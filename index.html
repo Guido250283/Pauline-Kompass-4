@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paulines Kompass-Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#f3c45a;--gold-d:#a86a10;--ink:#2b1d0e;--parch:#fff8e6;--parch2:#f3e2bb;--edge:#c9a35c;--ok:#2f9e57;--bad:#c8463b;--violet:#2a1b5e}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:#140d33;-webkit-tap-highlight-color:transparent}
+#sky{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 50% -10%,#5b3fa8 0%,#2a1b5e 40%,#140d33 80%);overflow:hidden}
+#sky i{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:.8;animation:tw 3s infinite alternate}
+@keyframes tw{from{opacity:.2}to{opacity:1}}
+#sky .moon{position:absolute;top:28px;right:24px;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffbe8,#f5dc8f 60%,#d9b65a);box-shadow:0 0 40px #f5dc8f88}
+.wrap{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:12px 14px 60px}
+h1,h2,h3,.medieval{font-family:MedievalSharp,Georgia,serif;font-weight:400}
+.top{display:flex;align-items:center;gap:10px;background:rgba(20,12,50,.7);border:2px solid #f3c45a55;border-radius:16px;padding:8px 12px;color:#fde9b0;position:sticky;top:8px;z-index:5;backdrop-filter:blur(6px)}
+.top .pet{font-size:34px;line-height:1}
+.top .who{flex:1;min-width:0}
+.top .who b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .who small{font-size:12px;opacity:.85}
+.bar{height:8px;background:#ffffff22;border-radius:6px;overflow:hidden;margin-top:3px}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,#f3c45a,#ffe9a3);border-radius:6px;transition:width .6s}
+.gems{font-weight:900;font-size:18px;white-space:nowrap}
+.iconbtn{background:none;border:none;color:#fde9b0;font-size:22px;padding:4px;cursor:pointer}
+.card{background:linear-gradient(170deg,var(--parch),var(--parch2));border:3px solid var(--edge);border-radius:20px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 0 30px #c9a35c33;margin-top:14px;position:relative}
+.card h2{margin:0 0 8px;font-size:26px;color:#5a2d0c}
+.lead{color:#fde9b0;text-align:center}
+.lead h1{font-size:38px;margin:18px 0 4px;text-shadow:0 3px 12px #000}
+.btn{font:800 18px Nunito,sans-serif;padding:13px 20px;border-radius:14px;border:none;background:linear-gradient(#ffe08a,#f0a92c);color:#4a2a00;box-shadow:0 4px 0 var(--gold-d);cursor:pointer;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--gold-d)}
+.btn.sec{background:linear-gradient(#efe4ff,#c9b6f2);color:#2a1b5e;box-shadow:0 4px 0 #7a62b5}
+.btn.ghost{background:transparent;color:#5a2d0c;box-shadow:none;border:2px dashed var(--edge)}
+.btn.wide{width:100%}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.row .btn{flex:1}
+input.ans{font:800 22px Nunito,sans-serif;padding:12px 14px;border-radius:12px;border:3px solid var(--edge);background:#fffdf5;width:100%;color:var(--ink)}
+input.ans:focus{outline:none;border-color:#7a62b5;box-shadow:0 0 0 4px #7a62b533}
+.field{display:flex;align-items:center;gap:8px;margin-top:10px}
+.field label{font-weight:800;min-width:0;flex:0 0 auto;max-width:48%}
+.field .unit{font-weight:800}
+.q{font-size:19px;line-height:1.5}
+.q b{color:#7a2e0b}
+.story{font-style:italic;color:#6b4a1f;margin-bottom:8px;font-size:16px}
+.opts{display:grid;gap:10px;margin-top:12px}
+.opt{font:700 17px Nunito,sans-serif;text-align:left;padding:13px 14px;border-radius:12px;border:3px solid var(--edge);background:#fffdf5;cursor:pointer;color:var(--ink)}
+.opt.sel{border-color:#7a62b5;background:#efe7ff}
+.opt.right{border-color:var(--ok);background:#dff5e6}
+.opt.wrong{border-color:var(--bad);background:#fde3e0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{font:800 19px Nunito,sans-serif;padding:9px 12px;border-radius:12px;border:3px solid var(--edge);background:#fffdf5;cursor:pointer;color:var(--ink)}
+.chip.sel{background:#7a62b5;color:#fff;border-color:#4b3690}
+.fb{margin-top:14px;padding:12px 14px;border-radius:14px;font-size:17px;line-height:1.45;display:none}
+.fb.show{display:block;animation:pop .25s}
+.fb.good{background:#dff5e6;border:2px solid var(--ok)}
+.fb.hint{background:#fff1c9;border:2px solid #e0a82e}
+.fb.sol{background:#efe7ff;border:2px solid #7a62b5}
+@keyframes pop{from{transform:scale(.95);opacity:0}to{transform:none;opacity:1}}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.progress{display:flex;gap:5px;margin:6px 0 12px}
+.progress span{flex:1;height:9px;border-radius:5px;background:#0000001f}
+.progress span.ok{background:var(--ok)}.progress span.half{background:#e0a82e}.progress span.no{background:var(--bad)}.progress span.cur{background:#7a62b5}
+.taskhead{display:flex;justify-content:space-between;align-items:center;font-weight:800;color:#6b4a1f}
+.tag{font-size:13px;background:#5a2d0c;color:#fde9b0;border-radius:20px;padding:3px 10px}
+table.t{border-collapse:collapse;margin:10px 0;font-size:17px;background:#fffdf5}
+table.t td,table.t th{border:2px solid var(--edge);padding:6px 10px;text-align:left}
+table.t th{background:#f3e2bb}
+.textbox{background:#fffdf5;border:2px solid var(--edge);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.6;margin-bottom:10px}
+.textbox h4{margin:0 0 6px;font-family:MedievalSharp,serif;font-size:19px;font-weight:400}
+svg.fig{display:block;margin:10px auto;max-width:100%}
+/* Map */
+.map{position:relative;margin-top:10px}
+.map svg.path{position:absolute;inset:0;width:100%;height:100%}
+.node{position:absolute;transform:translate(-50%,0);width:150px;text-align:center;cursor:pointer;color:#fde9b0}
+.node .disc{width:84px;height:84px;margin:0 auto;border-radius:50%;display:grid;place-items:center;font-size:42px;background:radial-gradient(circle at 35% 30%,#fff6d8,#e7c06a 70%,#a87a2a);border:4px solid #fff3c4;box-shadow:0 0 0 4px #00000033,0 8px 18px #000a;transition:transform .15s}
+.node.m .disc{background:radial-gradient(circle at 35% 30%,#e9fff0,#7fd6a0 70%,#2f8a57)}
+.node.d .disc{background:radial-gradient(circle at 35% 30%,#f2ecff,#b09cf0 70%,#5a43a8)}
+.node.final .disc{width:100px;height:100px;font-size:52px;background:radial-gradient(circle at 35% 30%,#fff,#ffb36b 60%,#c2410c)}
+.node.locked .disc{filter:grayscale(1) brightness(.6)}
+.node:active .disc{transform:scale(.94)}
+.node b{display:block;font-family:MedievalSharp,serif;font-weight:400;font-size:17px;margin-top:6px;text-shadow:0 2px 6px #000}
+.node .stars{font-size:16px;letter-spacing:2px}
+.node .subj{font-size:11px;opacity:.8}
+.legend{display:flex;justify-content:center;gap:14px;color:#fde9b0;font-size:14px;margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.legend .lm::before{background:#7fd6a0}.legend .ld::before{background:#b09cf0}
+.pets{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+.petopt{border:3px solid var(--edge);border-radius:14px;background:#fffdf5;padding:12px;text-align:center;cursor:pointer;font-weight:800}
+.petopt span{display:block;font-size:44px}
+.petopt.sel{border-color:#7a62b5;background:#efe7ff}
+.speech{display:flex;gap:10px;align-items:flex-start}
+.speech .p{font-size:40px;line-height:1}
+.speech .bubble{background:#fffdf5;border:2px solid var(--edge);border-radius:14px;padding:10px 12px;flex:1;font-size:16px}
+.bigstars{font-size:46px;text-align:center;letter-spacing:6px;margin:6px 0}
+.timer{font-weight:900;color:#7a2e0b}
+.stat{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px dashed var(--edge);font-size:16px}
+.stat .mini{width:90px;height:8px;background:#0000001a;border-radius:5px;overflow:hidden;margin-left:8px}
+.stat .mini span{display:block;height:100%;background:var(--ok)}
+.review{border-top:1px dashed var(--edge);padding:10px 0;font-size:15px}
+.spark{position:fixed;pointer-events:none;z-index:50;font-size:22px;animation:fly 1s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) scale(.4);opacity:0}}
+.modal{position:fixed;inset:0;background:#000a;z-index:40;display:grid;place-items:center;padding:16px}
+.modal .card{max-width:420px;width:100%}
+.cert{text-align:center;border:6px double #a87a2a}
+.cert .big{font-size:64px}
+.small{font-size:14px;color:#6b4a1f}
+a{color:#4b3690}
+</style>
+</head>
+<body>
+<div id="sky"><div class="moon"></div></div>
+<div class="wrap" id="app"></div>
+
+<script id="core">
+/* ============ Hilfsfunktionen ============ */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const eur=c=>(c/100).toFixed(2).replace('.',',')+' €';
+const pad=n=>String(n).padStart(2,'0');
+const tm=m=>`${Math.floor(m/60)}:${pad(m%60)} Uhr`;
+const minus='−';
+function steps(a,b,op){let cur=a;const out=[];const parts=[Math.floor(b/100)*100,Math.floor(b%100/10)*10,b%10];
+  for(const p of parts){if(!p)continue;const n=op==='+'?cur+p:cur-p;out.push(`${cur} ${op==='+'?'+':minus} ${p} = ${n}`);cur=n;}return out.join('<br>');}
+function choice(q,correct,wrongs,extra){const opts=shuffle([correct,...wrongs]);return Object.assign({type:'choice',q,options:opts,answer:opts.indexOf(correct)},extra);}
+
+/* ============ Prüfen ============ */
+function normText(s){return String(s??'').trim().replace(/\s+/g,' ').replace(/[.!?,;:]+$/,'').toLowerCase();}
+function stripArt(s){return s.replace(/^(der|die|das|den|dem|ein|eine|am) /,'');}
+function parseNum(s){s=String(s??'').replace(/\s/g,'').replace(/[^\d,.\-]/g,'');
+  if(/^\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,'');s=s.replace(',','.');if(s===''||isNaN(s))return NaN;return parseFloat(s);}
+function parseTime(s){const m=String(s??'').match(/(\d{1,2})\s*[:.,h ]\s*(\d{2})/);return m?(+m[1])*60+(+m[2]):NaN;}
+function checkField(f,val){
+  if(f.type==='num')return Math.abs(parseNum(val)-f.answer)<0.001;
+  if(f.type==='time')return parseTime(val)===f.answer;
+  const acc=[f.answer,...(f.accept||[])];
+  if(f.cs)return acc.some(a=>String(val??'').trim().replace(/[.!?]+$/,'')===a);
+  const v=stripArt(normText(val));return acc.some(a=>stripArt(normText(a))===v);}
+function check(t,resp){
+  if(t.type==='choice')return resp===t.answer;
+  if(t.type==='tap'){const a=[...(resp||[])].sort((x,y)=>x-y).join(),b=[...t.answer].sort((x,y)=>x-y).join();return a===b;}
+  if(t.type==='multi')return t.fields.every((f,i)=>checkField(f,(resp||[])[i]));
+  return checkField(t,resp);}
+function emptyResp(t,resp){
+  if(t.type==='choice')return resp==null;
+  if(t.type==='tap')return !resp||!resp.length;
+  if(t.type==='multi')return !resp||resp.some(v=>!String(v??'').trim());
+  return !String(resp??'').trim();}
+
+/* ============ Grafiken ============ */
+function svgNumberLine(n,labels){ // n Teilstriche, labels {index:text}
+  const W=330,x0=20,x1=W-20,step=(x1-x0)/(n-1);let s=`<svg class="fig" width="${W}" height="70" viewBox="0 0 ${W} 70"><line x1="8" y1="30" x2="${W-8}" y2="30" stroke="#5a2d0c" stroke-width="3"/><path d="M${W-8} 30 l-9 -6 v12z" fill="#5a2d0c"/>`;
+  for(let i=0;i<n;i++){const x=x0+i*step;s+=`<line x1="${x}" y1="20" x2="${x}" y2="40" stroke="#5a2d0c" stroke-width="${labels[i]?3:2}"/>`;if(labels[i])s+=`<text x="${x}" y="62" text-anchor="middle" font-size="16" font-weight="800" fill="#5a2d0c">${labels[i]}</text>`;}
+  return s+'</svg>';}
+function svgBars(cats,vals){const W=330,H=210,l=34,b=170,top=20,max=10,bw=46,gap=(W-l-10-cats.length*bw)/(cats.length);
+  let s=`<svg class="fig" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  for(let v=0;v<=max;v++){const y=b-(b-top)*v/max;s+=`<line x1="${l}" y1="${y}" x2="${W-6}" y2="${y}" stroke="#c9a35c" stroke-width="${v%2?0.7:1.4}"/>`;if(v%2===0)s+=`<text x="${l-6}" y="${y+5}" text-anchor="end" font-size="13" fill="#5a2d0c">${v}</text>`;}
+  const col=['#7fd6a0','#b09cf0','#f3c45a','#f08a7a'];
+  cats.forEach((c,i)=>{const x=l+gap/2+i*(bw+gap),h=(b-top)*vals[i]/max;s+=`<rect x="${x}" y="${b-h}" width="${bw}" height="${h}" rx="4" fill="${col[i]}" stroke="#5a2d0c" stroke-width="1.5"/><text x="${x+bw/2}" y="${b+18}" text-anchor="middle" font-size="12" font-weight="800" fill="#5a2d0c">${c}</text>`;});
+  return s+`<text x="4" y="12" font-size="12" fill="#5a2d0c">Stimmen</text></svg>`;}
+function svgNet(row,top,tc,bottom,bc){const z=48,W=z*4+20,H=z*3+20;let s=`<svg class="fig" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  const sq=(c,r,n)=>`<rect x="${10+c*z}" y="${10+r*z}" width="${z}" height="${z}" fill="#fffdf5" stroke="#5a2d0c" stroke-width="2.5"/><text x="${10+c*z+z/2}" y="${10+r*z+z/2+8}" text-anchor="middle" font-size="24" font-weight="900" fill="#5a2d0c">${n}</text>`;
+  s+=sq(tc,0,top);row.forEach((n,i)=>s+=sq(i,1,n));s+=sq(bc,2,bottom);return s+'</svg>';}
+function svgWall(){const z=60,W=z*3+20;let s=`<svg class="fig" width="${W}" height="${z*1.5+20}" viewBox="0 0 ${W} ${z*1.5+20}">`;
+  const br=(x,y,t)=>`<rect x="${x}" y="${y}" width="${z}" height="${z/2}" fill="#e8d3a6" stroke="#5a2d0c" stroke-width="2"/><text x="${x+z/2}" y="${y+z/4+6}" text-anchor="middle" font-size="16" font-weight="800" fill="#5a2d0c">${t}</text>`;
+  s+=br(10+z,10,'?')+br(10+z/2,10+z/2,'')+br(10+z*1.5,10+z/2,'')+br(10,10+z,'')+br(10+z,10+z,'')+br(10+z*2,10+z,'');return s+'</svg>';}
+
+/* ============ MATHE ============ */
+const M={
+add(){const a=ri(1200,6800),b=ri(120,2900);return{skill:'Plus und Minus',story:'Zwergin Brumhild zählt ihren Schatz.',q:`In ihrer Truhe liegen <b>${a}</b> Goldmünzen. Heute findet sie noch <b>${b}</b> Münzen dazu.<br>Wie viele Münzen hat sie jetzt?`,type:'num',answer:a+b,unit:'Münzen',hint:'Rechne in Schritten: erst die Hunderter dazu, dann die Zehner, dann die Einer. Du kannst auch schriftlich untereinander rechnen.',sol:`${a} + ${b} = <b>${a+b}</b><br>${steps(a,b,'+')}`};},
+sub(){const a=ri(2100,8900),b=ri(300,a-800);return{skill:'Plus und Minus',story:'Der Kobold Fips nascht aus dem Vorratskeller.',q:`Im Keller der Burg lagern <b>${a}</b> Zauberbeeren. Fips nascht <b>${b}</b> davon.<br>Wie viele Beeren sind noch übrig?`,type:'num',answer:a-b,unit:'Beeren',hint:'Ziehe in Schritten ab: erst die Hunderter, dann die Zehner, dann die Einer. Reichen die Einer nicht, musst du einen Zehner entbündeln.',sol:`${a} ${minus} ${b} = <b>${a-b}</b><br>${steps(a,b,'-')}`};},
+buendeln(){let H=ri(2,8),Z,E,v=Math.random()<.6;if(v){Z=ri(11,18);E=ri(1,9);}else{Z=ri(2,8);E=ri(11,16);}const val=H*100+Z*10+E;
+  return{skill:'Stellenwerte',story:'Im Zauberbuch liegen Kristalle in einer Stellenwerttafel.',q:`In der Stellenwerttafel liegen <b>${H} Hunderter</b>, <b>${Z} Zehner</b> und <b>${E} Einer</b>.<br>Welche Zahl ist gemeint?`,type:'num',answer:val,hint:v?`Achtung: ${Z} Zehner sind mehr als 10 Zehner. 10 Zehner sind 1 Hunderter!`:`Achtung: ${E} Einer sind mehr als 10 Einer. 10 Einer sind 1 Zehner!`,sol:`${H}·100 + ${Z}·10 + ${E} = ${H*100} + ${Z*10} + ${E} = <b>${val}</b><br>Nicht einfach die Ziffern hintereinander schreiben (${H}${Z}${E} wäre falsch).`};},
+nachbar(){const mode=pick(['Zehner','Hunderter']),st=mode==='Zehner'?10:100;let n;do{n=ri(1001,9899);}while(n%st===0);const lo=Math.floor(n/st)*st;
+  return{skill:'Stellenwerte',story:'Am Wegweiser im Zahlenwald stehen nur volle Zahlen.',q:`Finde die Nachbar-${mode} der Zahl <b>${n}</b>.`,type:'multi',fields:[{label:`${mode} davor:`,type:'num',answer:lo},{label:`${mode} danach:`,type:'num',answer:lo+st}],hint:mode==='Zehner'?'Nachbarzehner enden immer auf 0.':'Nachbarhunderter enden immer auf 00.',sol:`<b>${lo}</b> &lt; ${n} &lt; <b>${lo+st}</b>`};},
+strahl(){const step=pick([50,100,200,250]);const a=Math.round(ri(8,30)*100/step)*step+step*2;const b=a+4*step;
+  const v=pick([['mid','genau in der Mitte zwischen den beiden Zahlen',a+2*step],['r1','genau einen Abschnitt rechts von '+a,a+step],['l2','genau zwei Abschnitte links von '+a,a-2*step],['r3','genau drei Abschnitte rechts von '+a,a+3*step]]);
+  return{skill:'Zahlenstrahl',story:'Eine Feenbrücke ist wie ein Zahlenstrahl gebaut.',q:`Am Zahlenstrahl stehen <b>${a}</b> und <b>${b}</b>. Dazwischen liegen 4 gleich große Abschnitte.${svgNumberLine(7,{2:a,6:b})}Welche Zahl liegt ${v[1]}?`,type:'num',answer:v[2],hint:`Wie groß ist ein Abschnitt? Rechne ${b} ${minus} ${a} und teile durch 4.`,sol:`${b} ${minus} ${a} = ${4*step}, geteilt durch 4 = ${step}. Ein Abschnitt ist ${step} groß.<br>Gesuchte Zahl: <b>${v[2]}</b>`};},
+div(){if(Math.random()<.5){const d=ri(3,9),q=ri(12,95);return{skill:'Mal und Geteilt',story:'Zauberer Merlo verteilt Sternenstaub.',q:`Merlo hat <b>${d*q}</b> Sterne. Er verteilt sie gleichmäßig auf <b>${d}</b> Beutel.<br>Wie viele Sterne kommen in jeden Beutel?`,type:'num',answer:q,unit:'Sterne',hint:`Rechne ${d*q} : ${d}. Zerlege die Zahl in Teile, die sich gut durch ${d} teilen lassen.`,sol:`${d*q} : ${d} = <b>${q}</b> (Probe: ${q} · ${d} = ${d*q})`};}
+  const k=ri(2,5),nm=['','','Doppelte','Dreifache','Vierfache','Fünffache'][k],x=ri(10,40)*10,y=ri(11,45)*5;return{skill:'Mal und Geteilt',story:'Ein Rechenzauber steht auf einer alten Schriftrolle.',q:`Addiere zu <b>${x}</b> das <b>${nm}</b> von <b>${y}</b>.`,type:'num',answer:x+k*y,hint:`Rechne zuerst das ${nm}: ${k} · ${y}. Dann zählst du ${x} dazu.`,sol:`${k} · ${y} = ${k*y}<br>${x} + ${k*y} = <b>${x+k*y}</b>`};},
+schriftlich(){let a,b;do{a=ri(3,9)*100+ri(1,8);b=ri(100,a-60);}while(b%10<=a%10||Math.floor(b%100/10)===0);
+  return{skill:'Plus und Minus',story:'Die Wächter zählen die Pfeile im Turm.',q:`Rechne schriftlich (untereinander): <b>${a} ${minus} ${b}</b>`,type:'num',answer:a-b,hint:`Bei den Einern reicht ${a%10} nicht für ${b%10}. Du musst entbündeln, aber an der Zehnerstelle steht eine 0! Hole dir erst einen Hunderter.`,sol:`${a} ${minus} ${b} = <b>${a-b}</b><br>${steps(a,b,'-')}`};},
+geschickt(){const a=ri(320,980),d=pick([97,98,99,198,199]),r=d<150?100:200,df=r-d;
+  return choice(`Fips soll <b>${a} ${minus} ${d}</b> im Kopf rechnen. Er sagt: „Ich rechne zuerst ${a} ${minus} ${r} = ${a-r}.“<br>Was muss Fips jetzt noch rechnen?`,`${a-r} + ${df} = ${a-d}`,[`${a-r} ${minus} ${df} = ${a-r-df}`,`${a-r} + ${r} = ${a}`,`${a-r} + ${d} = ${a-r+d}`],{skill:'Geschickt rechnen',story:'Kobold Fips kennt einen Rechentrick.',hint:`Hat Fips mehr oder weniger abgezogen, als er sollte?`,sol:`Fips hat ${r} statt ${d} abgezogen, also ${df} zu viel. Die ${df} muss er wieder dazuzählen: <b>${a-r} + ${df} = ${a-d}</b>`});},
+geschicktMal(){const [a,b]=pick([[24,25],[16,25],[18,50],[14,50],[32,25],[44,25],[12,50],[36,25],[8,125],[28,25]]);
+  return{skill:'Geschickt rechnen',story:'Die Elfe Lirien rechnet mit Halbieren und Verdoppeln.',q:`Rechne geschickt im Kopf: <b>${a} · ${b}</b>`,type:'num',answer:a*b,hint:`Halbiere die eine Zahl und verdopple die andere. Das Ergebnis bleibt gleich! Zum Beispiel: ${a/2} · ${b*2}`,sol:`${a} · ${b} = ${a/2} · ${b*2} = <b>${a*b}</b><br>Wenn man eine Zahl halbiert und die andere verdoppelt, bleibt das Ergebnis gleich.`};},
+rest(){const t=ri(240,880),d=ri(110,t-40);return{skill:'Sachaufgaben',story:'Ritterin Ida reitet zur Drachenburg.',q:`Der Weg zur Drachenburg ist <b>${t} km</b> lang. Bis zur Rast ist Ida schon <b>${d} km</b> geritten.<br>Wie viele Kilometer muss sie noch reiten?`,type:'num',answer:t-d,unit:'km',hint:'Musst du die gerittenen Kilometer dazuzählen oder von der ganzen Strecke abziehen?',sol:`${t} ${minus} ${d} = <b>${t-d} km</b><br>${steps(t,d,'-')}`};},
+wechsel(){const p=pick([120,140,160,180,240,250,150,90,130]);let n=ri(4,8);let paid=n*p<1000?1000:2000;if(n*p>=paid){n=4;paid=n*p<1000?1000:2000;}
+  return{skill:'Geld',story:'Auf dem Zwergenmarkt gibt es Heiltränke.',q:`<table class="t"><tr><th>Heiltränke</th><th>Preis</th></tr><tr><td>1 Trank</td><td>${eur(p)}</td></tr><tr><td>2 Tränke</td><td>${eur(2*p)}</td></tr><tr><td>3 Tränke</td><td>${eur(3*p)}</td></tr></table>Ida kauft <b>${n} Tränke</b> und bezahlt mit einem <b>${paid/100}-Euro-Schein</b>.<br>Wie viel Wechselgeld bekommt sie?`,type:'num',answer:(paid-n*p)/100,unit:'€',hint:'Zwei Schritte: Erst ausrechnen, was die Tränke kosten. Dann vom Geldschein abziehen.',sol:`${n} · ${eur(p)} = ${eur(n*p)}<br>${eur(paid)} ${minus} ${eur(n*p)} = <b>${eur(paid-n*p)}</b>`};},
+familie(){const A=pick([1200,1400,1500,1600]),K=pick([650,700,750,800,850]),k=pick([2,3]),tot=2*A+k*K,F=Math.floor((tot-ri(3,12)*100)/100)*100;
+  return{skill:'Geld',story:'Familie Eichenlaub besucht den Zauberzoo.',q:`<table class="t"><tr><th>Eintritt</th><th>Preis</th></tr><tr><td>Erwachsene</td><td>${eur(A)}</td></tr><tr><td>Kinder</td><td>${eur(K)}</td></tr><tr><td>Familienkarte (2 Erwachsene, bis 3 Kinder)</td><td>${eur(F)}</td></tr></table>Vater, Mutter und <b>${k} Kinder</b> gehen in den Zoo.<br>Wie viel Euro sparen sie mit der Familienkarte?`,type:'num',answer:(tot-F)/100,unit:'€',hint:'Rechne zuerst aus, was die Einzelkarten zusammen kosten. Dann vergleiche mit der Familienkarte.',sol:`Einzelkarten: 2 · ${eur(A)} + ${k} · ${eur(K)} = ${eur(tot)}<br>${eur(tot)} ${minus} ${eur(F)} = <b>${eur(tot-F)}</b> gespart`};},
+kombi(){const pools=[['Umhänge',['rot','blau','grün']],['Hüte',['spitz','rund','mit Feder']],['Zauberstäbe',['Eiche','Birke','Kristall']],['Stiefel',['braun','schwarz']]];const cs=shuffle(pools).slice(0,3).map(([n,o])=>[n,o.slice(0,ri(2,o.length))]);const prod=cs.reduce((p,c)=>p*c[1].length,1);
+  return{skill:'Kombinieren',story:'In der Zauberschule bekommt jedes Kind eine Ausrüstung.',q:`Jedes Kind wählt genau eins von jedem:<ul>${cs.map(c=>`<li><b>${c[0]}:</b> ${c[1].join(', ')}</li>`).join('')}</ul>Wie viele verschiedene Ausrüstungen gibt es?`,type:'num',answer:prod,hint:'Male ein Baumdiagramm oder überlege: Zu jedem der ersten Dinge passen alle der zweiten …',sol:`${cs.map(c=>c[1].length).join(' · ')} = <b>${prod}</b>`};},
+diagramm(){const cats=['Drachen','Einhörner','Greife','Feen'],v=cats.map(()=>ri(2,9));let f=ri(0,3),to;do{to=ri(0,3);}while(to===f);const mv=Math.min(v[f]-1,ri(1,3)),tot=v.reduce((a,b)=>a+b,0);
+  return{skill:'Diagramme',story:'Die Zauberschule hat abgestimmt: Welches Fabelwesen ist das beliebteste?',q:`${svgBars(cats,v)}a) Wie viele Kinder haben insgesamt abgestimmt?<br>b) ${mv} ${mv===1?'Kind wechselt':'Kinder wechseln'} von <b>${cats[f]}</b> zu <b>${cats[to]}</b>. Wie viele Stimmen haben die ${cats[to]} danach?`,type:'multi',fields:[{label:'a)',type:'num',answer:tot,unit:'Kinder'},{label:'b)',type:'num',answer:v[to]+mv,unit:'Stimmen'}],hint:'Lies jede Säule genau ab, die Linien helfen dir. Bei b) kommen die Wechsler dazu.',sol:`a) ${v.join(' + ')} = <b>${tot}</b><br>b) ${v[to]} + ${mv} = <b>${v[to]+mv}</b>`};},
+malSach(){const n=ri(6,9),m=pick([12,15,25,24,35,45,18]);return{skill:'Mal und Geteilt',story:'Der Drache bewacht seine Schatztruhen.',q:`In jeder der <b>${n}</b> Schatztruhen liegen <b>${m}</b> Rubine.<br>Wie viele Rubine sind es zusammen?`,type:'num',answer:n*m,unit:'Rubine',hint:`Zerlege: ${n} · ${Math.floor(m/10)*10} und ${n} · ${m%10}, dann zusammenzählen.`,sol:`${n} · ${m} = ${n} · ${Math.floor(m/10)*10} + ${n} · ${m%10} = ${n*Math.floor(m/10)*10} + ${n*(m%10)} = <b>${n*m}</b>`};},
+zeitspanne(){const h=ri(7,17),m=ri(35,55),m2=ri(5,50),ans=60-m+m2;return{skill:'Zeit',story:'Im Uhrturm tickt die Zeitmagie.',q:`Die Eule Fiora startet um <b>${h}:${pad(m)} Uhr</b>. Um <b>${h+1}:${pad(m2)} Uhr</b> beginnt der Unterricht in der Zauberschule.<br>Wie viele Minuten hat sie noch Zeit?`,type:'num',answer:ans,unit:'Minuten',hint:`Eine Stunde hat 60 Minuten, nicht 100! Rechne erst bis ${h+1}:00 Uhr.`,sol:`${h}:${pad(m)} bis ${h+1}:00 = ${60-m} Minuten<br>${h+1}:00 bis ${h+1}:${pad(m2)} = ${m2} Minuten<br>${60-m} + ${m2} = <b>${ans} Minuten</b>`};},
+endzeit(){const s=ri(8,16)*60+pick([10,15,20,25,35,40,45,50]),d=ri(25,95),e=s+d;return{skill:'Zeit',story:'Merlo braut einen Zaubertrank.',q:`Der Trank muss <b>${d} Minuten</b> köcheln. Merlo stellt ihn um <b>${tm(s)}</b> aufs Feuer.<br>Um wie viel Uhr ist der Trank fertig?`,type:'time',answer:e,unit:'Uhr',placeholder:'z. B. 14:05',hint:`Rechne erst bis zur nächsten vollen Stunde, dann weiter. ${d>60?`${d} Minuten sind 1 Stunde und ${d-60} Minuten.`:''}`,sol:`${tm(s)} + ${d} Minuten = <b>${tm(e)}</b>`};},
+laengen(){const nm=shuffle(['Ida','Fips','Lirien','Brumhild','Merlo']).slice(0,4),v=nm.map(()=>ri(120,300));const mx=Math.max(...v),mn=Math.min(...v);if(mx===mn)v[0]+=15;const MX=Math.max(...v),MN=Math.min(...v);const f=c=>(c/100).toFixed(2).replace('.',',')+' m';
+  return{skill:'Größen',story:'Beim Froschsprung-Turnier im Feenwald.',q:`<table class="t"><tr><th>Name</th><th>Weite</th></tr>${nm.map((n,i)=>`<tr><td>${n}</td><td>${f(v[i])}</td></tr>`).join('')}</table>Wie viele <b>Zentimeter</b> ist der weiteste Sprung weiter als der kürzeste?`,type:'num',answer:MX-MN,unit:'cm',hint:'Wandle zuerst in Zentimeter um: 1 m = 100 cm. Also 2,45 m = 245 cm.',sol:`Weitester: ${f(MX)} = ${MX} cm, kürzester: ${f(MN)} = ${MN} cm<br>${MX} ${minus} ${MN} = <b>${MX-MN} cm</b>`};},
+umrechnen(){const v=pick(['kg','m','km','h']);
+  if(v==='kg'){const k=ri(1,5),g=ri(5,950);return{skill:'Größen',story:'Der Riese wiegt seinen Riesenkürbis.',q:`Der Kürbis wiegt <b>${k} kg ${g} g</b>. Wie viele Gramm sind das?`,type:'num',answer:k*1000+g,unit:'g',hint:'1 kg = 1000 g',sol:`${k} kg = ${k*1000} g, dazu ${g} g = <b>${k*1000+g} g</b>`};}
+  if(v==='m'){const m=ri(1,9),c=pick([ri(1,9),ri(11,95)]);return{skill:'Größen',story:'Der Zauberbesen wird ausgemessen.',q:`Der Besen ist <b>${m} m ${c} cm</b> lang. Wie viele Zentimeter sind das?`,type:'num',answer:m*100+c,unit:'cm',hint:`1 m = 100 cm. ${c<10?'Pass auf: '+c+' cm sind nur Einer!':''}`,sol:`${m} m = ${m*100} cm, dazu ${c} cm = <b>${m*100+c} cm</b>`};}
+  if(v==='km'){const k=ri(1,9),m=ri(50,950);return{skill:'Größen',story:'Wanderung zum Feenteich.',q:`Bis zum Feenteich sind es <b>${k} km ${m} m</b>. Wie viele Meter sind das?`,type:'num',answer:k*1000+m,unit:'m',hint:'1 km = 1000 m',sol:`${k} km = ${k*1000} m, dazu ${m} m = <b>${k*1000+m} m</b>`};}
+  const h=ri(1,3),m=ri(5,55);return{skill:'Zeit',story:'Ein Zauberschlaf dauert genau so lang.',q:`Der Zauberschlaf dauert <b>${h} Stunde${h>1?'n':''} ${m} Minuten</b>. Wie viele Minuten sind das?`,type:'num',answer:h*60+m,unit:'Minuten',hint:'1 Stunde = 60 Minuten',sol:`${h} · 60 = ${h*60}, dazu ${m} = <b>${h*60+m} Minuten</b>`};},
+einheit(){const [q,c,w]=pick([['Ein Zauberstab ist etwa 30 ___ lang.','cm',['m','mm','km']],['Der Weg ins Nachbardorf ist 4 ___ lang.','km',['m','cm','mm']],['Ein Apfel wiegt etwa 150 ___.','g',['kg','t','mm']],['Ein Elefant wiegt etwa 5 ___.','t',['kg','g','km']],['Die Burgmauer ist etwa 12 ___ hoch.','m',['cm','km','mm']],['Ein Marienkäfer ist etwa 7 ___ lang.','mm',['cm','m','km']],['Ein Kind wiegt etwa 32 ___.','kg',['g','t','km']],['In einen Eimer passen etwa 10 ___ Wasser.','l',['ml','kg','km']]]);
+  return choice(`Welche Einheit passt?<br><b>${q}</b>`,c,w,{skill:'Größen',story:'Die Zeitmagierin prüft dein Gefühl für Größen.',hint:'Stell dir den Gegenstand vor. Vergleiche mit Dingen, die du kennst: Dein Lineal ist 30 cm lang.',sol:`Richtig ist <b>${c}</b>: ${q.replace('___',c)}`});},
+folgeAlt(){const s=ri(10,60)*10,up=pick([30,40,50,60,70]),dn=pick([10,20,30].filter(x=>x<up));const seq=[s];for(let i=1;i<6;i++)seq.push(seq[i-1]+(i%2?up:-dn));const n1=seq[5]-dn,n2=n1+up;
+  return{skill:'Muster und Folgen',story:'An der Höhlenwand leuchten magische Zahlen.',q:`<b>${seq.join(', ')}, …</b><br>Wie heißen die nächsten beiden Zahlen?`,type:'multi',fields:[{label:'nächste Zahl:',type:'num',answer:n1},{label:'danach:',type:'num',answer:n2}],hint:'Schreibe über jeden Sprung, was passiert: Wird die Zahl größer oder kleiner, und um wie viel?',sol:`Regel: erst + ${up}, dann ${minus} ${dn}<br>${seq[5]} ${minus} ${dn} = <b>${n1}</b>, ${n1} + ${up} = <b>${n2}</b>`};},
+folgeMal(){const s=ri(4,9),k=ri(1,Math.min(5,s-1));const seq=[s];for(let i=1;i<7;i++)seq.push(i%2?seq[i-1]*2:seq[i-1]-k);const n1=seq[6]*2,n2=n1-k;
+  return{skill:'Muster und Folgen',story:'Ein Zauberspruch verdoppelt und zieht ab.',q:`<b>${seq.join(', ')}, …</b><br>Wie heißen die nächsten beiden Zahlen?`,type:'multi',fields:[{label:'nächste Zahl:',type:'num',answer:n1},{label:'danach:',type:'num',answer:n2}],hint:`Vergleiche ${seq[0]} und ${seq[1]}, dann ${seq[1]} und ${seq[2]}. Zwei verschiedene Rechenschritte wechseln sich ab.`,sol:`Regel: erst · 2, dann ${minus} ${k}<br>${seq[6]} · 2 = <b>${n1}</b>, ${n1} ${minus} ${k} = <b>${n2}</b>`};},
+regel(){const s=ri(10,50)*10,up=pick([30,40,50,60]),dn=pick([10,20]);const seq=[s];for(let i=1;i<6;i++)seq.push(seq[i-1]+(i%2?up:-dn));
+  return choice(`Welche Regel steckt in dieser Zahlenfolge?<br><b>${seq.join(', ')}</b>`,`erst + ${up}, dann ${minus} ${dn}`,[`immer + ${up}`,`erst ${minus} ${dn}, dann + ${up}`,`immer + ${up-dn}`],{skill:'Muster und Folgen',story:'Ein Rätsel an der Höhlentür.',hint:`Schau dir den ersten Sprung genau an: von ${seq[0]} nach ${seq[1]}.`,sol:`${seq[0]} → ${seq[1]}: + ${up}, ${seq[1]} → ${seq[2]}: ${minus} ${dn}. Also <b>erst + ${up}, dann ${minus} ${dn}</b>.`});},
+mauer(){let n;do{n=[ri(2,12)*5,ri(2,12)*5,ri(2,12)*5];}while(new Set(n).size<3);const maxi=Math.random()<.65,mid=maxi?Math.max(...n):Math.min(...n),o=n.filter(x=>x!==mid),top=o[0]+2*mid+o[1];
+  return{skill:'Zahlenmauern',story:'Die Zwerge bauen eine magische Zahlenmauer.',q:`${svgWall()}Setze <b>${n.join(', ')}</b> so in die unterste Reihe, dass der Deckstein (oben) so <b>${maxi?'groß':'klein'} wie möglich</b> wird.`,type:'multi',fields:[{label:'mittlerer Stein unten:',type:'num',answer:mid},{label:'Deckstein:',type:'num',answer:top}],hint:'Der mittlere Stein unten wird zweimal mitgezählt, einmal nach links oben und einmal nach rechts oben.',sol:`In die Mitte gehört <b>${mid}</b>, weil sie doppelt zählt.<br>${o[0]} + ${mid} = ${o[0]+mid}, ${mid} + ${o[1]} = ${mid+o[1]}, oben: ${o[0]+mid} + ${mid+o[1]} = <b>${top}</b>`};},
+raetsel(){const big=ri(25,70),sm=ri(5,big-5),S=big+sm,D=big-sm;return{skill:'Knobeln',story:'Die Sphinx stellt dir ein Zahlenrätsel.',q:`„Ich denke mir zwei Zahlen. Zusammen ergeben sie <b>${S}</b>. Der Unterschied zwischen ihnen ist <b>${D}</b>.“<br>Wie heißen die Zahlen?`,type:'multi',fields:[{label:'größere Zahl:',type:'num',answer:big},{label:'kleinere Zahl:',type:'num',answer:sm}],hint:`Probiere aus! Wenn beide Zahlen gleich wären, wären sie je ${S/2}. Jetzt verschiebe sie, bis der Unterschied ${D} ist.`,sol:`<b>${big}</b> und <b>${sm}</b>: ${big} + ${sm} = ${S} und ${big} ${minus} ${sm} = ${D}`};},
+wahr(){const v=pick([['nur rote',5,0,'sicher'],['rote und blaue',3,4,'möglich'],['nur blaue',0,6,'unmöglich'],['viele rote und eine blaue',7,1,'möglich']]);
+  return choice(`Im Zaubersack liegen <b>${v[1]} rote</b> und <b>${v[2]} blaue</b> Kristalle. Du ziehst blind einen heraus.<br>Einen <b>roten</b> Kristall zu ziehen ist …`,v[3],['sicher','möglich','unmöglich'].filter(x=>x!==v[3]),{skill:'Wahrscheinlichkeit',story:'Der Glückssack der Kobolde.',hint:'Sicher: Es kann nichts anderes passieren. Unmöglich: Es kann gar nicht passieren. Möglich: Es kann passieren, muss aber nicht.',sol:`<b>${v[3]}</b>, denn im Sack sind ${v[0]} Kristalle.`});},
+muster(){const a0=ri(200,500),sA=pick([111,101,110,121]),sB=pick([11,1,10,21]),b0=ri(2*sB+15,90);const L=[0,1,2].map(i=>[a0+i*sA,b0-i*sB]);
+  return{skill:'Muster und Folgen',story:'Auf drei Steintafeln stehen Rechnungen.',q:`${L.map(([a,b])=>`<b>${a} + ${b} = ${a+b}</b>`).join('<br>')}<br><br>a) Um wie viel wird die erste Zahl jede Zeile größer?<br>b) Um wie viel wird die zweite Zahl kleiner?<br>c) Um wie viel wird das Ergebnis größer?`,type:'multi',fields:[{label:'a)',type:'num',answer:sA},{label:'b)',type:'num',answer:sB},{label:'c)',type:'num',answer:sA-sB}],hint:'Vergleiche die Zahlen untereinander. Was dazukommt und was wegfällt, ergibt zusammen die Änderung des Ergebnisses.',sol:`a) + ${sA}, b) ${minus} ${sB}<br>c) ${sA} ${minus} ${sB} = <b>${sA-sB}</b>: Die erste Zahl wächst um ${sA}, die zweite schrumpft um ${sB}.`};},
+wuerfel(){const n=shuffle([1,2,3,4,5,6]),row=n.slice(0,4),top=n[4],bot=n[5],tc=ri(0,3),bc=ri(0,3);const opp={};opp[row[0]]=row[2];opp[row[2]]=row[0];opp[row[1]]=row[3];opp[row[3]]=row[1];opp[top]=bot;opp[bot]=top;const f=pick(n);
+  return{skill:'Raum und Form',story:'Die Zwerge falten einen Zauberwürfel.',q:`${svgNet(row,top,tc,bot,bc)}Du faltest das Netz zu einem Würfel. Welche Zahl liegt der <b>${f}</b> genau gegenüber?`,type:'num',answer:opp[f],hint:'In der langen Reihe aus 4 Feldern liegt jedes Feld dem übernächsten gegenüber. Das obere und das untere Feld liegen sich gegenüber.',sol:`Gegenüber der ${f} liegt die <b>${opp[f]}</b>.<br>Paare: ${row[0]}–${row[2]}, ${row[1]}–${row[3]}, ${top}–${bot}`};}
+};
+
+/* ============ DEUTSCH ============ */
+const STAEMME=[['fahr',['fahren','der Fahrer','die Abfahrt']],['spiel',['spielen','der Spieler','das Spielzeug']],['zauber',['zaubern','der Zauberer','zauberhaft']],['les',['lesen','der Leser','lesbar']],['mal',['malen','der Maler','die Malerei']],['wohn',['wohnen','die Wohnung','der Bewohner']],['wander',['wandern','der Wanderer','die Wanderung']],['hör',['hören','der Zuhörer','hörbar']],['schreib',['schreiben','der Schreiber','die Schreibschrift']],['lern',['lernen','der Lerner','lernbar']]];
+const KOMPOS=[['der Zauberstab','Zauber','Stab'],['die Wanduhr','Wand','Uhr'],['der Feuerberg','Feuer','Berg'],['das Burgtor','Burg','Tor'],['die Goldkrone','Gold','Krone'],['das Mondlicht','Mond','Licht'],['der Waldweg','Wald','Weg'],['der Eisdrache','Eis','Drache'],['die Schatzkiste','Schatz','Kiste'],['der Apfelbaum','Apfel','Baum'],['das Turmfenster','Turm','Fenster'],['der Sternenhimmel','Sterne','Himmel']];
+const FAMILIE=[[['der Sturm'],['stürmen'],['stürmisch']],[['die Furcht'],['fürchten'],['furchtsam','fürchterlich']],[['die Kühle'],['kühlen'],['kühl']],[['der Glanz'],['glänzen'],['glänzend']],[['der Zauber'],['zaubern'],['zauberhaft']],[['die Freude'],['freuen','sich freuen'],['freudig']],[['die Angst'],['ängstigen'],['ängstlich']],[['die Wärme'],['wärmen'],['warm']],[['die Ruhe'],['ruhen','beruhigen'],['ruhig']],[['das Glück'],['glücken'],['glücklich']]];
+const NACHSILBE=[['Die Dunkelheit legt sich über das Land und die Zwerge spüren große Müdigkeit.',[1,12]],['Nach der langen Wanderung erzählt der Zauberer von seiner Kindheit.',[3,9]],['Die Ritterin zeigt viel Tapferkeit und die Rettung der Burg gelingt.',[4,7]],['Im Dorf herrscht große Aufregung über das Geheimnis des Drachen.',[4,7]],['Die Freundschaft der beiden Elfen wächst mit jedem gemeinsamen Erlebnis.',[1,9]],['Die Schönheit des Zaubergartens weckt bei allen große Begeisterung.',[1,8]]];
+const VERL=[['der Hun_','d','t','die Hunde'],['das Bro_','t','d','die Brote'],['der Zwer_','g','k','die Zwerge'],['der Kor_','b','p','die Körbe'],['der Wal_','d','t','die Wälder'],['der Ber_','g','k','die Berge'],['das Schil_','d','t','die Schilder'],['das Zel_','t','d','die Zelte'],['das Pfer_','d','t','die Pferde'],['das Lan_','d','t','die Länder'],['der Die_','b','p','die Diebe'],['er kle_t','b','p','kleben'],['der Kobol_','d','t','die Kobolde'],['das Gel_','d','t','die Gelder'],['der Zwei_','g','k','die Zweige'],['sie sin_t','g','k','singen']];
+const ABL=[['die H_user','äu','eu','das Haus'],['die B_ume','äu','eu','der Baum'],['die Fr_nde','eu','äu',null],['die Kr_uter','äu','eu','das Kraut'],['das F_er','eu','äu',null],['die H_nde','ä','e','die Hand'],['die B_rge','e','ä',null],['die W_lder','ä','e','der Wald'],['die K_lte','ä','e','kalt'],['die F_lder','e','ä',null],['die St_rke','ä','e','stark'],['die N_ster','e','ä',null],['die Z_hne','ä','e','der Zahn'],['die L_ute','eu','äu',null],['die M_use','äu','eu','die Maus'],['die Tr_ume','äu','eu','der Traum']];
+const SSZ=[['der Flu_','ss','kurz'],['der Fu_','ß','lang'],['das Schlo_','ss','kurz'],['der Gru_','ß','lang'],['der Ku_','ss','kurz'],['der Strau_','ß','lang'],['der Schlu_','ss','kurz'],['gro_','ß','lang'],['der Spa_','ß','lang'],['na_','ss','kurz'],['hei_','ß','lang'],['das Fa_','ss','kurz'],['sü_','ß','lang'],['der Bi_','ss','kurz'],['wei_','ß','lang']];
+const GROSS=[['am abend fliegt der kleine drache über die alte burg.',[0,1,5,9]],['in der höhle findet die zwergin einen funkelnden schatz.',[0,2,5,8]],['jeden morgen füttert lina das mutige einhorn mit äpfeln.',[0,1,3,6,8]],['im zauberwald wachsen bunte pilze und hohe bäume.',[0,1,4,7]],['die junge hexe braut einen trank aus kräutern.',[0,2,5,7]],['nach der schule übt pauline mit ihrem zauberstab.',[0,2,4,7]]];
+const ZEIT=[['Der Drache schläft in seiner Höhle.','Präsens'],['Gestern flog die Eule über den Wald.','Präteritum'],['Die Zwerge haben einen Schatz gefunden.','Perfekt'],['Morgen wird die Hexe einen Trank brauen.','Futur'],['Die Elfe sang ein leises Lied.','Präteritum'],['Wir sind zur Burg gewandert.','Perfekt'],['Merlo zaubert einen Regenbogen.','Präsens'],['Die Ritterin ritt durch das Tor.','Präteritum'],['Das Einhorn hat aus dem See getrunken.','Perfekt'],['Bald werden die Feen tanzen.','Futur']];
+const ZNAME={'Präsens':'Präsens (Gegenwart)','Präteritum':'Präteritum (1. Vergangenheit)','Perfekt':'Perfekt (2. Vergangenheit)','Futur':'Futur (Zukunft)'};
+const VFORM=[['Gestern ___ wir im Wald eine Eule.','sehen','Präteritum','sahen'],['Heute ___ der Rabe auf dem Turm.','sitzen','Präsens','sitzt'],['Letzte Nacht ___ der Drache laut.','brüllen','Präteritum','brüllte'],['Die Fee ___ jeden Morgen ein Lied.','singen','Präsens','singt'],['Früher ___ hier ein Riese.','wohnen','Präteritum','wohnte'],['Gestern ___ die Kinder zur Burg.','laufen','Präteritum','liefen'],['Der Zauberer ___ ein dickes Buch.','lesen','Präsens','liest'],['Damals ___ der König ein Fest.','geben','Präteritum','gab'],['Im Winter ___ die Zwerge Holz.','sammeln','Präsens','sammeln'],['Vor langer Zeit ___ hier ein Schloss.','stehen','Präteritum','stand']];
+const PRAED=[['Der flinke Kobold versteckt die goldenen Löffel.',3],['Im Zauberteich schwimmen viele bunte Fische.',2],['Am Abend erzählt die Großmutter eine Sage.',2],['Die mutige Ritterin besiegt den bösen Nebel.',3],['Über dem Schloss leuchten tausend Sterne.',3],['Die kleine Fee repariert ihre Flügel.',3],['Jeden Morgen kräht der Hahn auf dem Burgturm.',2]];
+const WART=[[['Die','x'],['mutige','A'],['Katze','N'],['klettert','V'],['auf','x'],['den','x'],['hohen','A'],['Baum.','N']],[['Der','x'],['alte','A'],['Zauberer','N'],['liest','V'],['ein','x'],['dickes','A'],['Buch.','N']],[['Die','x'],['kleine','A'],['Fee','N'],['tanzt','V'],['im','x'],['hellen','A'],['Mondlicht.','N']],[['Ein','x'],['wilder','A'],['Drache','N'],['bewacht','V'],['den','x'],['glänzenden','A'],['Schatz.','N']],[['Die','x'],['fleißigen','A'],['Zwerge','N'],['graben','V'],['tiefe','A'],['Tunnel.','N']]];
+const SATZ=[['Der flinke Fuchs','fängt','die Maus.'],['Der mutige Ritter','rettet','die kleine Prinzessin.'],['Die Zwerge','graben','am Morgen','einen Tunnel.'],['Das Einhorn','trinkt','aus dem silbernen See.'],['Am Abend','singt','die Elfe','ein Lied.']];
+const UMST=[['Die fleißigen Ameisen transportieren schwere Tannennadeln in ihr Nest.','Schwere Tannennadeln transportieren die fleißigen Ameisen in ihr Nest.',['Tannennadeln transportieren die fleißigen Ameisen schwere in ihr Nest.','Die fleißigen transportieren Ameisen schwere Tannennadeln in ihr Nest.','In ihr transportieren die fleißigen Ameisen schwere Tannennadeln Nest.'],'Satzglieder bleiben immer zusammen. „schwere Tannennadeln“ und „in ihr Nest“ dürfen nicht auseinandergerissen werden.'],['Die junge Hexe fliegt am Abend über den dunklen Wald.','Am Abend fliegt die junge Hexe über den dunklen Wald.',['Junge fliegt die Hexe am Abend über den dunklen Wald.','Am fliegt die junge Hexe Abend über den dunklen Wald.','Über den fliegt die junge Hexe am Abend dunklen Wald.'],'„am Abend“, „die junge Hexe“ und „über den dunklen Wald“ sind Satzglieder. Sie werden nur als Ganzes verschoben.'],['Der alte Zauberer schenkt dem Mädchen einen Kristall.','Dem Mädchen schenkt der alte Zauberer einen Kristall.',['Alte schenkt der Zauberer dem Mädchen einen Kristall.','Dem schenkt der alte Zauberer Mädchen einen Kristall.','Einen schenkt der alte Zauberer dem Mädchen Kristall.'],'Beim Umstellen bleibt jedes Satzglied zusammen. Das Prädikat „schenkt“ steht an zweiter Stelle.']];
+const REDE=[['Jonas ruft: „Gib mir bitte den Zauberstab!“',['Jonas ruft „Gib mir bitte den Zauberstab!“','Jonas ruft: Gib mir bitte den Zauberstab!','Jonas ruft: „Gib mir bitte den Zauberstab“!'],'Vorangestellter Begleitsatz: Doppelpunkt, dann Anführungszeichen unten. Das Ausrufezeichen steht innerhalb der Anführungszeichen.'],['„Hast du den Schlüssel gefunden?“, fragt Lea.',['„Hast du den Schlüssel gefunden“, fragt Lea?','„Hast du den Schlüssel gefunden?“ fragt Lea.','Hast du den Schlüssel gefunden? fragt Lea.'],'Nachgestellter Begleitsatz: Das Fragezeichen bleibt in den Anführungszeichen, danach kommt ein Komma.'],['Der Drache brummt: „Ich habe Hunger.“',['Der Drache brummt, „Ich habe Hunger.“','Der Drache brummt: „Ich habe Hunger“','Der Drache brummt: Ich habe Hunger.'],'Nach dem Begleitsatz kommt ein Doppelpunkt. Die wörtliche Rede steht in Anführungszeichen, der Punkt davor.'],['„Wir fliegen zum Mond!“, jubelt die Fee.',['„Wir fliegen zum Mond“! jubelt die Fee.','„Wir fliegen zum Mond!“ jubelt die Fee.','Wir fliegen zum Mond!, jubelt die Fee.'],'Das Ausrufezeichen gehört zur wörtlichen Rede, danach Anführungszeichen und Komma.']];
+const STEIG=[['gut','besser','besten'],['viel','mehr','meisten'],['gern','lieber','liebsten'],['hoch','höher','höchsten'],['nah','näher','nächsten'],['groß','größer','größten'],['alt','älter','ältesten'],['mutig','mutiger','mutigsten']];
+
+const D={
+stamm(){const [s,w]=pick(STAEMME);return{skill:'Wortfamilie',story:'An der Wortquelle sprudeln verwandte Wörter.',q:`Finde den gemeinsamen <b>Wortstamm</b>:<br><b>${w.join(' – ')}</b>`,type:'text',answer:s,accept:[s+'-','-'+s+'-'],hint:'Der Wortstamm ist der Teil, der in allen Wörtern gleich bleibt. Streiche Vorsilben, Endungen und Begleiter weg.',sol:`Der Wortstamm ist <b>${s}</b>.`};},
+kompos(){const [w,a,b]=pick(KOMPOS);return{skill:'Zusammengesetzte Nomen',story:'Ein Zauberwort ist aus zwei Wörtern gebaut.',q:`Aus welchen zwei Wörtern besteht <b>${w}</b>?`,type:'multi',fields:[{label:'Bestimmungswort:',type:'text',answer:a,accept:a==='Zauber'?['zaubern']:a==='Sterne'?['Stern']:[]},{label:'Grundwort:',type:'text',answer:b}],hint:'Das Grundwort steht hinten und bestimmt den Begleiter. Das Bestimmungswort steht vorne und sagt genauer, was gemeint ist.',sol:`${w} = <b>${a}</b> (Bestimmungswort) + <b>${b}</b> (Grundwort)`};},
+familie(){const e=pick(FAMILIE),k=ri(0,2),lab=['Nomen (mit Begleiter)','Verb (Grundform)','Adjektiv'];
+  return{skill:'Wortfamilie',story:'Eine Wortfamilie hat sich verlaufen.',q:`<table class="t"><tr>${lab.map(l=>`<th>${l}</th>`).join('')}</tr><tr>${e.map((x,i)=>`<td>${i===k?'<b>?</b>':x[0]}</td>`).join('')}</tr></table>Welches Wort fehlt? (${lab[k]})`,type:'text',answer:e[k][0],accept:e[k].slice(1),hint:k===0?'Nomen haben einen Begleiter (der, die, das) und werden großgeschrieben.':k===1?'Die Grundform eines Verbs endet meistens auf -en oder -n.':'Ein Adjektiv sagt, wie etwas ist.',sol:`Es fehlt <b>${e[k].join(' / ')}</b>.`};},
+nachsilbe(){const [s,c]=pick(NACHSILBE),w=s.split(' ');return{skill:'Wortarten',story:'Zwei Nomen tragen eine typische Nomen-Endung.',q:`Tippe die <b>zwei Nomen</b> an, die eine typische Nomen-Endung haben (‑heit, ‑keit, ‑ung, ‑schaft, ‑nis).`,type:'tap',words:w,answer:c,hint:'Suche nach den Endungen -heit, -keit, -ung, -schaft oder -nis.',sol:`Richtig: <b>${c.map(i=>w[i].replace(/[.,]/g,'')).join('</b> und <b>')}</b>`};},
+nomenVerb(){const v=pick(['zaubern','schwimmen','tanzen','fliegen','singen']),V=v[0].toUpperCase()+v.slice(1);
+  return choice(`Im Satz <b>„Das ${V} macht mir großen Spaß.“</b> ist „${V}“ ein Nomen. Woran erkennst du das?`,'Es hat einen Begleiter (das) und wird großgeschrieben.',['Es endet auf -en.','Es steht am Anfang des Satzes.','Man kann es steigern.'],{skill:'Wortarten',story:'Ein Verb hat sich als Nomen verkleidet.',hint:'Kannst du „das“ davor setzen?',sol:`Aus dem Verb „${v}“ wird ein Nomen, wenn ein Begleiter davorsteht: <b>das ${V}</b>. Dann schreibt man es groß.`});},
+verl(){const [w,c,x,h]=pick(VERL);return choice(`Welcher Buchstabe fehlt? <b>${w}</b><br>Tipp: Verlängere das Wort!`,c,[x],{skill:'Rechtschreibung',story:'Die Rechtschreib-Brücke hat Lücken.',hint:'Bilde die Mehrzahl oder eine andere Form, dann hörst du den Buchstaben deutlich.',sol:`Verlängern: <b>${h}</b> → ${w.replace('_','<b>'+c+'</b>')}`});},
+abl(){const [w,c,x,h]=pick(ABL);return choice(`<b>${w}</b>: ${c.length===1?'ä oder e':'äu oder eu'}?`,c,[x],{skill:'Rechtschreibung',story:'Brückentroll Grumpel fragt nach verwandten Wörtern.',hint:'Gibt es ein verwandtes Wort mit a oder au? Dann schreibt man ä oder äu.',sol:h?`Verwandtes Wort: <b>${h}</b> → ${w.replace('_','<b>'+c+'</b>')}`:`Es gibt kein verwandtes Wort mit a/au → ${w.replace('_','<b>'+c+'</b>')}`});},
+ssz(){const [w,c,l]=pick(SSZ);return choice(`<b>${w}</b>: ss oder ß?`,c,[c==='ss'?'ß':'ss'],{skill:'Rechtschreibung',story:'Auf der Brücke zählen kurze und lange Laute.',hint:'Sprich das Wort langsam: Ist der Laut vor dem s kurz oder lang?',sol:l==='kurz'?`Nach einem <b>kurzen</b> Laut schreibt man ss: ${w.replace('_','<b>ss</b>')}`:`Nach einem <b>langen</b> Laut oder ei/au schreibt man ß: ${w.replace('_','<b>ß</b>')}`});},
+sszStreit(){const [w]=pick(SSZ.filter(x=>x[1]==='ss'));const W=w.replace('_','ss').replace(/^(der|die|das) /,'');
+  return choice(`Ben sagt: „<b>${W}</b> schreibt man mit ss, weil der Laut davor kurz ist.“<br>Mia sagt: „Nein, am Wortende steht immer ß.“<br>Wer hat recht?`,'Ben',['Mia','Beide','Keiner'],{skill:'Rechtschreibung',story:'Ein Streit am Brückengeländer.',hint:'Denk an „Fuß“ und „Fluss“: Beide enden auf s-Laut, werden aber verschieden geschrieben.',sol:`<b>Ben</b> hat recht: Nach kurzem Laut steht ss, auch am Wortende. Mias Regel stimmt nicht (z. B. Fluss, Schloss).`});},
+gross(){const [s,c]=pick(GROSS),w=s.split(' ');return{skill:'Großschreibung',story:'Ein Fluch hat alle Buchstaben klein gemacht!',q:`Tippe alle Wörter an, die man <b>großschreiben</b> muss. (Es sind ${c.length}.)`,type:'tap',words:w,answer:c,hint:'Satzanfang und Nomen schreibt man groß. Nomen kann man anfassen oder einen Begleiter (der, die, das) davorsetzen.',sol:`Groß: <b>${c.map(i=>w[i].replace('.','')).join(', ')}</b> (Satzanfang und Nomen)`};},
+zeitform(){const [s,z]=pick(ZEIT);return choice(`Welche Zeitform hat dieser Satz?<br><b>${s}</b>`,ZNAME[z],Object.values(ZNAME).filter(x=>x!==ZNAME[z]),{skill:'Zeitformen',story:'In der Grammatik-Burg hängen Zeit-Uhren.',hint:'Perfekt hat zwei Teile (haben/sein + Partizip). Futur hat „werden“. Präteritum ist ein Wort in der Vergangenheit.',sol:`<b>${ZNAME[z]}</b>`});},
+verbform(){const [s,inf,z,a]=pick(VFORM);return{skill:'Zeitformen',story:'Setze das Zauberwort richtig ein.',q:`Setze <b>„${inf}“</b> im <b>${z}</b> ein:<br><b>${s}</b>`,type:'text',answer:a,hint:z==='Präteritum'?'Präteritum: So erzählt man in Märchen, z. B. „ging“, „sah“, „spielte“.':'Präsens: Was passiert gerade jetzt? Passe das Verb an die Person an.',sol:s.replace('___','<b>'+a+'</b>')};},
+praed(){const [s,i]=pick(PRAED),w=s.split(' ');return{skill:'Satzglieder',story:'Das Prädikat ist der König im Satz.',q:`Tippe das <b>Prädikat</b> (das gebeugte Verb) an.`,type:'tap',words:w,answer:[i],hint:'Frage: Was tut jemand? Was passiert? In Aussagesätzen steht das Prädikat an zweiter Satzglied-Stelle.',sol:`Das Prädikat ist <b>${w[i]}</b>.`};},
+wortart(){const s=pick(WART),k=pick([['N','alle Nomen'],['A','alle Adjektive'],['V','das Verb']]);const w=s.map(x=>x[0]),c=s.map((x,i)=>x[1]===k[0]?i:-1).filter(i=>i>=0);
+  return{skill:'Wortarten',story:'Die Wörter der Burg sollen sortiert werden.',q:`Tippe <b>${k[1]}</b> im Satz an.`,type:'tap',words:w,answer:c,hint:k[0]==='N'?'Nomen haben einen Begleiter und werden großgeschrieben.':k[0]==='A'?'Adjektive sagen, wie etwas ist. Man kann sie steigern.':'Das Verb sagt, was jemand tut.',sol:`Richtig: <b>${c.map(i=>w[i].replace('.','')).join(', ')}</b>`};},
+satzglieder(){const p=pick(SATZ);const correct=p.join(' | ');const words=p.join(' ').split(' ');const nb=p.length-1;const cb=[];let acc=0;p.slice(0,-1).forEach(x=>{acc+=x.split(' ').length;cb.push(acc);});
+  const wr=new Set();let guard=0;while(wr.size<3&&guard++<200){const b=shuffle([...Array(words.length-1).keys()].map(i=>i+1)).slice(0,nb).sort((a,b)=>a-b);if(b.join()===cb.join())continue;let out=[],last=0;b.forEach(x=>{out.push(words.slice(last,x).join(' '));last=x;});out.push(words.slice(last).join(' '));wr.add(out.join(' | '));}
+  return choice(`Welcher Satz ist richtig in <b>Satzglieder</b> getrennt?`,correct,[...wr],{skill:'Satzglieder',story:'Mache die Umstellprobe im Kopf.',hint:'Wörter, die beim Umstellen zusammenbleiben, bilden ein Satzglied.',sol:`<b>${correct}</b>`});},
+umstell(){const [o,c,w,ex]=pick(UMST);return choice(`Ausgangssatz: <b>${o}</b><br>Welche Umstellung ist richtig?`,c,w,{skill:'Satzglieder',story:'Kobold Fips hat die Satzglieder durcheinandergebracht.',hint:'Satzglieder bleiben beim Umstellen zusammen. Das Prädikat steht an zweiter Stelle.',sol:`<b>${c}</b><br>${ex}`});},
+rede(){const [c,w,ex]=pick(REDE);return choice(`Welcher Satz hat die richtigen Satzzeichen der wörtlichen Rede?`,c,w,{skill:'Wörtliche Rede',story:'Die Burggeister flüstern wörtliche Rede.',hint:'Vor der Rede: Doppelpunkt. Die Rede steht in „…“. Ist der Begleitsatz hinten, kommt nach dem schließenden Anführungszeichen ein Komma.',sol:`<b>${c}</b><br>${ex}`});},
+steig(){const [a,b,c]=pick(STEIG);return{skill:'Adjektive',story:'Die Steigerungs-Treppe im Turm.',q:`Steigere das Adjektiv <b>„${a}“</b>.`,type:'multi',fields:[{label:'Vergleichsstufe:',type:'text',answer:b},{label:'Höchststufe: am',type:'text',answer:c}],hint:'Achtung, manche Adjektive sind unregelmäßig: gut → besser, viel → mehr.',sol:`${a} – <b>${b}</b> – <b>am ${c}</b>`};}
+};
+
+/* ============ Lesetexte ============ */
+const TEXTE=[
+{t:'Der Feuersalamander',x:'Feuersalamander leben in feuchten Laubwäldern mit klaren Bächen. Ihre schwarze Haut ist mit leuchtend gelben Flecken bedeckt. Diese Farben warnen Feinde, denn die Haut gibt ein giftiges Sekret ab. Tagsüber verstecken sich die Tiere unter Steinen, Wurzeln oder Laub. Erst in der Dämmerung oder bei Regen gehen sie auf die Jagd. Sie fressen vor allem Regenwürmer, Schnecken und Käfer. Im Frühling setzen die Weibchen ihre Larven in kühles, sauberes Bachwasser ab.',
+ f:[['Warum haben Feuersalamander gelbe Flecken?','Die Farben warnen Feinde vor dem Gift.',['Damit sie im Laub nicht gefunden werden.','Weil sie gerne in der Sonne liegen.','Damit sie im Wasser besser schwimmen.']],['Wann gehen Feuersalamander auf die Jagd?','In der Dämmerung oder bei Regen.',['Mittags, wenn die Sonne scheint.','Nur im Winter.','Den ganzen Tag lang.']],['Welche Überschrift passt am besten zum Text?','Der Feuersalamander – ein giftiger Waldbewohner',['Wie man einen Bach baut','Salamander im Winterschlaf','Gefährliche Tiere in der Wüste']]]},
+{t:'Fledermäuse',x:'Fledermäuse sind die einzigen Säugetiere, die richtig fliegen können. Ihre Flügel bestehen aus einer dünnen Haut, die zwischen den langen Fingern gespannt ist. Nachts jagen sie Insekten. Dabei hilft ihnen ein besonderer Trick: Sie stoßen sehr hohe Rufe aus, die Menschen nicht hören können. Das Echo verrät ihnen, wo ein Hindernis oder eine Mücke ist. Den Winter verschlafen viele Fledermäuse kopfüber hängend in Höhlen oder alten Kellern.',
+ f:[['Wie finden Fledermäuse im Dunkeln ihre Beute?','Sie hören das Echo ihrer eigenen Rufe.',['Sie haben besonders große Augen.','Sie riechen die Insekten von weitem.','Sie warten, bis es hell wird.']],['Woraus bestehen die Flügel einer Fledermaus?','Aus dünner Haut zwischen den Fingern.',['Aus vielen kleinen Federn.','Aus festem Horn.','Aus dichtem Fell.']],['Welche Aussage steht <u>nicht</u> im Text?','Fledermäuse jagen am liebsten mittags.',['Fledermäuse können richtig fliegen.','Viele Fledermäuse halten Winterschlaf.','Menschen hören die hohen Rufe nicht.']]]},
+{t:'Das Eichhörnchen',x:'Eichhörnchen leben in Wäldern und Parks. Mit ihren scharfen Krallen klettern sie geschickt an Baumstämmen hinauf. Der buschige Schwanz hilft ihnen, beim Springen das Gleichgewicht zu halten. Im Herbst sammeln Eichhörnchen Nüsse und Samen und vergraben sie an vielen Stellen im Boden. Einige Verstecke finden sie im Winter nicht wieder. Aus diesen vergessenen Nüssen wachsen im Frühling neue Bäume. So helfen Eichhörnchen ganz nebenbei, den Wald zu vergrößern.',
+ f:[['Wozu braucht das Eichhörnchen seinen buschigen Schwanz?','Um beim Springen das Gleichgewicht zu halten.',['Um sich im Winter zuzudecken.','Um Nüsse zu tragen.','Um Feinde zu erschrecken.']],['Wie hilft das Eichhörnchen dem Wald?','Aus vergessenen Nüssen wachsen neue Bäume.',['Es frisst schädliche Käfer.','Es gießt die jungen Bäume.','Es baut Nester für Vögel.']],['Welche Überschrift passt am besten?','Das Eichhörnchen – ein fleißiger Gärtner des Waldes',['Eichhörnchen im Zoo','Warum Eichhörnchen nicht klettern können','Die Feinde des Eichhörnchens']]]},
+{t:'Die Honigbiene',x:'In einem Bienenvolk leben im Sommer bis zu 50 000 Bienen. Jede Biene hat eine Aufgabe. Die Königin legt Eier. Die Arbeiterinnen putzen die Waben, füttern die Larven und bewachen den Eingang. Ältere Arbeiterinnen fliegen hinaus und sammeln Nektar und Blütenstaub. Haben sie gute Blüten gefunden, tanzen sie im Stock. Durch diesen Tanz zeigen sie den anderen Bienen, in welcher Richtung und wie weit entfernt das Futter liegt.',
+ f:[['Welche Aufgabe hat die Königin?','Sie legt Eier.',['Sie sammelt Nektar.','Sie bewacht den Eingang.','Sie putzt die Waben.']],['Warum tanzen die Bienen im Stock?','Sie zeigen, wo das Futter liegt.',['Sie wollen sich aufwärmen.','Sie feiern den Sommer.','Sie vertreiben Feinde.']],['Wie viele Bienen leben im Sommer höchstens in einem Volk?','bis zu 50 000',['genau 500','bis zu 5000','über eine Million']]]},
+{t:'Die Laterne von Nebelau',x:'In dem kleinen Dorf Nebelau wohnte das Mädchen Mira. Jeden Abend zündete ihr Großvater die große Laterne auf dem Hügel an, damit die Reisenden den Weg durch den Nebel fanden. Eines Abends wurde der Großvater krank. Mira hatte Angst vor der Dunkelheit, doch sie dachte an die Menschen draußen im Nebel. Mit zitternden Händen nahm sie die Streichhölzer und stieg den Hügel hinauf. Als die Laterne endlich leuchtete, hörte sie unten im Tal ein fröhliches Rufen. Ein Händler mit seinem Wagen hatte den Weg ins Dorf gefunden.',
+ f:[['Warum zündete der Großvater jeden Abend die Laterne an?','Damit Reisende den Weg durch den Nebel finden.',['Damit Mira lesen konnte.','Weil im Dorf ein Fest war.','Um die Tiere zu verscheuchen.']],['Wie fühlte sich Mira, als sie den Hügel hinaufstieg?','Sie hatte Angst, war aber mutig.',['Sie war fröhlich und ausgelassen.','Sie war wütend auf den Großvater.','Sie war müde und gelangweilt.']],['Woran merkte Mira, dass sich ihr Mut gelohnt hat?','Ein Händler fand den Weg ins Dorf.',['Der Großvater wurde sofort gesund.','Der Nebel verschwand.','Sie bekam einen Schatz geschenkt.']]]},
+{t:'Der Kobold im Turm',x:'Im alten Turm der Burg Wolkenstein lebte ein kleiner Kobold namens Fips. Er liebte glänzende Dinge und versteckte jeden Löffel, den er fand. Die Köchin suchte jeden Morgen verzweifelt ihr Besteck. Eines Tages stellte sie eine Schale mit blank geputzten Knöpfen vor die Turmtür. Am nächsten Morgen lagen alle Löffel ordentlich auf dem Küchentisch. Seitdem bekommt Fips jede Woche neue Knöpfe, und die Köchin muss nie wieder suchen.',
+ f:[['Warum versteckte Fips die Löffel?','Weil er glänzende Dinge liebte.',['Weil er Hunger hatte.','Weil die Köchin es verlangte.','Weil er kochen lernen wollte.']],['Wie löste die Köchin das Problem?','Sie schenkte Fips glänzende Knöpfe.',['Sie schloss den Turm ab.','Sie kaufte neue Löffel.','Sie jagte Fips aus der Burg.']],['Welche Überschrift passt am besten?','Ein guter Tausch mit dem Kobold',['Die Köchin verlässt die Burg','Fips lernt kochen','Der Turm stürzt ein']]]}
+];
+function lesen(){const T=pick(TEXTE);return T.f.map(([q,c,w])=>choice(`<div class="textbox"><h4>${T.t}</h4>${T.x}</div><b>${q}</b>`,c,w,{skill:'Lesen',story:'Aus dem Buch der Elfen-Bibliothek.',hint:'Lies die passende Stelle im Text noch einmal genau. Die Antwort steht im Text.',sol:`<b>${c}</b>`}));}
+
+/* ============ Regionen ============ */
+const REGIONS=[
+{id:'wald',name:'Zahlenwald',icon:'🌲',subj:'M',desc:'Stellenwerte, Zahlenstrahl, Plus und Minus',intro:'Im Zahlenwald wachsen Zahlen an den Bäumen. Die Waldgeister brauchen deine Hilfe beim Zählen und Rechnen!',gens:['add','sub','buendeln','nachbar','strahl','schriftlich','div']},
+{id:'markt',name:'Zwergenmarkt',icon:'⚒️',subj:'M',desc:'Geld, Sachaufgaben, Tabellen, Diagramme',intro:'Auf dem Zwergenmarkt wird gehandelt, gezählt und verglichen. Zwergin Brumhild sucht eine kluge Rechenmeisterin!',gens:['rest','wechsel','familie','kombi','diagramm','malSach']},
+{id:'turm',name:'Uhrturm der Zeitmagierin',icon:'🕰️',subj:'M',desc:'Uhrzeiten, Längen, Gewichte',intro:'Die Zeitmagierin hat die Uhren verzaubert. Nur wer mit Zeit und Größen rechnen kann, bringt sie wieder zum Ticken.',gens:['zeitspanne','endzeit','laengen','umrechnen','einheit']},
+{id:'hoehle',name:'Rätselhöhle',icon:'💎',subj:'M',desc:'Muster, Zahlenmauern, Knobeln, Würfelnetze',intro:'Tief in der Höhle warten knifflige Rätsel. Löse sie und die Kristalle beginnen zu leuchten!',gens:['folgeAlt','folgeMal','regel','mauer','raetsel','wahr','muster','wuerfel','geschickt','geschicktMal']},
+{id:'quelle',name:'Wortquelle',icon:'⛲',subj:'D',desc:'Wortstamm, Wortfamilien, zusammengesetzte Nomen',intro:'An der Wortquelle sprudeln Wörter und ihre Verwandten. Die Quellnymphe möchte, dass du die Familien wieder zusammenführst.',gens:['stamm','kompos','familie','nachsilbe','nomenVerb']},
+{id:'bruecke',name:'Rechtschreib-Brücke',icon:'🌉',subj:'D',desc:'Verlängern, Ableiten, ss/ß, Großschreibung',intro:'Brückentroll Grumpel lässt nur hinüber, wer richtig schreibt. Zeig ihm deine Rechtschreib-Tricks!',gens:['verl','abl','ssz','sszStreit','gross','gross']},
+{id:'burg',name:'Grammatik-Burg',icon:'🏰',subj:'D',desc:'Wortarten, Zeitformen, Satzglieder, wörtliche Rede',intro:'In der Grammatik-Burg herrscht Durcheinander. Bringe Wörter und Sätze wieder in Ordnung!',gens:['zeitform','verbform','praed','wortart','satzglieder','umstell','rede','steig']},
+{id:'bib',name:'Bibliothek der Elfen',icon:'📚',subj:'D',desc:'Texte lesen und verstehen',intro:'In der Elfen-Bibliothek stehen magische Bücher. Lies genau, dann verraten sie dir ihre Geheimnisse.',gens:'lesen'}
+];
+function genFor(reg,n){if(reg.gens==='lesen'){let out=[];const used=new Set();while(out.length<n){let t;do{t=lesen();}while(used.has(t[0].q)&&used.size<TEXTE.length);used.add(t[0].q);out=out.concat(t);}return out.slice(0,n);}
+  const g=shuffle(reg.gens);const out=[];for(let i=0;i<n;i++){const name=g[i%g.length];const t=(reg.subj==='M'?M:D)[name]();t.region=reg.id;out.push(t);}return out;}
+function genMixed(subj,n){const regs=REGIONS.filter(r=>!subj||r.subj===subj);const out=[];
+  const lesenTasks=lesen();
+  for(let i=0;i<n;i++){const r=regs[i%regs.length];if(r.gens==='lesen'){out.push(Object.assign(lesenTasks.shift()||lesen()[0],{region:r.id}));continue;}const t=(r.subj==='M'?M:D)[pick(r.gens)]();t.region=r.id;out.push(t);}return shuffle(out);}
+if(typeof module!=='undefined')module.exports={M,D,REGIONS,genFor,genMixed,lesen,check,TEXTE};
+</script>
+
+<script>
+/* ============ Spielzustand ============ */
+const PETS=[{e:'🐉',n:'Funkel',t:'Drache'},{e:'🦉',n:'Fiora',t:'Eule'},{e:'🦄',n:'Sternchen',t:'Einhorn'},{e:'🦊',n:'Flammi',t:'Fuchs'}];
+const LEVELS=[[0,'Lehrling'],[25,'Abenteurerin'],[60,'Heldin'],[120,'Zauber-Meisterin'],[200,'Kompass-Legende'],[350,'Hüterin des Reiches']];
+const KEY='kompassQuest_v1';
+let S;try{S=JSON.parse(localStorage.getItem(KEY))||null;}catch(e){S=null;}
+if(!S)S={name:'',pet:0,gems:0,regions:{},stats:{},streak:0,lastDay:'',finalDone:false,probes:[]};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const $=s=>document.querySelector(s);const app=$('#app');
+const pet=()=>PETS[S.pet]||PETS[0];
+function level(){let cur=LEVELS[0],next=null;for(let i=0;i<LEVELS.length;i++){if(S.gems>=LEVELS[i][0]){cur=LEVELS[i];next=LEVELS[i+1]||null;}}return{cur,next};}
+function today(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function touchStreak(){const t=today();if(S.lastDay===t)return;const y=new Date();y.setDate(y.getDate()-1);const ys=y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();S.streak=S.lastDay===ys?S.streak+1:1;S.lastDay=t;save();}
+function splinters(){return REGIONS.filter(r=>(S.regions[r.id]?.stars||0)>=1).length;}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* Sterne am Himmel */
+(function(){const sky=$('#sky');for(let i=0;i<70;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=(Math.random()*3)+'s';if(Math.random()<.2){s.style.width=s.style.height='3px';}sky.appendChild(s);}})();
+
+function topbar(){const {cur,next}=level();const pct=next?Math.round((S.gems-cur[0])/(next[0]-cur[0])*100):100;
+  return `<div class="top"><div class="pet">${pet().e}</div><div class="who"><b>${esc(S.name||'Heldin')} · ${cur[1]}</b><div class="bar"><span style="width:${pct}%"></span></div><small>${next?`Noch ${next[0]-S.gems} 💎 bis „${next[1]}“`:'Höchste Stufe erreicht!'}${S.streak>1?` · 🔥 ${S.streak} Tage`:''}</small></div><div class="gems">💎 ${S.gems}</div><button class="iconbtn" onclick="showMap()" aria-label="Karte">🗺️</button></div>`;}
+
+function sparkle(x,y,n=14){const em=['✨','💎','⭐','🌟'];for(let i=0;i<n;i++){const s=document.createElement('div');s.className='spark';s.textContent=em[i%em.length];s.style.left=x+'px';s.style.top=y+'px';const a=Math.random()*Math.PI*2,d=60+Math.random()*90;s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',Math.sin(a)*d+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1000);}}
+
+/* ============ Start ============ */
+function showStart(){let sel=S.pet;app.innerHTML=`<div class="lead"><h1>Kompass-Quest</h1><div>Das Abenteuer im Reich Kompassia</div></div>
+<div class="card"><h2>Willkommen, junge Heldin!</h2><p class="q">Der magische Kompass des Reiches ist in acht Splitter zerbrochen. Nur wer Rätsel aus <b>Mathe</b> und <b>Deutsch</b> löst, kann ihn wieder zusammensetzen.</p>
+<label class="q"><b>Wie heißt du?</b></label><input class="ans" id="nm" value="${esc(S.name||'Pauline')}" maxlength="20" autocomplete="off">
+<p class="q" style="margin-top:14px"><b>Wähle deinen Begleiter:</b></p><div class="pets">${PETS.map((p,i)=>`<div class="petopt ${i===sel?'sel':''}" data-i="${i}"><span>${p.e}</span>${p.n} <small>(${p.t})</small></div>`).join('')}</div>
+<div class="row"><button class="btn wide" id="go">Abenteuer beginnen ✨</button></div></div>`;
+  app.querySelectorAll('.petopt').forEach(el=>el.onclick=()=>{sel=+el.dataset.i;app.querySelectorAll('.petopt').forEach(x=>x.classList.toggle('sel',+x.dataset.i===sel));});
+  $('#go').onclick=()=>{S.name=$('#nm').value.trim()||'Pauline';S.pet=sel;save();showMap();};}
+
+/* ============ Karte ============ */
+function showMap(){if(!S.name)return showStart();window.scrollTo(0,0);const nodes=[...REGIONS,{id:'final',name:'Turm des Großen Kompass',icon:'🧭',final:true}];
+  const xs=[28,72,30,70,28,72,30,70,50],gapY=150,H=nodes.length*gapY+20;const sp=splinters(),unlocked=sp>=8;
+  const pts=nodes.map((n,i)=>[xs[i],i*gapY+50]);
+  let path=`M${pts[0][0]} ${pts[0][1]}`;for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i];path+=` C${x0} ${y0+gapY/2}, ${x1} ${y1-gapY/2}, ${x1} ${y1}`;}
+  app.innerHTML=topbar()+`<div class="lead"><h1 style="font-size:30px">Das Reich Kompassia</h1><div>Kompass-Splitter: <b>${sp} / 8</b> ${'🔷'.repeat(sp)}${'▫️'.repeat(8-sp)}</div></div>
+<div class="legend"><span class="lm">Mathe</span><span class="ld">Deutsch</span></div>
+<div class="map" style="height:${H}px"><svg class="path" viewBox="0 0 100 ${H}" preserveAspectRatio="none"><path d="${path}" fill="none" stroke="#fde9b0" stroke-opacity=".55" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
+${nodes.map((n,i)=>{const st=S.regions[n.id]?.stars||0;const cls=n.final?('final'+(unlocked?'':' locked')):(n.subj==='M'?'m':'d');
+  return `<div class="node ${cls}" style="left:${xs[i]}%;top:${i*gapY+8}px" data-id="${n.id}"><div class="disc">${n.final&&!unlocked?'🔒':n.icon}</div><b>${n.name}</b>${n.final?`<div class="subj">${unlocked?(S.finalDone?'⭐ bezwungen!':'Bereit für die letzte Prüfung!'):'Sammle alle 8 Splitter'}</div>`:`<div class="stars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><div class="subj">${n.subj==='M'?'Mathe':'Deutsch'}</div>`}</div>`;}).join('')}</div>
+<div class="card"><h2>🎓 Probe-Kompass</h2><p class="q">Wie im echten Test: 11 Aufgaben, 30 Minuten, keine Tipps. Am Ende siehst du alle Lösungen.</p><div class="row"><button class="btn sec" onclick="startQuest('probeM')">Mathe-Probe</button><button class="btn sec" onclick="startQuest('probeD')">Deutsch-Probe</button></div></div>
+<div class="row"><button class="btn ghost wide" style="color:#fde9b0;border-color:#fde9b088" onclick="showParents()">👪 Für Eltern: Fortschritt ansehen</button></div>`;
+  app.querySelectorAll('.node').forEach(el=>el.onclick=()=>{const id=el.dataset.id;if(id==='final'){if(!unlocked)return toast(`${pet().n}: „Der Turm ist noch verschlossen. Sammle zuerst alle 8 Splitter!“`);return startQuest('final');}showRegion(id);});}
+
+function toast(msg){const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="card"><div class="speech"><div class="p">${pet().e}</div><div class="bubble">${msg}</div></div><div class="row"><button class="btn wide">OK</button></div></div>`;m.querySelector('button').onclick=()=>m.remove();m.onclick=e=>{if(e.target===m)m.remove();};document.body.appendChild(m);}
+
+function showRegion(id){const r=REGIONS.find(x=>x.id===id);const st=S.regions[id]?.stars||0;window.scrollTo(0,0);
+  app.innerHTML=topbar()+`<div class="card"><div style="font-size:60px;text-align:center">${r.icon}</div><h2 style="text-align:center">${r.name}</h2><p class="small" style="text-align:center">${r.subj==='M'?'Mathe':'Deutsch'} · ${r.desc}</p>
+<div class="speech"><div class="p">${pet().e}</div><div class="bubble">${r.intro}</div></div>
+<div class="bigstars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><p class="small" style="text-align:center">6 Aufgaben · 1 Stern ab 3 richtig · 3 Sterne bei allen richtig</p>
+<div class="row"><button class="btn wide" onclick="startQuest('${id}')">Quest starten ⚔️</button></div><div class="row"><button class="btn ghost wide" onclick="showMap()">Zurück zur Karte</button></div></div>`;}
+
+/* ============ Quest ============ */
+let Q=null;
+function startQuest(kind){touchStreak();let tasks,title,probe=false;
+  if(kind==='final'){tasks=genMixed(null,10);title='Turm des Großen Kompass';}
+  else if(kind==='probeM'){tasks=genMixed('M',11);title='Probe-Kompass Mathe';probe=true;}
+  else if(kind==='probeD'){tasks=genMixed('D',11);title='Probe-Kompass Deutsch';probe=true;}
+  else{const r=REGIONS.find(x=>x.id===kind);tasks=genFor(r,6);title=r.name;}
+  Q={kind,title,tasks,i:0,res:[],att:0,probe,resp:[],end:probe?Date.now()+30*60000:0};renderTask();}
+
+function renderTask(){const t=Q.tasks[Q.i];Q.att=0;Q.cur=t.type==='tap'?[]:t.type==='multi'?t.fields.map(()=>''):null;window.scrollTo(0,0);
+  const prog=Q.tasks.map((_,k)=>{const r=Q.res[k];let c='';if(k===Q.i)c='cur';else if(r!=null)c=Q.probe?'cur':(r===2?'ok':r===1?'half':'no');return `<span class="${c}"></span>`;}).join('');
+  let inp='';
+  if(t.type==='choice')inp=`<div class="opts">${t.options.map((o,k)=>`<button class="opt" data-k="${k}">${o}</button>`).join('')}</div>`;
+  else if(t.type==='tap')inp=`<div class="chips">${t.words.map((w,k)=>`<button class="chip" data-k="${k}">${w}</button>`).join('')}</div>`;
+  else if(t.type==='multi')inp=t.fields.map((f,k)=>`<div class="field"><label>${f.label}</label><input class="ans" data-k="${k}" ${f.type==='num'?'inputmode="decimal"':'autocapitalize="off" autocorrect="off" spellcheck="false"'} autocomplete="off">${f.unit?`<span class="unit">${f.unit}</span>`:''}</div>`).join('');
+  else inp=`<div class="field"><input class="ans" id="single" ${t.type==='num'?'inputmode="decimal"':t.type==='time'?'inputmode="decimal"':'autocapitalize="off" autocorrect="off" spellcheck="false"'} placeholder="${t.placeholder||'Deine Antwort'}" autocomplete="off">${t.unit&&t.type!=='time'?`<span class="unit">${t.unit}</span>`:''}</div>`;
+  app.innerHTML=topbar()+`<div class="card" id="tc"><div class="taskhead"><span>${Q.title}</span><span>${Q.probe?`<span class="timer" id="timer"></span>`:`Aufgabe ${Q.i+1} / ${Q.tasks.length}`}</span></div><div class="progress">${prog}</div>
+<span class="tag">${t.skill}</span>${!Q.probe&&t.story?`<div class="story" style="margin-top:8px">${t.story}</div>`:'<div style="height:8px"></div>'}<div class="q">${t.q}</div>${inp}
+<div class="fb" id="fb"></div><div class="row" id="acts"><button class="btn" id="chk">${Q.probe?'Antwort speichern':'Prüfen ✨'}</button>${Q.probe?'':`<button class="btn sec" id="hnt" style="flex:0 0 auto">💡 Tipp</button>`}</div>
+<div class="row"><button class="btn ghost wide" id="quit">Quest abbrechen</button></div></div>`;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(Q.locked)return;Q.cur=+b.dataset.k;app.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));});
+  app.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{if(Q.locked)return;const k=+b.dataset.k;const i=Q.cur.indexOf(k);if(i>=0)Q.cur.splice(i,1);else Q.cur.push(k);b.classList.toggle('sel');});
+  app.querySelectorAll('input.ans').forEach(inpEl=>{inpEl.addEventListener('keydown',e=>{if(e.key==='Enter')$('#chk')?.click();});});
+  Q.locked=false;$('#chk').onclick=onCheck;if($('#hnt'))$('#hnt').onclick=()=>{Q.hintUsed=true;fb('hint',`💡 <b>${pet().n} flüstert:</b> ${t.hint}`);};
+  $('#quit').onclick=()=>confirmBox('Willst du die Quest wirklich abbrechen? Dein Fortschritt in dieser Quest geht verloren.',()=>{clearInterval(Q.timerId);showMap();});
+  Q.hintUsed=false;if(Q.probe)startTimer();}
+
+function startTimer(){clearInterval(Q.timerId);const up=()=>{const left=Math.max(0,Q.end-Date.now());const el=$('#timer');if(el)el.textContent=`⏳ ${Math.floor(left/60000)}:${pad(Math.floor(left%60000/1000))}`;if(left<=0){clearInterval(Q.timerId);while(Q.res.length<Q.tasks.length){Q.resp.push(null);Q.res.push(0);}endQuest();}};up();Q.timerId=setInterval(up,1000);}
+
+function confirmBox(msg,yes){const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="card"><p class="q">${msg}</p><div class="row"><button class="btn sec" id="n">Nein</button><button class="btn" id="y">Ja</button></div></div>`;m.querySelector('#n').onclick=()=>m.remove();m.querySelector('#y').onclick=()=>{m.remove();yes();};document.body.appendChild(m);}
+
+function fb(cls,html){const el=$('#fb');el.className='fb show '+cls;el.innerHTML=html;el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+
+function readResp(t){if(t.type==='multi')return [...app.querySelectorAll('input.ans')].map(x=>x.value);if(t.type==='num'||t.type==='text'||t.type==='time')return $('#single').value;return Q.cur;}
+
+const PRAISE=['Großartig!','Fantastisch!','Genau richtig!','Wie eine echte Heldin!','Zauberhaft gelöst!','Super gemacht!','Bravo!'];
+function onCheck(){const t=Q.tasks[Q.i];const r=readResp(t);
+  if(emptyResp(t,r)){fb('hint',`${pet().e} Gib zuerst eine Antwort ein.`);return;}
+  const ok=check(t,r);
+  if(Q.probe){Q.resp.push(r);Q.res.push(ok?2:0);stat(t,ok);next();return;}
+  if(ok){const g=Q.att===0?(Q.hintUsed?1:2):1;S.gems+=g;Q.res.push(Q.att===0&&!Q.hintUsed?2:1);stat(t,true);save();markChoice(t,true);
+    const b=$('#chk').getBoundingClientRect();sparkle(b.left+b.width/2,b.top);
+    fb('good',`<b>${pick(PRAISE)}</b> ${pet().e} ${pet().n} freut sich. +${g} 💎${Q.att>0||Q.hintUsed?'':' (beim ersten Versuch!)'}`);done();}
+  else{Q.att++;$('#tc').classList.remove('shake');void $('#tc').offsetWidth;$('#tc').classList.add('shake');
+    if(Q.att===1){fb('hint',`<b>Noch nicht ganz.</b> ${pet().e} ${pet().n} hat einen Tipp:<br>${t.hint}<br><i>Versuch es noch einmal!</i>`);if(t.type==='choice'){app.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));Q.cur=null;}}
+    else{Q.res.push(0);stat(t,false);save();markChoice(t,false);fb('sol',`<b>So geht's:</b><br>${t.sol}<br><small>Nicht schlimm! Beim nächsten Mal klappt es bestimmt.</small>`);done();}}}
+function markChoice(t,ok){if(t.type==='choice'){app.querySelectorAll('.opt').forEach(x=>{const k=+x.dataset.k;if(k===t.answer)x.classList.add('right');else if(k===Q.cur&&!ok)x.classList.add('wrong');});}
+  if(t.type==='tap'){app.querySelectorAll('.chip').forEach(x=>{const k=+x.dataset.k;if(t.answer.includes(k)){x.style.borderColor='#2f9e57';x.style.boxShadow='0 0 0 3px #2f9e5755';}});}}
+function done(){Q.locked=true;app.querySelectorAll('input.ans').forEach(x=>x.disabled=true);$('#acts').innerHTML=`<button class="btn wide" id="nx">${Q.i+1<Q.tasks.length?'Weiter ➜':'Quest abschließen 🏁'}</button>`;$('#nx').onclick=next;}
+function next(){Q.i++;if(Q.i<Q.tasks.length)renderTask();else endQuest();}
+function stat(t,ok){const k=t.skill;S.stats[k]=S.stats[k]||{ok:0,all:0};S.stats[k].all++;if(ok)S.stats[k].ok++;}
+
+function endQuest(){clearInterval(Q.timerId);window.scrollTo(0,0);const n=Q.tasks.length,ok=Q.res.filter(x=>x>0).length,first=Q.res.filter(x=>x===2).length;
+  if(Q.probe){S.probes.push({k:Q.kind,d:today(),ok,n});save();
+    app.innerHTML=topbar()+`<div class="card"><h2>${Q.title}: Auswertung</h2><div class="bigstars">${ok} / ${n}</div><p class="q" style="text-align:center">${ok>=9?'Hervorragend, du bist bestens vorbereitet!':ok>=6?'Gut gemacht! Schau dir die Fehler genau an.':'Übe die Bereiche auf der Karte noch etwas. Du schaffst das!'}</p>
+${Q.tasks.map((t,k)=>`<div class="review"><b>${Q.res[k]?'✅':'❌'} Aufgabe ${k+1}</b> <span class="tag">${t.skill}</span><div class="q" style="font-size:16px">${t.q.replace(/<div class="textbox">[\s\S]*?<\/div>/,'<i>(Lesetext)</i> ')}</div>${t.type==='choice'?`<div>Richtige Antwort: <b>${t.options[t.answer]}</b></div>`:''}<div class="small">${t.sol}</div></div>`).join('')}
+<div class="row"><button class="btn wide" onclick="showMap()">Zur Karte</button></div></div>`;return;}
+  if(Q.kind==='final'){const win=ok>=7;if(win){S.finalDone=true;S.gems+=20;save();}
+    app.innerHTML=topbar()+(win?`<div class="card cert"><div class="big">🧭</div><h2>Urkunde</h2><p class="q">Hiermit wird feierlich bestätigt:</p><h1 style="margin:6px 0;color:#7a2e0b">${esc(S.name)}</h1><p class="q">hat den <b>Großen Kompass von Kompassia</b> wieder zusammengesetzt und ist nun<br><b style="font-size:24px">Hüterin des Reiches</b>!</p><div class="bigstars">${pet().e}✨</div><p class="small">${ok} von ${n} Prüfungen bestanden · +20 💎 Bonus</p><div class="row"><button class="btn wide" onclick="showMap()">Zur Karte</button></div></div>`
+    :`<div class="card"><h2>Fast geschafft!</h2><p class="q">Du hast ${ok} von ${n} Aufgaben gelöst. Für den Großen Kompass brauchst du 7. ${pet().n} glaubt an dich, versuch es gleich noch einmal!</p><div class="row"><button class="btn" onclick="startQuest('final')">Nochmal versuchen</button><button class="btn sec" onclick="showMap()">Zur Karte</button></div></div>`);
+    if(win)setTimeout(()=>sparkle(innerWidth/2,200,30),200);return;}
+  const stars=ok===n&&first>=n-1?3:ok>=n-1?2:ok>=3?1:0;const R=S.regions[Q.kind]=S.regions[Q.kind]||{stars:0,plays:0};const had=R.stars;R.plays++;R.stars=Math.max(R.stars,stars);const newSplinter=had<1&&stars>=1;save();
+  const reg=REGIONS.find(x=>x.id===Q.kind);
+  app.innerHTML=topbar()+`<div class="card" style="text-align:center"><div style="font-size:56px">${reg.icon}</div><h2>${stars?'Quest geschafft!':'Quest beendet'}</h2><div class="bigstars">${'⭐'.repeat(stars)}${'☆'.repeat(3-stars)}</div><p class="q">${ok} von ${n} richtig, ${first} davon beim ersten Versuch.</p>
+${newSplinter?`<div class="speech" style="text-align:left"><div class="p">${pet().e}</div><div class="bubble"><b>Ein Kompass-Splitter! 🔷</b> Du hast den Splitter vom ${reg.name} gefunden. Noch ${8-splinters()} bis zum Großen Kompass!</div></div>`:''}
+${!stars?`<div class="speech" style="text-align:left"><div class="p">${pet().e}</div><div class="bubble">Ab 3 richtigen Aufgaben bekommst du den ersten Stern. Probier es gleich nochmal, die Aufgaben sind jedes Mal neu!</div></div>`:''}
+<div class="row"><button class="btn" onclick="startQuest('${Q.kind}')">Nochmal ⚔️</button><button class="btn sec" onclick="showMap()">Zur Karte</button></div></div>`;
+  if(stars)setTimeout(()=>sparkle(innerWidth/2,180,stars*10),200);}
+
+/* ============ Eltern ============ */
+function showParents(){window.scrollTo(0,0);const sk=Object.entries(S.stats).sort((a,b)=>a[1].ok/a[1].all-b[1].ok/b[1].all);
+  app.innerHTML=topbar()+`<div class="card"><h2>👪 Für Eltern</h2><p class="small">Der Fortschritt wird nur auf diesem Gerät im Browser gespeichert.</p>
+<h3 class="medieval">Bereiche (schwächste zuerst)</h3>${sk.length?sk.map(([k,v])=>{const p=Math.round(v.ok/v.all*100);return `<div class="stat"><span>${k}</span><span style="display:flex;align-items:center">${v.ok}/${v.all} (${p} %)<span class="mini"><span style="width:${p}%"></span></span></span></div>`;}).join(''):'<p class="small">Noch keine Aufgaben gelöst.</p>'}
+<h3 class="medieval">Orte</h3>${REGIONS.map(r=>`<div class="stat"><span>${r.icon} ${r.name}</span><span>${'⭐'.repeat(S.regions[r.id]?.stars||0)||'–'} · ${S.regions[r.id]?.plays||0}× gespielt</span></div>`).join('')}
+<h3 class="medieval">Probe-Tests</h3>${S.probes.length?S.probes.slice(-8).reverse().map(p=>`<div class="stat"><span>${p.k==='probeM'?'Mathe':'Deutsch'} · ${p.d}</span><span>${p.ok} / ${p.n}</span></div>`).join(''):'<p class="small">Noch kein Probe-Test.</p>'}
+<p class="small" style="margin-top:12px">Die Aufgaben sind eigene Übungsaufgaben im Stil der Kompass-4-Kompetenzmessung (Klasse 4, Baden-Württemberg), keine Originalaufgaben des IBBW. Rechenaufgaben werden bei jedem Start neu erzeugt.</p>
+<div class="row"><button class="btn sec" onclick="showStart()">Name / Begleiter ändern</button><button class="btn ghost" id="rst">Fortschritt löschen</button></div><div class="row"><button class="btn wide" onclick="showMap()">Zur Karte</button></div></div>`;
+  $('#rst').onclick=()=>confirmBox('Wirklich den gesamten Fortschritt löschen?',()=>{S={name:S.name,pet:S.pet,gems:0,regions:{},stats:{},streak:0,lastDay:'',finalDone:false,probes:[]};save();showMap();});}
+
+S.name?showMap():showStart();
+</script>
+</body>
+</html>
