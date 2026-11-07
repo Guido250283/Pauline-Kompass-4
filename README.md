@@ -26,6 +26,12 @@ Der magische Kompass des Reiches Kompassia ist in acht Splitter zerbrochen. An a
 - **Quelle der Wiederholung:** Aufgabenarten mit Fehlern werden gesammelt und können gezielt geübt werden
 - **Vorlesen (🔊)** jeder Aufgabe
 
+## Aufgabenvorrat
+
+- **Mathe:** Jede Aufgabe wird mit neuen Zufallszahlen erzeugt.
+- **Deutsch:** rund 430 Einträge (z. B. 49 Verlängern-Wörter, 42 Ableiten-Wörter, 38 ss/ß-Wörter, 30 Zeitform-Sätze, 33 Wortstämme) und 15 Lesetexte mit je 3 Fragen.
+- **Wiederholungsschutz:** Gelöste Aufgaben kommen erst wieder, wenn alle anderen einer Liste dran waren. Danach beginnt eine neue Runde.
+
 Dazu: **Probe-Kompass** (11 Aufgaben, 30 Minuten, ohne Tipps, mit Auswertung) und ein **Elternbereich** mit Statistik je Kompetenz.
 
 ## Benutzen
