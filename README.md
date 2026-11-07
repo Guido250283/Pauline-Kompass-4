@@ -17,6 +17,15 @@ Der magische Kompass des Reiches Kompassia ist in acht Splitter zerbrochen. An a
 | 🏰 Grammatik-Burg | Deutsch | Wortarten, Zeitformen, Prädikat, Satzglieder, Umstellprobe, wörtliche Rede, Steigerung |
 | 📚 Elfen-Bibliothek | Deutsch | Lesetexte mit Verständnisfragen |
 
+## Lernhilfe, wenn eine Aufgabe nicht klappt
+
+- **Hilfe-Leiter (💡):** Denkanstoß → konkreter Tipp → Erklärung mit Beispiel → Lösungsweg
+- **Gezielte Rückmeldung** bei typischen Fehlern (z. B. „Stunde hat 60, nicht 100 Minuten“, „Wechselgeld: Schritt 2 fehlt“, Ziffern hintereinander statt bündeln)
+- **Teilrückmeldung:** bei mehreren Feldern ✅/❌ je Feld, beim Antippen „2 richtig, 1 fehlt“; falsche Auswahlantworten werden durchgestrichen
+- **Übungsaufgabe:** Nach einem Fehler folgt sofort eine Aufgabe derselben Art mit neuen Zahlen
+- **Quelle der Wiederholung:** Aufgabenarten mit Fehlern werden gesammelt und können gezielt geübt werden
+- **Vorlesen (🔊)** jeder Aufgabe
+
 Dazu: **Probe-Kompass** (11 Aufgaben, 30 Minuten, ohne Tipps, mit Auswertung) und ein **Elternbereich** mit Statistik je Kompetenz.
 
 ## Benutzen
