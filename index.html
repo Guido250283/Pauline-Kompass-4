@@ -109,6 +109,15 @@ svg.fig{display:block;margin:10px auto;max-width:100%}
 .cert .big{font-size:64px}
 .small{font-size:14px;color:#6b4a1f}
 a{color:#4b3690}
+.hcalc{display:flex;flex-direction:column;gap:8px;align-items:center}
+.hrow{display:flex;align-items:center;gap:5px}
+.hrow span{font-weight:900;font-size:20px;color:#5a2d0c;min-width:12px;text-align:center}
+.hn{width:64px;height:44px;font:800 21px Nunito,sans-serif;text-align:center;border:2px solid #dcc597;border-radius:8px;background:#fff;color:var(--ink);padding:0}
+.hn.sm{width:44px}.hn:focus{outline:none;border-color:#7a62b5;box-shadow:0 0 0 3px #7a62b533}
+.hrow.main .hn{border-color:#c9a35c}.hn.ok{border-color:var(--ok);background:#e6f7ec}.hn.bad{border-color:var(--bad);background:#fde3e0}
+.hrow .hb{min-width:30px}
+.hsep{font-size:13px;font-weight:800;color:#8a6a3a;border-top:3px solid #5a2d0c;padding-top:6px;width:100%;max-width:320px;text-align:center}
+
 .garea{display:flex;flex-direction:column;align-items:center;width:100%}
 .gcanvas{display:block;border-radius:12px;touch-action:none;box-shadow:0 4px 14px #0006;max-width:100%;-webkit-user-select:none;user-select:none}
 .dpad{display:grid;grid-template-columns:repeat(3,68px);grid-template-rows:repeat(2,54px);gap:6px;margin-top:10px;touch-action:none}
@@ -218,7 +227,7 @@ nachbar(){const mode=pick(['Zehner','Hunderter']),st=mode==='Zehner'?10:100;let 
 strahl(){const step=pick([50,100,200,250]);const a=Math.round(ri(8,30)*100/step)*step+step*2;const b=a+4*step;
   const v=pick([['mid','genau in der Mitte zwischen den beiden Zahlen',a+2*step],['r1','genau einen Abschnitt rechts von '+a,a+step],['l2','genau zwei Abschnitte links von '+a,a-2*step],['r3','genau drei Abschnitte rechts von '+a,a+3*step]]);
   return{skill:'Zahlenstrahl',story:'Eine Feenbrücke ist wie ein Zahlenstrahl gebaut.',q:`Am Zahlenstrahl stehen <b>${a}</b> und <b>${b}</b>. Dazwischen liegen 4 gleich große Abschnitte.${svgNumberLine(7,{2:a,6:b})}Welche Zahl liegt ${v[1]}?`,type:'num',answer:v[2],hint:`Wie groß ist ein Abschnitt? Rechne ${b} ${minus} ${a} und teile durch 4.`,sol:`${b} ${minus} ${a} = ${4*step}, geteilt durch 4 = ${step}. Ein Abschnitt ist ${step} groß.<br>Gesuchte Zahl: <b>${v[2]}</b>`};},
-div(){if(Math.random()<.5){const d=ri(3,9),q=ri(12,95);return{skill:'Mal und Geteilt',story:'Zauberer Merlo verteilt Sternenstaub.',q:`Merlo hat <b>${d*q}</b> Sterne. Er verteilt sie gleichmäßig auf <b>${d}</b> Beutel.<br>Wie viele Sterne kommen in jeden Beutel?`,type:'num',answer:q,unit:'Sterne',hint:`Rechne ${d*q} : ${d}. Zerlege die Zahl in Teile, die sich gut durch ${d} teilen lassen.`,sol:`${d*q} : ${d} = <b>${q}</b> (Probe: ${q} · ${d} = ${d*q})`};}
+div(){if(Math.random()<.5){const d=ri(3,9),q=ri(12,95);return{skill:'Mal und Geteilt',story:'Zauberer Merlo verteilt Sternenstaub.',q:`Merlo hat <b>${d*q}</b> Sterne. Er verteilt sie gleichmäßig auf <b>${d}</b> Beutel.<br>Wie viele Sterne kommen in jeden Beutel?`,type:'num',answer:q,calc:{a:d*q,b:d,op:':'},unit:'Sterne',hint:`Rechne ${d*q} : ${d}. Zerlege die Zahl in Teile, die sich gut durch ${d} teilen lassen.`,sol:`${d*q} : ${d} = <b>${q}</b> (Probe: ${q} · ${d} = ${d*q})`};}
   const k=ri(2,5),nm=['','','Doppelte','Dreifache','Vierfache','Fünffache'][k],x=ri(10,40)*10,y=ri(11,45)*5;return{skill:'Mal und Geteilt',story:'Ein Rechenzauber steht auf einer alten Schriftrolle.',q:`Addiere zu <b>${x}</b> das <b>${nm}</b> von <b>${y}</b>.`,type:'num',answer:x+k*y,errs:[[(x+y)*k,`Du hast zuerst addiert und dann malgenommen. Gemeint ist: Nur ${y} wird ${k}-mal genommen, dann kommt ${x} dazu.`]],hint:`Rechne zuerst das ${nm}: ${k} · ${y}. Dann zählst du ${x} dazu.`,sol:`${k} · ${y} = ${k*y}<br>${x} + ${k*y} = <b>${x+k*y}</b>`};},
 schriftlich(){let a,b;do{a=ri(3,9)*100+ri(1,8);b=ri(100,a-60);}while(b%10<=a%10||Math.floor(b%100/10)===0);
   return{skill:'Plus und Minus',story:'Die Wächter zählen die Pfeile im Turm.',q:`Rechne schriftlich (untereinander): <b>${a} ${minus} ${b}</b>`,type:'num',answer:a-b,calc:{a,b,op:'−'},errs:[[digitAbsDiff(a,b),'Pass auf: Oben steht an manchen Stellen die kleinere Ziffer. Dann musst du entbündeln, nicht umdrehen!']],hint:`Bei den Einern reicht ${a%10} nicht für ${b%10}. Du musst entbündeln, aber an der Zehnerstelle steht eine 0! Hole dir erst einen Hunderter.`,sol:`${a} ${minus} ${b} = <b>${a-b}</b><br>${steps(a,b,'-')}`};},
@@ -235,6 +244,13 @@ kombi(){const pools=[['Umhänge',['rot','blau','grün']],['Hüte',['spitz','rund
   return{skill:'Kombinieren',story:'In der Zauberschule bekommt jedes Kind eine Ausrüstung.',q:`Jedes Kind wählt genau eins von jedem:<ul>${cs.map(c=>`<li><b>${c[0]}:</b> ${c[1].join(', ')}</li>`).join('')}</ul>Wie viele verschiedene Ausrüstungen gibt es?`,type:'num',answer:prod,hint:'Male ein Baumdiagramm oder überlege: Zu jedem der ersten Dinge passen alle der zweiten …',sol:`${cs.map(c=>c[1].length).join(' · ')} = <b>${prod}</b>`};},
 diagramm(){const cats=['Drachen','Einhörner','Greife','Feen'],v=cats.map(()=>ri(2,9));let f=ri(0,3),to;do{to=ri(0,3);}while(to===f);const mv=Math.min(v[f]-1,ri(1,3)),tot=v.reduce((a,b)=>a+b,0);
   return{skill:'Diagramme',story:'Die Zauberschule hat abgestimmt: Welches Fabelwesen ist das beliebteste?',q:`${svgBars(cats,v)}a) Wie viele Kinder haben insgesamt abgestimmt?<br>b) ${mv} ${mv===1?'Kind wechselt':'Kinder wechseln'} von <b>${cats[f]}</b> zu <b>${cats[to]}</b>. Wie viele Stimmen haben die ${cats[to]} danach?`,type:'multi',fields:[{label:'a)',type:'num',answer:tot,unit:'Kinder'},{label:'b)',type:'num',answer:v[to]+mv,unit:'Stimmen'}],hint:'Lies jede Säule genau ab, die Linien helfen dir. Bei b) kommen die Wechsler dazu.',sol:`a) ${v.join(' + ')} = <b>${tot}</b><br>b) ${v[to]} + ${mv} = <b>${v[to]+mv}</b>`};},
+restTeilen(){const b=ri(3,9),q=ri(2,9),r=ri(1,b-1),a=b*q+r;const v=Math.random()<.5;
+  return{skill:'Mal und Geteilt',story:v?'Kobold Fips verteilt Haselnüsse.':'Ein Rechenrätsel aus dem Zahlenwald.',q:v?`Fips verteilt <b>${a}</b> Haselnüsse gerecht an <b>${b}</b> Eichhörnchen.<br>Wie viele bekommt jedes, und wie viele bleiben übrig?`:`Rechne mit Rest: <b>${a} : ${b}</b>`,type:'multi',calc:{a,b,op:':'},fields:[{label:v?'jedes bekommt:':'Ergebnis:',type:'num',answer:q},{label:v?'übrig (Rest):':'Rest:',type:'num',answer:r}],hint:`Welche Zahl aus der ${b}er-Reihe liegt knapp unter ${a}? Der Unterschied ist der Rest.`,sol:`${q} · ${b} = ${q*b}, bis ${a} fehlen noch ${r}.<br>${a} : ${b} = <b>${q} R ${r}</b>`};},
+teilenHalb(){const b=ri(3,9),q=ri(Math.ceil(100/b)+2,Math.floor(400/b)),r=ri(0,b-1),a=b*q+r,f=Math.floor(a/(10*b))*10*b;
+  return{skill:'Mal und Geteilt',story:'Zauberer Merlo teilt halbschriftlich.',q:`Rechne halbschriftlich: <b>${a} : ${b}</b><br><small>Bleibt nichts übrig, schreibe beim Rest 0.</small>`,type:'multi',calc:{a,b,op:':'},fields:[{label:'Ergebnis:',type:'num',answer:q},{label:'Rest:',type:'num',answer:r}],hint:`Zerlege ${a} in zwei Zahlen: eine, die gut durch ${b} geht (zum Beispiel ${f}), und den Rest (${a-f}).`,sol:`${f} : ${b} = ${f/b}<br>${a-f} : ${b} = ${Math.floor((a-f)/b)}${r?' R '+r:''}<br>${a} : ${b} = <b>${q}${r?' R '+r:''}</b>`};},
+teiler(){const n=pick([12,15,16,18,20,24]),w=[...Array(n)].map((_,i)=>String(i+1)),c=w.map((x,i)=>n%(i+1)===0?i:-1).filter(i=>i>=0);
+  return{skill:'Teilbarkeit',story:'Die Sphinx fragt nach Teilern.',q:`Tippe <b>alle Teiler von ${n}</b> an.`,type:'tap',words:w,answer:c,hint:`Ein Teiler geht ohne Rest auf. Prüfe der Reihe nach: ${n} : 1, ${n} : 2, ${n} : 3 … Teiler kommen immer in Paaren: 1 · ${n} = ${n}.`,sol:`Teiler von ${n}: <b>${c.map(i=>i+1).join(', ')}</b><br>${c.filter(i=>(i+1)*(i+1)<=n).map(i=>`${i+1} · ${n/(i+1)}`).join(' · ')} = ${n}`};},
+teilenSach(){const d=ri(3,9),q=ri(21,180),N=d*q;return{skill:'Mal und Geteilt',story:'Zwergin Brumhild verteilt den Schatz.',q:`Brumhild verteilt <b>${N}</b> Goldmünzen gerecht an <b>${d}</b> Zwerge.<br>Wie viele Münzen bekommt jeder Zwerg?`,type:'num',answer:q,calc:{a:N,b:d,op:':'},unit:'Münzen',errs:[[N-d,'Du hast minus gerechnet. Beim gerechten Verteilen musst du teilen!'],[N*d,'Du hast malgenommen. Beim gerechten Verteilen wird geteilt!']],hint:`Rechne ${N} : ${d}. Zerlege in Teilaufgaben: Welche Zahl knapp darunter lässt sich gut durch ${d} teilen?`,sol:`${(()=>{const f=Math.floor(N/(10*d))*10*d;return f>0&&f<N?`${f} : ${d} = ${f/d}<br>${N-f} : ${d} = ${(N-f)/d}<br>`:'';})()}${N} : ${d} = <b>${q}</b> (Probe: ${q} · ${d} = ${N})`};},
 malSach(){const n=ri(6,9),m=pick([12,15,25,24,35,45,18]);return{skill:'Mal und Geteilt',story:'Der Drache bewacht seine Schatztruhen.',q:`In jeder der <b>${n}</b> Schatztruhen liegen <b>${m}</b> Rubine.<br>Wie viele Rubine sind es zusammen?`,type:'num',answer:n*m,calc:{a:m,b:n,op:'·'},unit:'Rubine',hint:`Zerlege: ${n} · ${Math.floor(m/10)*10} und ${n} · ${m%10}, dann zusammenzählen.`,sol:`${n} · ${m} = ${n} · ${Math.floor(m/10)*10} + ${n} · ${m%10} = ${n*Math.floor(m/10)*10} + ${n*(m%10)} = <b>${n*m}</b>`};},
 zeitspanne(){const h=ri(7,17),m=ri(35,55),m2=ri(5,50),ans=60-m+m2;return{skill:'Zeit',story:'Im Uhrturm tickt die Zeitmagie.',q:`Die Eule Fiora startet um <b>${h}:${pad(m)} Uhr</b>. Um <b>${h+1}:${pad(m2)} Uhr</b> beginnt der Unterricht in der Zauberschule.<br>Wie viele Minuten hat sie noch Zeit?`,type:'num',answer:ans,unit:'Minuten',errs:[[(h+1)*100+m2-(h*100+m),'Du hast gerechnet, als hätte eine Stunde 100 Minuten. Sie hat aber nur 60! Rechne erst bis zur vollen Stunde.']],hint:`Eine Stunde hat 60 Minuten, nicht 100! Rechne erst bis ${h+1}:00 Uhr.`,sol:`${h}:${pad(m)} bis ${h+1}:00 = ${60-m} Minuten<br>${h+1}:00 bis ${h+1}:${pad(m2)} = ${m2} Minuten<br>${60-m} + ${m2} = <b>${ans} Minuten</b>`};},
 endzeit(){const s=ri(8,16)*60+pick([10,15,20,25,35,40,45,50]),d=ri(25,95),e=s+d;return{skill:'Zeit',story:'Merlo braut einen Zaubertrank.',q:`Der Trank muss <b>${d} Minuten</b> köcheln. Merlo stellt ihn um <b>${tm(s)}</b> aufs Feuer.<br>Um wie viel Uhr ist der Trank fertig?`,type:'time',answer:e,unit:'Uhr',placeholder:'z. B. 14:05',hint:`Rechne erst bis zur nächsten vollen Stunde, dann weiter. ${d>60?`${d} Minuten sind 1 Stunde und ${d-60} Minuten.`:''}`,sol:`${tm(s)} + ${d} Minuten = <b>${tm(e)}</b>`};},
@@ -384,7 +400,7 @@ const LESSON={
 'Plus und Minus':{ask:'Rechne in Schritten: Zerlege die zweite Zahl in Hunderter, Zehner und Einer.',learn:'<b>Schrittweise rechnen:</b> Zerlege die zweite Zahl.<br>3456 + 238: 3456 + 200 = 3656 → + 30 = 3686 → + 8 = <b>3694</b><br><br><b>Entbündeln beim Minus:</b> Bei 52 − 7 reichen 2 Einer nicht. Tausche 1 Zehner in 10 Einer: 12 − 7 = 5, übrig bleiben 4 Zehner → <b>45</b>.<br>Steht an der Zehnerstelle eine 0 (z. B. 403 − 8), holst du dir zuerst einen Hunderter: 403 = 39 Zehner und 13 Einer → 13 − 8 = 5 → <b>395</b>.'},
 'Stellenwerte':{ask:'Hast du gebündelt? 10 Zehner sind 1 Hunderter, 10 Einer sind 1 Zehner.',learn:'<b>Stellenwerttafel:</b> T | H | Z | E<br>10 E = 1 Z · 10 Z = 1 H · 10 H = 1 T<br><br>Beispiel: 3 H, 12 Z, 4 E → 12 Z = 1 H und 2 Z → 4 H, 2 Z, 4 E = <b>424</b><br><br><b>Nachbarzehner</b> enden auf 0: 467 liegt zwischen <b>460</b> und <b>470</b>.<br><b>Nachbarhunderter</b> enden auf 00: 467 liegt zwischen <b>400</b> und <b>500</b>.'},
 'Zahlenstrahl':{ask:'Wie groß ist ein einziger Abschnitt? Rechne zuerst den Abstand der beiden Zahlen aus.',learn:'<b>Abstand : Anzahl der Abschnitte = ein Abschnitt</b><br><br>Beispiel: 100 und 500 mit 4 Abschnitten: 500 − 100 = 400, 400 : 4 = 100.<br>Die Striche heißen dann: 100, 200, 300, 400, 500. Die Mitte ist bei <b>300</b>.<br>Nach links wird es kleiner, nach rechts größer.'},
-'Mal und Geteilt':{ask:'Zerlege die große Zahl in Teile, mit denen du leicht rechnen kannst.',learn:'<b>Zerlegen:</b> 7 · 24 = 7 · 20 + 7 · 4 = 140 + 28 = <b>168</b><br><b>Geteilt:</b> 168 : 7 → 140 : 7 = 20 und 28 : 7 = 4 → <b>24</b><br>Probe: 24 · 7 = 168 ✓<br><br>„Das <b>Dreifache</b> von 40“ heißt 3 · 40 = 120.'},
+'Mal und Geteilt':{ask:'Zerlege die große Zahl in Teile, mit denen du leicht rechnen kannst.',learn:'<b>Halbschriftlich teilen:</b> 190 : 8<br>→ 160 : 8 = 20 (eine Zahl, die gut aufgeht)<br>→ 30 : 8 = 3 R 6<br>→ zusammen: 190 : 8 = <b>23 R 6</b><br><b>Teilen mit Rest:</b> 39 : 8 = 4 R 7, denn 4 · 8 = 32 und bis 39 fehlen 7.<br><br><b>Zerlegen:</b> 7 · 24 = 7 · 20 + 7 · 4 = 140 + 28 = <b>168</b><br><b>Geteilt:</b> 168 : 7 → 140 : 7 = 20 und 28 : 7 = 4 → <b>24</b><br>Probe: 24 · 7 = 168 ✓<br><br>„Das <b>Dreifache</b> von 40“ heißt 3 · 40 = 120.'},
 'Geschickt rechnen':{ask:'Kannst du mit einer runden Zahl rechnen und danach ausgleichen?',learn:'<b>Minus 99 ist fast minus 100:</b><br>345 − 99 → 345 − 100 = 245. Du hast 1 zu viel abgezogen, also wieder dazu: 245 + 1 = <b>246</b>.<br><br><b>Halbieren und Verdoppeln:</b><br>18 · 5 = 9 · 10 = <b>90</b>. Die eine Zahl halb, die andere doppelt, das Ergebnis bleibt gleich.'},
 'Sachaufgaben':{ask:'Was weißt du? Was ist gesucht? Kommt etwas dazu oder geht etwas weg?',learn:'<b>So knackst du Sachaufgaben:</b><br>1. Lies die Aufgabe zweimal.<br>2. Was ist gegeben? Was ist gefragt?<br>3. Ganze Strecke − schon geschafft = Rest.<br><br>Beispiel: Weg 500 km, gefahren 320 km → 500 − 320 = <b>180 km</b>.<br>Denk an die Einheit (km, €, Minuten).'},
 'Geld':{ask:'Musst du in zwei Schritten rechnen? Erst die Kosten, dann das Rückgeld?',learn:'<b>Zwei Schritte:</b><br>1. Kosten: 5 Kugeln zu je 1,60 € → 5 · 160 ct = 800 ct = 8,00 €<br>2. Rückgeld: bezahlt − Kosten → 20,00 € − 8,00 € = <b>12,00 €</b><br><br>Tipp: Rechne in Cent, wenn dich das Komma stört. 1 € = 100 ct.'},
@@ -406,6 +422,7 @@ const LESSON={
 'Satzglieder':{ask:'Welche Wörter bleiben beim Umstellen zusammen?',learn:'<b>Umstellprobe:</b><br>Der kleine Hund | bellt | laut.<br>Laut | bellt | der kleine Hund.<br>Was zusammenbleibt, ist ein Satzglied.<br>Das <b>Prädikat</b> (gebeugtes Verb) steht im Aussagesatz an 2. Stelle. Frage: Was tut jemand?'},
 'Wörtliche Rede':{ask:'Steht der Begleitsatz vorne oder hinten?',learn:'<b>Vorne:</b> Mia sagt: „Ich komme mit.“<br>→ Doppelpunkt, Satzzeichen innerhalb der Anführungszeichen<br><b>Hinten:</b> „Ich komme mit“, sagt Mia. · „Kommst du mit?“, fragt Mia.<br>→ Komma nach dem Schlusszeichen. Der Punkt fällt weg, ? und ! bleiben.'},
 'Adjektive':{ask:'Ist das Adjektiv regelmäßig oder eine Ausnahme?',learn:'klein – kleiner – am kleinsten<br>Oft mit Umlaut: alt – älter – am ältesten<br><b>Ausnahmen merken:</b><br>gut – besser – am besten<br>viel – mehr – am meisten<br>gern – lieber – am liebsten'},
+'Teilbarkeit':{ask:'Geht die Zahl ohne Rest auf? Probiere die Zahlen der Reihe nach.',learn:'<b>Teiler</b> sind Zahlen, durch die man ohne Rest teilen kann.<br>Teiler von 15: 15 : 1 = 15, 15 : 3 = 5, 15 : 5 = 3, 15 : 15 = 1<br>→ <b>1, 3, 5 und 15</b> (15 hat 4 Teiler)<br>Tipp: Teiler kommen in Paaren: 1 · 15 und 3 · 5.'},
 'Lesen':{ask:'Welches wichtige Wort aus der Frage findest du im Text wieder?',learn:'<b>So findest du Antworten im Text:</b><br>1. Lies zuerst die Frage.<br>2. Suche ein Schlüsselwort der Frage im Text (z. B. „Flügel“).<br>3. Lies den Satz davor und danach genau.<br>Bei Überschriften: Welche passt zum <b>ganzen</b> Text, nicht nur zu einem Satz?'}
 };
 /* typische Fehler: Ergebnis, das beim Entbündeln-Fehler entsteht */
@@ -413,10 +430,10 @@ function digitAbsDiff(a,b){const A=String(a),B=String(b).padStart(A.length,'0');
 
 /* ============ Regionen ============ */
 const REGIONS=[
-{id:'wald',name:'Zahlenwald',icon:'🌲',subj:'M',desc:'Stellenwerte, Zahlenstrahl, Plus und Minus',intro:'Im Zahlenwald wachsen Zahlen an den Bäumen. Die Waldgeister brauchen deine Hilfe beim Zählen und Rechnen!',gens:['add','sub','buendeln','nachbar','strahl','schriftlich','div']},
-{id:'markt',name:'Zwergenmarkt',icon:'⚒️',subj:'M',desc:'Geld, Sachaufgaben, Tabellen, Diagramme',intro:'Auf dem Zwergenmarkt wird gehandelt, gezählt und verglichen. Zwergin Brumhild sucht eine kluge Rechenmeisterin!',gens:['rest','wechsel','familie','kombi','diagramm','malSach']},
+{id:'wald',name:'Zahlenwald',icon:'🌲',subj:'M',desc:'Stellenwerte, Zahlenstrahl, Plus und Minus',intro:'Im Zahlenwald wachsen Zahlen an den Bäumen. Die Waldgeister brauchen deine Hilfe beim Zählen und Rechnen!',gens:['add','sub','buendeln','nachbar','strahl','schriftlich','div','restTeilen','teilenHalb']},
+{id:'markt',name:'Zwergenmarkt',icon:'⚒️',subj:'M',desc:'Geld, Sachaufgaben, Tabellen, Diagramme',intro:'Auf dem Zwergenmarkt wird gehandelt, gezählt und verglichen. Zwergin Brumhild sucht eine kluge Rechenmeisterin!',gens:['rest','wechsel','familie','kombi','diagramm','malSach','teilenSach']},
 {id:'turm',name:'Uhrturm der Zeitmagierin',icon:'🕰️',subj:'M',desc:'Uhrzeiten, Längen, Gewichte',intro:'Die Zeitmagierin hat die Uhren verzaubert. Nur wer mit Zeit und Größen rechnen kann, bringt sie wieder zum Ticken.',gens:['zeitspanne','endzeit','laengen','umrechnen','einheit']},
-{id:'hoehle',name:'Rätselhöhle',icon:'💎',subj:'M',desc:'Muster, Zahlenmauern, Knobeln, Würfelnetze',intro:'Tief in der Höhle warten knifflige Rätsel. Löse sie und die Kristalle beginnen zu leuchten!',gens:['folgeAlt','folgeMal','regel','mauer','raetsel','wahr','muster','wuerfel','geschickt','geschicktMal']},
+{id:'hoehle',name:'Rätselhöhle',icon:'💎',subj:'M',desc:'Muster, Zahlenmauern, Knobeln, Würfelnetze',intro:'Tief in der Höhle warten knifflige Rätsel. Löse sie und die Kristalle beginnen zu leuchten!',gens:['folgeAlt','folgeMal','regel','mauer','raetsel','wahr','muster','wuerfel','geschickt','geschicktMal','teiler']},
 {id:'quelle',name:'Wortquelle',icon:'⛲',subj:'D',desc:'Wortstamm, Wortfamilien, zusammengesetzte Nomen',intro:'An der Wortquelle sprudeln Wörter und ihre Verwandten. Die Quellnymphe möchte, dass du die Familien wieder zusammenführst.',gens:['stamm','kompos','familie','nachsilbe','nomenVerb']},
 {id:'bruecke',name:'Rechtschreib-Brücke',icon:'🌉',subj:'D',desc:'Verlängern, Ableiten, ss/ß, Großschreibung',intro:'Brückentroll Grumpel lässt nur hinüber, wer richtig schreibt. Zeig ihm deine Rechtschreib-Tricks!',gens:['verl','abl','ssz','sszStreit','gross','gross']},
 {id:'burg',name:'Grammatik-Burg',icon:'🏰',subj:'D',desc:'Wortarten, Zeitformen, Satzglieder, wörtliche Rede',intro:'In der Grammatik-Burg herrscht Durcheinander. Bringe Wörter und Sätze wieder in Ordnung!',gens:['zeitform','verbform','praed','wortart','satzglieder','umstell','rede','steig']},
@@ -529,40 +546,80 @@ function renderTask(){const t=Q.tasks[Q.i];Q.att=0;Q.help=0;Q.locked=false;Q.cur
   initTools(t);if(Q.probe)startTimer();}
 
 /* ---- Rechenkasten & Notizblock ---- */
-const COLS=6,PLACE=['HT','ZT','T','H','Z','E'],OPS=['+','−','·'];
-function isMath(t){return !!(t.gen&&M[t.gen])&&t.type!=='choice';}
+const COLS=6,PLACE=['HT','ZT','T','H','Z','E'],OPS=['+','−','·',':'];
+function isMath(t){return !!(t.gen&&M[t.gen])&&t.type!=='choice'&&t.type!=='tap';}
 function toolsHtml(){return `<div class="tools"><button class="tbtn" id="tCalc">✏️ Schriftlich rechnen</button><button class="tbtn" id="tDraw">📝 Notizblock</button></div><div id="calcBox" class="toolbox" hidden></div><div id="drawBox" class="toolbox" hidden></div>`;}
-function calcHtml(){const row=(r,cls,first)=>first+[...Array(COLS)].map((_,c)=>`<input class="cc ${cls}" data-r="${r}" data-c="${c}" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="${PLACE[c]}">`).join('');
-  return `<div class="calc"><div></div>${PLACE.map(p=>`<div class="ph">${p}</div>`).join('')}${row(0,'','<div></div>')}${row(1,'','<button class="opbtn" id="opb" title="Rechenzeichen wechseln">+</button>')}${row(2,'carry','<div class="lbl">Ü</div>')}<div class="line"></div>${row(3,'res','<div class="lbl">=</div>')}</div>
-<p class="small" style="text-align:center;margin:6px 0 0">Trage die Zahlen stellengerecht ein. Das Ergebnis schreibst du von <b>rechts nach links</b>. Ü = Übertrag. Tippe auf das Rechenzeichen, um es zu wechseln.</p>
-<div class="row" style="margin-top:8px">${Q.probe?'':'<button class="btn sec" id="cChk">Stimmt meine Rechnung?</button>'}<button class="btn" id="cTake">Ergebnis übernehmen ⤵</button></div>
+const cellIn=(r,c,cls,lab)=>`<input class="cc ${cls}" data-r="${r}" data-c="${c}" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="${lab||''}">`;
+const hIn=(k,sm)=>`<input class="hn${sm?' sm':''}" data-k="${k}" inputmode="numeric" maxlength="5" autocomplete="off">`;
+function calcHtml(isDiv){let grid;
+  if(!isDiv){const row=(r,cls,first)=>first+[...Array(COLS)].map((_,c)=>cellIn(r,c,cls,PLACE[c])).join('');
+    grid=`<div class="calc"><div></div>${PLACE.map(p=>`<div class="ph">${p}</div>`).join('')}${row(0,'','<div></div>')}${row(1,'','<button class="opbtn" id="opb" title="Rechenzeichen wechseln">+</button>')}${row(2,'carry','<div class="lbl">Ü</div>')}<div class="line"></div>${row(3,'res','<div class="lbl">=</div>')}</div>
+<p class="small" style="text-align:center;margin:6px 0 0">Zahlen stellengerecht eintragen. Das Ergebnis schreibst du von <b>rechts nach links</b>. Ü = Übertrag. Tippe auf das Rechenzeichen, um es zu wechseln.</p>`;}
+  else{grid=`<div class="hcalc"><div class="hrow main"><button class="opbtn" id="opb" title="Rechenzeichen wechseln">:</button>${hIn('a')}<span>:</span>${hIn('b',1)}<span>=</span>${hIn('q')}<span>R</span>${hIn('r',1)}</div>
+<div class="hsep">Zerlegen in Teilaufgaben</div>${[0,1,2].map(i=>`<div class="hrow part" data-row="${i}"><span style="width:34px"></span>${hIn('p'+i)}<span>:</span><span class="hb">?</span><span>=</span>${hIn('q'+i)}<span>R</span>${hIn('r'+i,1)}</div>`).join('')}</div>
+<p class="small" style="text-align:center;margin:6px 0 0">Zerlege wie in deinem Heft: <b>190 : 8</b> → 160 : 8 = 20 und 30 : 8 = 3 R 6 → zusammen <b>23 R 6</b>. Bleibt nichts übrig, lass R leer.</p>${Q.probe?'':'<div class="row" style="margin-top:6px"><button class="btn ghost" id="cHow" style="padding:6px 12px;font-size:15px">💡 Wie zerlege ich?</button></div>'}`;}
+  return grid+`<div class="row" style="margin-top:8px">${Q.probe?'':'<button class="btn sec" id="cChk">Stimmt meine Rechnung?</button>'}<button class="btn" id="cTake">Ergebnis übernehmen ⤵</button></div>
 <div class="row" style="margin-top:6px"><button class="btn ghost" id="cClr" style="padding:8px 14px;font-size:15px">Rechenkasten leeren</button></div><div id="cMsg" class="fb"></div>`;}
 const cells=r=>[...document.querySelectorAll(`.cc[data-r="${r}"]`)];
-function setRow(r,n){const s=String(n);const cs=cells(r);cs.forEach(x=>x.value='');for(let i=0;i<s.length&&i<COLS;i++)cs[COLS-1-i].value=s[s.length-1-i];}
-function rowVal(r){const d=cells(r).map(x=>x.value);const f=d.findIndex(v=>v!=='');if(f<0)return null;return parseInt(d.slice(f).map(v=>v===''?'0':v).join(''),10);}
+function setRow(r,n){const s=String(n),cs=cells(r);cs.forEach(x=>x.value='');for(let i=0;i<s.length&&i<cs.length;i++)cs[cs.length-s.length+i].value=s[i];}
+function rowVal(r){const d=cells(r).map(x=>x.value);const f=d.findIndex(v=>v!=='');if(f<0)return null;let l=d.length-1;while(d[l]==='')l--;return parseInt(d.slice(f,l+1).map(v=>v===''?'0':v).join(''),10);}
+const hEl=k=>document.querySelector(`.hn[data-k="${k}"]`);
+function hv(k){const e=hEl(k);if(!e)return null;const v=e.value.replace(/\D/g,'');return v===''?null:parseInt(v,10);}
+function hset(k,v){const e=hEl(k);if(e)e.value=v==null?'':v;}
 function calcMsg(cls,html){const m=$('#cMsg');m.className='fb show '+cls;m.innerHTML=html;}
-function initCalc(t){$('#calcBox').innerHTML=calcHtml();let op=0;const opb=$('#opb');const setOp=i=>{op=i;opb.textContent=OPS[i];};
-  if(t.calc){setRow(0,t.calc.a);setRow(1,t.calc.b);setOp(OPS.indexOf(t.calc.op));}
-  opb.onclick=()=>setOp((op+1)%OPS.length);
-  document.querySelectorAll('.cc').forEach(el=>{
-    el.addEventListener('input',()=>{el.value=el.value.replace(/\D/g,'').slice(-1);el.classList.remove('ok','bad');if(!el.value)return;const r=+el.dataset.r,c=+el.dataset.c;
-      if(r===3&&c>0)cells(3)[c-1].focus();else if((r===0||r===1)&&c<COLS-1)cells(r)[c+1].focus();});
-    el.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!el.value){const r=+el.dataset.r,c=+el.dataset.c;const n=r===3?cells(3)[c+1]:cells(r)[c-1];if(n){n.focus();e.preventDefault();}}});});
-  $('#cClr').onclick=()=>{document.querySelectorAll('.cc').forEach(x=>{x.value='';x.classList.remove('ok','bad');});$('#cMsg').className='fb';};
-  if($('#cChk'))$('#cChk').onclick=()=>{const a=rowVal(0),b=rowVal(1),res=cells(3);res.forEach(x=>x.classList.remove('ok','bad'));
+function firstPart(a,b){return Math.floor(a/(10*b))*10*b;}
+function initCalc(t){let op=t.calc?Math.max(0,OPS.indexOf(t.calc.op)):0;
+  const build=()=>{const isDiv=OPS[op]===':';$('#calcBox').innerHTML=calcHtml(isDiv);$('#opb').textContent=OPS[op];
+    if(t.calc&&OPS.indexOf(t.calc.op)===op){if(isDiv){hset('a',t.calc.a);hset('b',t.calc.b);}else{setRow(0,t.calc.a);setRow(1,t.calc.b);}}
+    bind(isDiv);};
+  function bind(isDiv){
+    $('#opb').onclick=()=>{const was=OPS[op]===':';op=(op+1)%OPS.length;if(was!==(OPS[op]===':'))build();else $('#opb').textContent=OPS[op];};
+    document.querySelectorAll('.cc').forEach(el=>{
+      el.addEventListener('input',()=>{el.value=el.value.replace(/\D/g,'').slice(-1);el.classList.remove('ok','bad');if(!el.value)return;const r=el.dataset.r,c=+el.dataset.c,row=cells(r);
+        if(r==='3'){if(c>0)row[c-1].focus();}else if(r!=='2'&&c<row.length-1)row[c+1].focus();});
+      el.addEventListener('keydown',e=>{if(e.key!=='Backspace'||el.value)return;const r=el.dataset.r,c=+el.dataset.c,row=cells(r);const n=r==='3'?row[c+1]:row[c-1];if(n){n.focus();e.preventDefault();}});});
+    const syncB=()=>{const b=hv('b');document.querySelectorAll('.hb').forEach(x=>x.textContent=b==null?'?':b);};
+    document.querySelectorAll('.hn').forEach(el=>el.addEventListener('input',()=>{el.value=el.value.replace(/\D/g,'');el.classList.remove('ok','bad');if(el.dataset.k==='b')syncB();}));syncB();
+    $('#cClr').onclick=()=>{document.querySelectorAll('.cc,.hn').forEach(x=>{x.value='';x.classList.remove('ok','bad');});if(isDiv&&t.calc&&t.calc.op===':'){hset('a',t.calc.a);hset('b',t.calc.b);}syncB();$('#cMsg').className='fb';};
+    if($('#cChk'))$('#cChk').onclick=isDiv?checkHalb:checkNormal;
+    if($('#cHow'))$('#cHow').onclick=()=>{const a=hv('a'),b=hv('b');if(a==null||!b)return calcMsg('hint','Trage zuerst die Aufgabe in die oberste Zeile ein.');const f=firstPart(a,b);
+      calcMsg('hint',f>0&&f<a?`Nimm zuerst eine Zahl, die sich gut durch ${b} teilen lässt: <b>${f}</b> (denn ${b} · ${f/b} = ${f}).<br>Dann bleibt noch <b>${a-f}</b> übrig. Rechne also ${f} : ${b} und ${a-f} : ${b}.`:f===a?`${a} lässt sich direkt gut teilen: ${b} · ${a/b} = ${a}.`:`Die Zahl ist klein. Rechne mit dem Einmaleins: Welche Zahl aus der ${b}er-Reihe liegt knapp unter ${a}? Der Unterschied ist der Rest.`);};
+    $('#cTake').onclick=()=>{let v,r=null;if(isDiv){v=hv('q');r=hv('r');}else v=rowVal('3');if(v==null)return calcMsg('hint','Im Ergebnisfeld steht noch nichts.');
+      const ins=[...app.querySelectorAll('input.ans')].filter(x=>!x.disabled);if(!ins.length)return;let target;
+      if(t.type==='multi'&&t.fields.length===2&&/Rest/.test(t.fields[1].label)){ins[0].value=v;if(ins[1])ins[1].value=r??0;target=ins[0];}
+      else{target=$('#single')||ins.find(x=>!x.value)||ins[0];target.value=v;}
+      target.scrollIntoView({behavior:'smooth',block:'center'});target.classList.add('flash');setTimeout(()=>target.classList.remove('flash'),900);
+      calcMsg('good',`Das Ergebnis steht jetzt im Antwortfeld.${t.unit==='€'?' Denk dran: Hast du in Cent gerechnet? Dann setze das Komma richtig.':''} Prüfe noch einmal und tippe dann auf „Prüfen“.`);};}
+  function checkNormal(){const a=rowVal(0),b=rowVal(1),res=cells(3);res.forEach(x=>x.classList.remove('ok','bad'));
     if(a==null||b==null)return calcMsg('hint','Trage zuerst beide Zahlen in den Rechenkasten ein.');
     if(OPS[op]==='−'&&b>a)return calcMsg('hint','Beim Minusrechnen muss die größere Zahl oben stehen.');
     const exp=OPS[op]==='+'?a+b:OPS[op]==='−'?a-b:a*b;if(String(exp).length>COLS)return calcMsg('hint','Das Ergebnis passt nicht in den Rechenkasten.');
     if(rowVal(3)==null)return calcMsg('hint','Schreibe dein Ergebnis in die unterste Reihe, von rechts nach links.');
-    const es=String(exp).padStart(COLS,' ');let wrong=[];
-    res.forEach((x,c)=>{const want=es[c]===' '?'':es[c];const have=x.value;if(want===''&&have===''){return;}if(have===want)x.classList.add('ok');else{x.classList.add('bad');wrong.push(c);}});
-    if(!wrong.length){calcMsg('good',`✅ <b>Deine Rechnung stimmt!</b> Tippe auf „Ergebnis übernehmen“.`);return;}
+    const es=String(exp).padStart(COLS,' ');const wrong=[];
+    res.forEach((x,c)=>{const want=es[c]===' '?'':es[c];if(want===''&&x.value==='')return;if(x.value===want)x.classList.add('ok');else{x.classList.add('bad');wrong.push(c);}});
+    if(!wrong.length)return calcMsg('good','✅ <b>Deine Rechnung stimmt!</b> Tippe auf „Ergebnis übernehmen“.');
     const first=wrong[wrong.length-1],tip=OPS[op]==='+'?'Hast du den Übertrag aus der Spalte rechts daneben dazugezählt?':OPS[op]==='−'?'Musstest du hier entbündeln? Oder hast du nach dem Entbündeln vergessen, die Ziffer links um 1 kleiner zu machen?':'Hast du den Übertrag dazugezählt?';
-    calcMsg('hint',`In ${wrong.length===1?'einer Spalte':wrong.length+' Spalten'} stimmt es noch nicht (rot). Schau dir zuerst die <b>${PLACE[first]}-Spalte</b> an. ${tip}`);};
-  $('#cTake').onclick=()=>{const v=rowVal(3);if(v==null)return calcMsg('hint','Im Ergebnisfeld steht noch nichts.');const single=$('#single');let target=single;
-    if(!target){target=[...app.querySelectorAll('input.ans')].find(x=>!x.value&&!x.disabled)||app.querySelector('input.ans');}
-    if(!target||target.disabled)return;target.value=v;target.scrollIntoView({behavior:'smooth',block:'center'});target.classList.add('flash');setTimeout(()=>target.classList.remove('flash'),900);
-    calcMsg('good',`${v} steht jetzt im Antwortfeld.${t.unit==='€'?' Denk dran: Hast du in Cent gerechnet? Dann setze das Komma richtig.':''} Prüfe noch einmal und tippe dann auf „Prüfen“.`);};}
+    calcMsg('hint',`In ${wrong.length===1?'einer Spalte':wrong.length+' Spalten'} stimmt es noch nicht (rot). Schau dir zuerst die <b>${PLACE[first]}-Spalte</b> an. ${tip}`);}
+  function checkHalb(){document.querySelectorAll('.hn').forEach(x=>x.classList.remove('ok','bad'));const a=hv('a'),b=hv('b');
+    if(a==null||b==null)return calcMsg('hint','Trage zuerst die Aufgabe in die oberste Zeile ein: links die Zahl, die geteilt wird, dann die Zahl, durch die du teilst.');
+    if(b===0)return calcMsg('hint','Durch 0 kann man nicht teilen.');
+    const Qa=Math.floor(a/b),Ra=a%b,f=firstPart(a,b);
+    const rows=[0,1,2].map(i=>({i,p:hv('p'+i),q:hv('q'+i),r:hv('r'+i)||0})).filter(x=>x.p!=null);
+    let bad=null;rows.forEach(x=>{const good=x.q!=null&&x.q===Math.floor(x.p/b)&&x.r===x.p%b;['p','q','r'].forEach(k=>{const e=hEl(k+x.i);if(e&&(e.value||k!=='r'))e.classList.add(good?'ok':'bad');});if(!good&&!bad)bad=x;});
+    const sumP=rows.reduce((s,x)=>s+x.p,0);
+    if(rows.length&&sumP!==a)return calcMsg('hint',`Deine Teilzahlen ergeben zusammen <b>${rows.map(x=>x.p).join(' + ')} = ${sumP}</b>. Zusammen müssen sie aber <b>${a}</b> ergeben.`);
+    if(bad){calcMsg('hint',`Die Teilaufgabe <b>${bad.p} : ${b}</b> stimmt noch nicht (rot).<br>Frag dich: <b>Wie oft passt ${b} in ${bad.p}?</b> Und was bleibt übrig?<br><button class="btn ghost" id="cShow" style="margin-top:8px;padding:6px 12px;font-size:15px">Zeig es mir</button><div id="cShowTxt"></div>`);
+      const qq=Math.floor(bad.p/b),rr=bad.p%b;$('#cShow').onclick=()=>{$('#cShowTxt').innerHTML=`<div style="margin-top:8px">${bad.p} : ${b} = <b>${qq}${rr?' R '+rr:''}</b>, denn ${qq} · ${b} = ${qq*b}${rr?` und bis ${bad.p} fehlen noch ${rr}`:''}.</div>`;$('#cShow').remove();};return;}
+    const restTip=rows.slice(0,-1).some(x=>x.r>0)?`<br><small>Tipp: Wähle die erste Teilzahl so, dass sie ohne Rest aufgeht, zum Beispiel ${f}.</small>`:'';
+    const qv=hv('q'),rv=hv('r')||0;
+    if(qv==null){if(rows.length)return calcMsg('hint',`Deine Teilaufgaben stimmen! 👍 Zähle jetzt die Ergebnisse zusammen: <b>${rows.map(x=>x.q).join(' + ')}</b>. Der Rest aus der letzten Zeile ist der Rest. Schreibe das oben hinter das =.${restTip}`);
+      return calcMsg('hint','Schreibe dein Ergebnis oben hinter das =. Wenn es schwer ist, zerlege die Aufgabe in Teilaufgaben.');}
+    if(qv===Qa&&rv===Ra){hEl('q').classList.add('ok');if(hEl('r').value)hEl('r').classList.add('ok');return calcMsg('good',`✅ <b>Deine Rechnung stimmt!</b> ${a} : ${b} = ${Qa}${Ra?' R '+Ra:''}.<br>Probe: ${Qa} · ${b} = ${Qa*b}${Ra?` und ${Qa*b} + ${Ra} = ${a}`:''}. Tippe auf „Ergebnis übernehmen“.${restTip}`);}
+    if(qv===Qa){hEl('q').classList.add('ok');hEl('r').classList.add('bad');return calcMsg('hint',`Das Ergebnis stimmt, aber der Rest nicht. Probe: ${Qa} · ${b} = ${Qa*b}. Wie viel fehlt noch bis ${a}?`);}
+    hEl('q').classList.add('bad');
+    if(rows.length&&sumP===a)return calcMsg('hint',`Deine Teilaufgaben stimmen. Zähle die Teilergebnisse noch einmal zusammen: <b>${rows.map(x=>x.q).join(' + ')} = ?</b>${restTip}`);
+    calcMsg('hint',`Das Ergebnis stimmt noch nicht. Zerlege die Aufgabe in Teilaufgaben${f>0&&f<a?`, zum Beispiel <b>${f} : ${b}</b> und <b>${a-f} : ${b}</b>`:''}.`);}
+  build();}
 function initPad(){$('#drawBox').innerHTML=`<canvas id="pad" class="pad"></canvas><div class="row" style="margin-top:8px"><button class="btn sec" id="pPen" style="padding:8px 12px;font-size:15px">✏️ Stift</button><button class="btn ghost" id="pEr" style="padding:8px 12px;font-size:15px">🧽 Radierer</button><button class="btn ghost" id="pClr" style="padding:8px 12px;font-size:15px">Alles löschen</button></div>`;
   const cv=$('#pad'),r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;cv.width=r.width*dpr;cv.height=r.height*dpr;const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);ctx.lineCap='round';ctx.lineJoin='round';
   let mode='pen',down=false,last=null;const pos=e=>{const b=cv.getBoundingClientRect();return [e.clientX-b.left,e.clientY-b.top];};
