@@ -25,6 +25,8 @@ Der magische Kompass des Reiches Kompassia ist in acht Splitter zerbrochen. An a
 - **Übungsaufgabe:** Nach einem Fehler folgt sofort eine Aufgabe derselben Art mit neuen Zahlen
 - **Quelle der Wiederholung:** Aufgabenarten mit Fehlern werden gesammelt und können gezielt geübt werden
 - **Vorlesen (🔊)** jeder Aufgabe
+- **Rechenkasten (✏️):** schriftlich rechnen (Plus, Minus, Mal) mit Stellenwert-Spalten und Übertragszeile; „Stimmt meine Rechnung?“ markiert falsche Spalten; Ergebnis per Tipp ins Antwortfeld
+- **Notizblock (📝):** Karopapier zum Malen mit dem Finger, z. B. für Skizzen oder Nebenrechnungen
 
 ## Aufgabenvorrat
 

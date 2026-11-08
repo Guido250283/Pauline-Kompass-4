@@ -109,6 +109,25 @@ svg.fig{display:block;margin:10px auto;max-width:100%}
 .cert .big{font-size:64px}
 .small{font-size:14px;color:#6b4a1f}
 a{color:#4b3690}
+.tools{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.tbtn{font:800 15px Nunito,sans-serif;padding:8px 12px;border-radius:20px;border:2px solid var(--edge);background:#fffdf5;color:#5a2d0c;cursor:pointer}
+.tbtn.on{background:#5a2d0c;color:#fde9b0;border-color:#5a2d0c}
+.toolbox{margin-top:10px;background:#fffdf5;border:2px dashed var(--edge);border-radius:14px;padding:12px}
+.calc{display:grid;grid-template-columns:34px repeat(6,40px);gap:4px;justify-content:center;align-items:center}
+.calc .ph{font-size:12px;font-weight:800;color:#8a6a3a;text-align:center}
+.calc .lbl{font-weight:900;font-size:20px;text-align:center;color:#5a2d0c}
+.cc{width:40px;height:46px;text-align:center;font:800 24px Nunito,sans-serif;border:2px solid #dcc597;border-radius:8px;background:#fff;color:var(--ink);padding:0;
+  background-image:linear-gradient(#e8eef8 1px,transparent 1px);background-size:100% 23px}
+.cc:focus{outline:none;border-color:#7a62b5;box-shadow:0 0 0 3px #7a62b533}
+.cc.carry{height:28px;font-size:15px;color:#c8463b;border-style:dashed}
+.cc.res{border-color:#c9a35c}
+.cc.ok{border-color:var(--ok);background:#e6f7ec}.cc.bad{border-color:var(--bad);background:#fde3e0}
+.calc .line{grid-column:1 / -1;height:0;border-top:3px solid #5a2d0c;margin:2px 0}
+.opbtn{width:34px;height:40px;font:900 24px Nunito,sans-serif;border-radius:8px;border:2px solid #7a62b5;background:#efe7ff;color:#2a1b5e;cursor:pointer;padding:0}
+.pad{display:block;width:100%;height:300px;border:2px solid var(--edge);border-radius:12px;touch-action:none;background-color:#fff;background-image:linear-gradient(#d6e4f5 1px,transparent 1px),linear-gradient(90deg,#d6e4f5 1px,transparent 1px);background-size:22px 22px;cursor:crosshair}
+input.ans.flash{animation:flash .9s}
+@keyframes flash{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 6px #f3c45a}}
+
 </style>
 </head>
 <body>
@@ -171,8 +190,8 @@ function svgWall(){const z=60,W=z*3+20;let s=`<svg class="fig" width="${W}" heig
 
 /* ============ MATHE ============ */
 const M={
-add(){const a=ri(1200,6800),b=ri(120,2900);return{skill:'Plus und Minus',story:'Zwergin Brumhild zählt ihren Schatz.',q:`In ihrer Truhe liegen <b>${a}</b> Goldmünzen. Heute findet sie noch <b>${b}</b> Münzen dazu.<br>Wie viele Münzen hat sie jetzt?`,type:'num',answer:a+b,unit:'Münzen',hint:'Rechne in Schritten: erst die Hunderter dazu, dann die Zehner, dann die Einer. Du kannst auch schriftlich untereinander rechnen.',sol:`${a} + ${b} = <b>${a+b}</b><br>${steps(a,b,'+')}`};},
-sub(){const a=ri(2100,8900),b=ri(300,a-800);return{skill:'Plus und Minus',story:'Der Kobold Fips nascht aus dem Vorratskeller.',q:`Im Keller der Burg lagern <b>${a}</b> Zauberbeeren. Fips nascht <b>${b}</b> davon.<br>Wie viele Beeren sind noch übrig?`,type:'num',answer:a-b,unit:'Beeren',hint:'Ziehe in Schritten ab: erst die Hunderter, dann die Zehner, dann die Einer. Reichen die Einer nicht, musst du einen Zehner entbündeln.',errs:[[digitAbsDiff(a,b),'Hast du an einer Stelle einfach die kleinere von der größeren Ziffer abgezogen? Wenn oben die kleinere Ziffer steht, musst du entbündeln.'],[a+b,'Du hast plus gerechnet. Fips nascht Beeren weg, also wird es weniger!']],sol:`${a} ${minus} ${b} = <b>${a-b}</b><br>${steps(a,b,'-')}`};},
+add(){const a=ri(1200,6800),b=ri(120,2900);return{skill:'Plus und Minus',story:'Zwergin Brumhild zählt ihren Schatz.',q:`In ihrer Truhe liegen <b>${a}</b> Goldmünzen. Heute findet sie noch <b>${b}</b> Münzen dazu.<br>Wie viele Münzen hat sie jetzt?`,type:'num',answer:a+b,calc:{a,b,op:'+'},unit:'Münzen',hint:'Rechne in Schritten: erst die Hunderter dazu, dann die Zehner, dann die Einer. Du kannst auch schriftlich untereinander rechnen.',sol:`${a} + ${b} = <b>${a+b}</b><br>${steps(a,b,'+')}`};},
+sub(){const a=ri(2100,8900),b=ri(300,a-800);return{skill:'Plus und Minus',story:'Der Kobold Fips nascht aus dem Vorratskeller.',q:`Im Keller der Burg lagern <b>${a}</b> Zauberbeeren. Fips nascht <b>${b}</b> davon.<br>Wie viele Beeren sind noch übrig?`,type:'num',answer:a-b,calc:{a,b,op:'−'},unit:'Beeren',hint:'Ziehe in Schritten ab: erst die Hunderter, dann die Zehner, dann die Einer. Reichen die Einer nicht, musst du einen Zehner entbündeln.',errs:[[digitAbsDiff(a,b),'Hast du an einer Stelle einfach die kleinere von der größeren Ziffer abgezogen? Wenn oben die kleinere Ziffer steht, musst du entbündeln.'],[a+b,'Du hast plus gerechnet. Fips nascht Beeren weg, also wird es weniger!']],sol:`${a} ${minus} ${b} = <b>${a-b}</b><br>${steps(a,b,'-')}`};},
 buendeln(){let H=ri(2,8),Z,E,v=Math.random()<.6;if(v){Z=ri(11,18);E=ri(1,9);}else{Z=ri(2,8);E=ri(11,16);}const val=H*100+Z*10+E;
   return{skill:'Stellenwerte',story:'Im Zauberbuch liegen Kristalle in einer Stellenwerttafel.',q:`In der Stellenwerttafel liegen <b>${H} Hunderter</b>, <b>${Z} Zehner</b> und <b>${E} Einer</b>.<br>Welche Zahl ist gemeint?`,type:'num',answer:val,errs:[[+(''+H+Z+E),`Du hast die Ziffern einfach hintereinander geschrieben. Aber ${v?Z+' Zehner':E+' Einer'} sind mehr als 10, da musst du bündeln!`]],hint:v?`Achtung: ${Z} Zehner sind mehr als 10 Zehner. 10 Zehner sind 1 Hunderter!`:`Achtung: ${E} Einer sind mehr als 10 Einer. 10 Einer sind 1 Zehner!`,sol:`${H}·100 + ${Z}·10 + ${E} = ${H*100} + ${Z*10} + ${E} = <b>${val}</b><br>Nicht einfach die Ziffern hintereinander schreiben (${H}${Z}${E} wäre falsch).`};},
 nachbar(){const mode=pick(['Zehner','Hunderter']),st=mode==='Zehner'?10:100;let n;do{n=ri(1001,9899);}while(n%st===0);const lo=Math.floor(n/st)*st;
@@ -183,12 +202,12 @@ strahl(){const step=pick([50,100,200,250]);const a=Math.round(ri(8,30)*100/step)
 div(){if(Math.random()<.5){const d=ri(3,9),q=ri(12,95);return{skill:'Mal und Geteilt',story:'Zauberer Merlo verteilt Sternenstaub.',q:`Merlo hat <b>${d*q}</b> Sterne. Er verteilt sie gleichmäßig auf <b>${d}</b> Beutel.<br>Wie viele Sterne kommen in jeden Beutel?`,type:'num',answer:q,unit:'Sterne',hint:`Rechne ${d*q} : ${d}. Zerlege die Zahl in Teile, die sich gut durch ${d} teilen lassen.`,sol:`${d*q} : ${d} = <b>${q}</b> (Probe: ${q} · ${d} = ${d*q})`};}
   const k=ri(2,5),nm=['','','Doppelte','Dreifache','Vierfache','Fünffache'][k],x=ri(10,40)*10,y=ri(11,45)*5;return{skill:'Mal und Geteilt',story:'Ein Rechenzauber steht auf einer alten Schriftrolle.',q:`Addiere zu <b>${x}</b> das <b>${nm}</b> von <b>${y}</b>.`,type:'num',answer:x+k*y,errs:[[(x+y)*k,`Du hast zuerst addiert und dann malgenommen. Gemeint ist: Nur ${y} wird ${k}-mal genommen, dann kommt ${x} dazu.`]],hint:`Rechne zuerst das ${nm}: ${k} · ${y}. Dann zählst du ${x} dazu.`,sol:`${k} · ${y} = ${k*y}<br>${x} + ${k*y} = <b>${x+k*y}</b>`};},
 schriftlich(){let a,b;do{a=ri(3,9)*100+ri(1,8);b=ri(100,a-60);}while(b%10<=a%10||Math.floor(b%100/10)===0);
-  return{skill:'Plus und Minus',story:'Die Wächter zählen die Pfeile im Turm.',q:`Rechne schriftlich (untereinander): <b>${a} ${minus} ${b}</b>`,type:'num',answer:a-b,errs:[[digitAbsDiff(a,b),'Pass auf: Oben steht an manchen Stellen die kleinere Ziffer. Dann musst du entbündeln, nicht umdrehen!']],hint:`Bei den Einern reicht ${a%10} nicht für ${b%10}. Du musst entbündeln, aber an der Zehnerstelle steht eine 0! Hole dir erst einen Hunderter.`,sol:`${a} ${minus} ${b} = <b>${a-b}</b><br>${steps(a,b,'-')}`};},
+  return{skill:'Plus und Minus',story:'Die Wächter zählen die Pfeile im Turm.',q:`Rechne schriftlich (untereinander): <b>${a} ${minus} ${b}</b>`,type:'num',answer:a-b,calc:{a,b,op:'−'},errs:[[digitAbsDiff(a,b),'Pass auf: Oben steht an manchen Stellen die kleinere Ziffer. Dann musst du entbündeln, nicht umdrehen!']],hint:`Bei den Einern reicht ${a%10} nicht für ${b%10}. Du musst entbündeln, aber an der Zehnerstelle steht eine 0! Hole dir erst einen Hunderter.`,sol:`${a} ${minus} ${b} = <b>${a-b}</b><br>${steps(a,b,'-')}`};},
 geschickt(){const a=ri(320,980),d=pick([97,98,99,198,199]),r=d<150?100:200,df=r-d;
   return choice(`Fips soll <b>${a} ${minus} ${d}</b> im Kopf rechnen. Er sagt: „Ich rechne zuerst ${a} ${minus} ${r} = ${a-r}.“<br>Was muss Fips jetzt noch rechnen?`,`${a-r} + ${df} = ${a-d}`,[`${a-r} ${minus} ${df} = ${a-r-df}`,`${a-r} + ${r} = ${a}`,`${a-r} + ${d} = ${a-r+d}`],{skill:'Geschickt rechnen',story:'Kobold Fips kennt einen Rechentrick.',hint:`Hat Fips mehr oder weniger abgezogen, als er sollte?`,sol:`Fips hat ${r} statt ${d} abgezogen, also ${df} zu viel. Die ${df} muss er wieder dazuzählen: <b>${a-r} + ${df} = ${a-d}</b>`});},
 geschicktMal(){const [a,b]=pick([[24,25],[16,25],[18,50],[14,50],[32,25],[44,25],[12,50],[36,25],[8,125],[28,25]]);
   return{skill:'Geschickt rechnen',story:'Die Elfe Lirien rechnet mit Halbieren und Verdoppeln.',q:`Rechne geschickt im Kopf: <b>${a} · ${b}</b>`,type:'num',answer:a*b,hint:`Halbiere die eine Zahl und verdopple die andere. Das Ergebnis bleibt gleich! Zum Beispiel: ${a/2} · ${b*2}`,sol:`${a} · ${b} = ${a/2} · ${b*2} = <b>${a*b}</b><br>Wenn man eine Zahl halbiert und die andere verdoppelt, bleibt das Ergebnis gleich.`};},
-rest(){const t=ri(240,880),d=ri(110,t-40);return{skill:'Sachaufgaben',story:'Ritterin Ida reitet zur Drachenburg.',q:`Der Weg zur Drachenburg ist <b>${t} km</b> lang. Bis zur Rast ist Ida schon <b>${d} km</b> geritten.<br>Wie viele Kilometer muss sie noch reiten?`,type:'num',answer:t-d,unit:'km',errs:[[t+d,'Du hast die Kilometer zusammengezählt. Gesucht ist aber, was noch übrig bleibt!']],hint:'Musst du die gerittenen Kilometer dazuzählen oder von der ganzen Strecke abziehen?',sol:`${t} ${minus} ${d} = <b>${t-d} km</b><br>${steps(t,d,'-')}`};},
+rest(){const t=ri(240,880),d=ri(110,t-40);return{skill:'Sachaufgaben',story:'Ritterin Ida reitet zur Drachenburg.',q:`Der Weg zur Drachenburg ist <b>${t} km</b> lang. Bis zur Rast ist Ida schon <b>${d} km</b> geritten.<br>Wie viele Kilometer muss sie noch reiten?`,type:'num',answer:t-d,calc:{a:t,b:d,op:'−'},unit:'km',errs:[[t+d,'Du hast die Kilometer zusammengezählt. Gesucht ist aber, was noch übrig bleibt!']],hint:'Musst du die gerittenen Kilometer dazuzählen oder von der ganzen Strecke abziehen?',sol:`${t} ${minus} ${d} = <b>${t-d} km</b><br>${steps(t,d,'-')}`};},
 wechsel(){const p=pick([120,140,160,180,240,250,150,90,130]);let n=ri(4,8);let paid=n*p<1000?1000:2000;if(n*p>=paid){n=4;paid=n*p<1000?1000:2000;}
   return{skill:'Geld',story:'Auf dem Zwergenmarkt gibt es Heiltränke.',q:`<table class="t"><tr><th>Heiltränke</th><th>Preis</th></tr><tr><td>1 Trank</td><td>${eur(p)}</td></tr><tr><td>2 Tränke</td><td>${eur(2*p)}</td></tr><tr><td>3 Tränke</td><td>${eur(3*p)}</td></tr></table>Ida kauft <b>${n} Tränke</b> und bezahlt mit einem <b>${paid/100}-Euro-Schein</b>.<br>Wie viel Wechselgeld bekommt sie?`,type:'num',answer:(paid-n*p)/100,unit:'€',errs:[[n*p/100,'Das ist schon mal richtig: So viel kosten die Tränke! Jetzt fehlt noch Schritt 2: Wie viel Geld bekommt Ida zurück?']],hint:'Zwei Schritte: Erst ausrechnen, was die Tränke kosten. Dann vom Geldschein abziehen.',sol:`${n} · ${eur(p)} = ${eur(n*p)}<br>${eur(paid)} ${minus} ${eur(n*p)} = <b>${eur(paid-n*p)}</b>`};},
 familie(){const A=pick([1200,1400,1500,1600]),K=pick([650,700,750,800,850]),k=pick([2,3]),tot=2*A+k*K,F=Math.floor((tot-ri(3,12)*100)/100)*100;
@@ -197,7 +216,7 @@ kombi(){const pools=[['Umhänge',['rot','blau','grün']],['Hüte',['spitz','rund
   return{skill:'Kombinieren',story:'In der Zauberschule bekommt jedes Kind eine Ausrüstung.',q:`Jedes Kind wählt genau eins von jedem:<ul>${cs.map(c=>`<li><b>${c[0]}:</b> ${c[1].join(', ')}</li>`).join('')}</ul>Wie viele verschiedene Ausrüstungen gibt es?`,type:'num',answer:prod,hint:'Male ein Baumdiagramm oder überlege: Zu jedem der ersten Dinge passen alle der zweiten …',sol:`${cs.map(c=>c[1].length).join(' · ')} = <b>${prod}</b>`};},
 diagramm(){const cats=['Drachen','Einhörner','Greife','Feen'],v=cats.map(()=>ri(2,9));let f=ri(0,3),to;do{to=ri(0,3);}while(to===f);const mv=Math.min(v[f]-1,ri(1,3)),tot=v.reduce((a,b)=>a+b,0);
   return{skill:'Diagramme',story:'Die Zauberschule hat abgestimmt: Welches Fabelwesen ist das beliebteste?',q:`${svgBars(cats,v)}a) Wie viele Kinder haben insgesamt abgestimmt?<br>b) ${mv} ${mv===1?'Kind wechselt':'Kinder wechseln'} von <b>${cats[f]}</b> zu <b>${cats[to]}</b>. Wie viele Stimmen haben die ${cats[to]} danach?`,type:'multi',fields:[{label:'a)',type:'num',answer:tot,unit:'Kinder'},{label:'b)',type:'num',answer:v[to]+mv,unit:'Stimmen'}],hint:'Lies jede Säule genau ab, die Linien helfen dir. Bei b) kommen die Wechsler dazu.',sol:`a) ${v.join(' + ')} = <b>${tot}</b><br>b) ${v[to]} + ${mv} = <b>${v[to]+mv}</b>`};},
-malSach(){const n=ri(6,9),m=pick([12,15,25,24,35,45,18]);return{skill:'Mal und Geteilt',story:'Der Drache bewacht seine Schatztruhen.',q:`In jeder der <b>${n}</b> Schatztruhen liegen <b>${m}</b> Rubine.<br>Wie viele Rubine sind es zusammen?`,type:'num',answer:n*m,unit:'Rubine',hint:`Zerlege: ${n} · ${Math.floor(m/10)*10} und ${n} · ${m%10}, dann zusammenzählen.`,sol:`${n} · ${m} = ${n} · ${Math.floor(m/10)*10} + ${n} · ${m%10} = ${n*Math.floor(m/10)*10} + ${n*(m%10)} = <b>${n*m}</b>`};},
+malSach(){const n=ri(6,9),m=pick([12,15,25,24,35,45,18]);return{skill:'Mal und Geteilt',story:'Der Drache bewacht seine Schatztruhen.',q:`In jeder der <b>${n}</b> Schatztruhen liegen <b>${m}</b> Rubine.<br>Wie viele Rubine sind es zusammen?`,type:'num',answer:n*m,calc:{a:m,b:n,op:'·'},unit:'Rubine',hint:`Zerlege: ${n} · ${Math.floor(m/10)*10} und ${n} · ${m%10}, dann zusammenzählen.`,sol:`${n} · ${m} = ${n} · ${Math.floor(m/10)*10} + ${n} · ${m%10} = ${n*Math.floor(m/10)*10} + ${n*(m%10)} = <b>${n*m}</b>`};},
 zeitspanne(){const h=ri(7,17),m=ri(35,55),m2=ri(5,50),ans=60-m+m2;return{skill:'Zeit',story:'Im Uhrturm tickt die Zeitmagie.',q:`Die Eule Fiora startet um <b>${h}:${pad(m)} Uhr</b>. Um <b>${h+1}:${pad(m2)} Uhr</b> beginnt der Unterricht in der Zauberschule.<br>Wie viele Minuten hat sie noch Zeit?`,type:'num',answer:ans,unit:'Minuten',errs:[[(h+1)*100+m2-(h*100+m),'Du hast gerechnet, als hätte eine Stunde 100 Minuten. Sie hat aber nur 60! Rechne erst bis zur vollen Stunde.']],hint:`Eine Stunde hat 60 Minuten, nicht 100! Rechne erst bis ${h+1}:00 Uhr.`,sol:`${h}:${pad(m)} bis ${h+1}:00 = ${60-m} Minuten<br>${h+1}:00 bis ${h+1}:${pad(m2)} = ${m2} Minuten<br>${60-m} + ${m2} = <b>${ans} Minuten</b>`};},
 endzeit(){const s=ri(8,16)*60+pick([10,15,20,25,35,40,45,50]),d=ri(25,95),e=s+d;return{skill:'Zeit',story:'Merlo braut einen Zaubertrank.',q:`Der Trank muss <b>${d} Minuten</b> köcheln. Merlo stellt ihn um <b>${tm(s)}</b> aufs Feuer.<br>Um wie viel Uhr ist der Trank fertig?`,type:'time',answer:e,unit:'Uhr',placeholder:'z. B. 14:05',hint:`Rechne erst bis zur nächsten vollen Stunde, dann weiter. ${d>60?`${d} Minuten sind 1 Stunde und ${d-60} Minuten.`:''}`,sol:`${tm(s)} + ${d} Minuten = <b>${tm(e)}</b>`};},
 laengen(){const nm=shuffle(['Ida','Fips','Lirien','Brumhild','Merlo']).slice(0,4),v=nm.map(()=>ri(120,300));const mx=Math.max(...v),mn=Math.min(...v);if(mx===mn)v[0]+=15;const MX=Math.max(...v),MN=Math.min(...v);const f=c=>(c/100).toFixed(2).replace('.',',')+' m';
@@ -479,7 +498,7 @@ function renderTask(){const t=Q.tasks[Q.i];Q.att=0;Q.help=0;Q.locked=false;Q.cur
   else inp=`<div class="field"><input class="ans" id="single" ${t.type==='num'||t.type==='time'?'inputmode="decimal"':'autocapitalize="off" autocorrect="off" spellcheck="false"'} placeholder="${t.placeholder||'Deine Antwort'}" autocomplete="off">${t.unit&&t.type!=='time'?`<span class="unit">${t.unit}</span>`:''}</div>`;
   const twinNote=t.twin?`<div class="speech" style="margin:8px 0"><div class="p">${pet().e}</div><div class="bubble"><b>🔁 Übungsaufgabe:</b> Gleich nochmal so eine, mit neuen Zahlen. Jetzt weißt du, wie es geht!</div></div>`:'';
   app.innerHTML=topbar()+`<div class="card" id="tc"><div class="taskhead"><span>${Q.title}</span><span>${Q.probe?`<span class="timer" id="timer"></span>`:t.twin?'Übung':`Aufgabe ${Math.min(Q.i+1,Q.n)} / ${Q.n}`}</span></div><div class="progress">${prog}</div>
-<div style="display:flex;justify-content:space-between;align-items:center"><span class="tag">${t.skill}</span><button class="iconbtn" id="spk" style="color:#5a2d0c" aria-label="Vorlesen" title="Vorlesen">🔊</button></div>${twinNote}${!Q.probe&&t.story&&!t.twin?`<div class="story" style="margin-top:6px">${t.story}</div>`:'<div style="height:6px"></div>'}<div class="q" id="qtext">${t.q}</div>${inp}
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="tag">${t.skill}</span><button class="iconbtn" id="spk" style="color:#5a2d0c" aria-label="Vorlesen" title="Vorlesen">🔊</button></div>${twinNote}${!Q.probe&&t.story&&!t.twin?`<div class="story" style="margin-top:6px">${t.story}</div>`:'<div style="height:6px"></div>'}<div class="q" id="qtext">${t.q}</div>${isMath(t)?toolsHtml():''}${inp}
 <div id="helpbox"></div><div class="fb" id="fb"></div><div class="row" id="acts"><button class="btn" id="chk">${Q.probe?'Antwort speichern':'Prüfen ✨'}</button>${Q.probe?'':`<button class="btn sec" id="hnt" style="flex:0 0 auto">💡 Hilfe</button>`}</div>
 <div class="row"><button class="btn ghost wide" id="quit">Quest abbrechen</button></div></div>`;
   app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(Q.locked||b.disabled)return;Q.cur=+b.dataset.k;app.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));});
@@ -487,7 +506,56 @@ function renderTask(){const t=Q.tasks[Q.i];Q.att=0;Q.help=0;Q.locked=false;Q.cur
   app.querySelectorAll('input.ans').forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')$('#chk')?.click();}));
   $('#chk').onclick=onCheck;if($('#hnt'))$('#hnt').onclick=onHelp;$('#spk').onclick=()=>speak($('#qtext').innerText);
   $('#quit').onclick=()=>confirmBox('Willst du die Quest wirklich abbrechen? Dein Fortschritt in dieser Quest geht verloren.',()=>{clearInterval(Q.timerId);stopSpeak();showMap();});
-  if(Q.probe)startTimer();}
+  initTools(t);if(Q.probe)startTimer();}
+
+/* ---- Rechenkasten & Notizblock ---- */
+const COLS=6,PLACE=['HT','ZT','T','H','Z','E'],OPS=['+','−','·'];
+function isMath(t){return !!(t.gen&&M[t.gen])&&t.type!=='choice';}
+function toolsHtml(){return `<div class="tools"><button class="tbtn" id="tCalc">✏️ Schriftlich rechnen</button><button class="tbtn" id="tDraw">📝 Notizblock</button></div><div id="calcBox" class="toolbox" hidden></div><div id="drawBox" class="toolbox" hidden></div>`;}
+function calcHtml(){const row=(r,cls,first)=>first+[...Array(COLS)].map((_,c)=>`<input class="cc ${cls}" data-r="${r}" data-c="${c}" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="${PLACE[c]}">`).join('');
+  return `<div class="calc"><div></div>${PLACE.map(p=>`<div class="ph">${p}</div>`).join('')}${row(0,'','<div></div>')}${row(1,'','<button class="opbtn" id="opb" title="Rechenzeichen wechseln">+</button>')}${row(2,'carry','<div class="lbl">Ü</div>')}<div class="line"></div>${row(3,'res','<div class="lbl">=</div>')}</div>
+<p class="small" style="text-align:center;margin:6px 0 0">Trage die Zahlen stellengerecht ein. Das Ergebnis schreibst du von <b>rechts nach links</b>. Ü = Übertrag. Tippe auf das Rechenzeichen, um es zu wechseln.</p>
+<div class="row" style="margin-top:8px">${Q.probe?'':'<button class="btn sec" id="cChk">Stimmt meine Rechnung?</button>'}<button class="btn" id="cTake">Ergebnis übernehmen ⤵</button></div>
+<div class="row" style="margin-top:6px"><button class="btn ghost" id="cClr" style="padding:8px 14px;font-size:15px">Rechenkasten leeren</button></div><div id="cMsg" class="fb"></div>`;}
+const cells=r=>[...document.querySelectorAll(`.cc[data-r="${r}"]`)];
+function setRow(r,n){const s=String(n);const cs=cells(r);cs.forEach(x=>x.value='');for(let i=0;i<s.length&&i<COLS;i++)cs[COLS-1-i].value=s[s.length-1-i];}
+function rowVal(r){const d=cells(r).map(x=>x.value);const f=d.findIndex(v=>v!=='');if(f<0)return null;return parseInt(d.slice(f).map(v=>v===''?'0':v).join(''),10);}
+function calcMsg(cls,html){const m=$('#cMsg');m.className='fb show '+cls;m.innerHTML=html;}
+function initCalc(t){$('#calcBox').innerHTML=calcHtml();let op=0;const opb=$('#opb');const setOp=i=>{op=i;opb.textContent=OPS[i];};
+  if(t.calc){setRow(0,t.calc.a);setRow(1,t.calc.b);setOp(OPS.indexOf(t.calc.op));}
+  opb.onclick=()=>setOp((op+1)%OPS.length);
+  document.querySelectorAll('.cc').forEach(el=>{
+    el.addEventListener('input',()=>{el.value=el.value.replace(/\D/g,'').slice(-1);el.classList.remove('ok','bad');if(!el.value)return;const r=+el.dataset.r,c=+el.dataset.c;
+      if(r===3&&c>0)cells(3)[c-1].focus();else if((r===0||r===1)&&c<COLS-1)cells(r)[c+1].focus();});
+    el.addEventListener('keydown',e=>{if(e.key==='Backspace'&&!el.value){const r=+el.dataset.r,c=+el.dataset.c;const n=r===3?cells(3)[c+1]:cells(r)[c-1];if(n){n.focus();e.preventDefault();}}});});
+  $('#cClr').onclick=()=>{document.querySelectorAll('.cc').forEach(x=>{x.value='';x.classList.remove('ok','bad');});$('#cMsg').className='fb';};
+  if($('#cChk'))$('#cChk').onclick=()=>{const a=rowVal(0),b=rowVal(1),res=cells(3);res.forEach(x=>x.classList.remove('ok','bad'));
+    if(a==null||b==null)return calcMsg('hint','Trage zuerst beide Zahlen in den Rechenkasten ein.');
+    if(OPS[op]==='−'&&b>a)return calcMsg('hint','Beim Minusrechnen muss die größere Zahl oben stehen.');
+    const exp=OPS[op]==='+'?a+b:OPS[op]==='−'?a-b:a*b;if(String(exp).length>COLS)return calcMsg('hint','Das Ergebnis passt nicht in den Rechenkasten.');
+    if(rowVal(3)==null)return calcMsg('hint','Schreibe dein Ergebnis in die unterste Reihe, von rechts nach links.');
+    const es=String(exp).padStart(COLS,' ');let wrong=[];
+    res.forEach((x,c)=>{const want=es[c]===' '?'':es[c];const have=x.value;if(want===''&&have===''){return;}if(have===want)x.classList.add('ok');else{x.classList.add('bad');wrong.push(c);}});
+    if(!wrong.length){calcMsg('good',`✅ <b>Deine Rechnung stimmt!</b> Tippe auf „Ergebnis übernehmen“.`);return;}
+    const first=wrong[wrong.length-1],tip=OPS[op]==='+'?'Hast du den Übertrag aus der Spalte rechts daneben dazugezählt?':OPS[op]==='−'?'Musstest du hier entbündeln? Oder hast du nach dem Entbündeln vergessen, die Ziffer links um 1 kleiner zu machen?':'Hast du den Übertrag dazugezählt?';
+    calcMsg('hint',`In ${wrong.length===1?'einer Spalte':wrong.length+' Spalten'} stimmt es noch nicht (rot). Schau dir zuerst die <b>${PLACE[first]}-Spalte</b> an. ${tip}`);};
+  $('#cTake').onclick=()=>{const v=rowVal(3);if(v==null)return calcMsg('hint','Im Ergebnisfeld steht noch nichts.');const single=$('#single');let target=single;
+    if(!target){target=[...app.querySelectorAll('input.ans')].find(x=>!x.value&&!x.disabled)||app.querySelector('input.ans');}
+    if(!target||target.disabled)return;target.value=v;target.scrollIntoView({behavior:'smooth',block:'center'});target.classList.add('flash');setTimeout(()=>target.classList.remove('flash'),900);
+    calcMsg('good',`${v} steht jetzt im Antwortfeld.${t.unit==='€'?' Denk dran: Hast du in Cent gerechnet? Dann setze das Komma richtig.':''} Prüfe noch einmal und tippe dann auf „Prüfen“.`);};}
+function initPad(){$('#drawBox').innerHTML=`<canvas id="pad" class="pad"></canvas><div class="row" style="margin-top:8px"><button class="btn sec" id="pPen" style="padding:8px 12px;font-size:15px">✏️ Stift</button><button class="btn ghost" id="pEr" style="padding:8px 12px;font-size:15px">🧽 Radierer</button><button class="btn ghost" id="pClr" style="padding:8px 12px;font-size:15px">Alles löschen</button></div>`;
+  const cv=$('#pad'),r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;cv.width=r.width*dpr;cv.height=r.height*dpr;const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);ctx.lineCap='round';ctx.lineJoin='round';
+  let mode='pen',down=false,last=null;const pos=e=>{const b=cv.getBoundingClientRect();return [e.clientX-b.left,e.clientY-b.top];};
+  const line=(p,q)=>{ctx.globalCompositeOperation=mode==='pen'?'source-over':'destination-out';ctx.strokeStyle='#1f3a93';ctx.lineWidth=mode==='pen'?3:24;ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0]+.01,q[1]);ctx.stroke();};
+  cv.addEventListener('pointerdown',e=>{down=true;try{cv.setPointerCapture(e.pointerId);}catch(_){}last=pos(e);line(last,last);e.preventDefault();});
+  cv.addEventListener('pointermove',e=>{if(!down)return;const p=pos(e);line(last,p);last=p;e.preventDefault();});
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>cv.addEventListener(ev,()=>down=false));
+  const setMode=m=>{mode=m;$('#pPen').className='btn '+(m==='pen'?'sec':'ghost');$('#pEr').className='btn '+(m==='er'?'sec':'ghost');};
+  $('#pPen').onclick=()=>setMode('pen');$('#pEr').onclick=()=>setMode('er');$('#pClr').onclick=()=>ctx.clearRect(0,0,cv.width,cv.height);}
+function initTools(t){if(!$('#tCalc'))return;let calcInit=false,padInit=false;
+  const openCalc=()=>{const b=$('#calcBox');b.hidden=!b.hidden;$('#tCalc').classList.toggle('on',!b.hidden);if(!calcInit&&!b.hidden){initCalc(t);calcInit=true;}};
+  const openPad=()=>{const b=$('#drawBox');b.hidden=!b.hidden;$('#tDraw').classList.toggle('on',!b.hidden);if(!padInit&&!b.hidden){initPad();padInit=true;}};
+  $('#tCalc').onclick=openCalc;$('#tDraw').onclick=openPad;if(t.calc)openCalc();}
 
 /* ---- Vorlesen ---- */
 function speak(text){try{const ss=window.speechSynthesis;if(!ss)return toast('Vorlesen klappt auf diesem Gerät leider nicht.');ss.cancel();const u=new SpeechSynthesisUtterance(text.replace(/[⭐💎✨]/g,''));u.lang='de-DE';u.rate=.9;const v=ss.getVoices().find(v=>v.lang&&v.lang.startsWith('de'));if(v)u.voice=v;ss.speak(u);}catch(e){toast('Vorlesen klappt auf diesem Gerät leider nicht.');}}
@@ -538,7 +606,7 @@ function fail(asked){const t=Q.tasks[Q.i];Q.res.push(0);stat(t,false);if(!t.twin
   fb('sol',`<b>${asked?'Hier ist der Lösungsweg':'So geht’s'}:</b><br>${t.type==='choice'?`Richtig ist: <b>${t.options[t.answer]}</b><br>`:''}${t.sol}${L&&Q.help<3?`<details style="margin-top:8px"><summary><b>📖 Erklär's mir nochmal</b></summary><div style="margin-top:6px">${L.learn}</div></details>`:''}<br><small>${pick(COMFORT)}</small>${twinTxt}`);done();}
 function markChoice(t,ok){if(t.type==='choice'){app.querySelectorAll('.opt').forEach(x=>{const k=+x.dataset.k;if(k===t.answer)x.classList.add('right');});}
   if(t.type==='tap'){app.querySelectorAll('.chip').forEach(x=>{const k=+x.dataset.k;if(t.answer.includes(k)){x.style.borderColor='#2f9e57';x.style.boxShadow='0 0 0 3px #2f9e5755';}});}}
-function done(){Q.locked=true;app.querySelectorAll('input.ans').forEach(x=>x.disabled=true);$('#acts').innerHTML=`<button class="btn wide" id="nx">${Q.i+1<Q.tasks.length?'Weiter ➜':'Quest abschließen 🏁'}</button>`;$('#nx').onclick=next;}
+function done(){Q.locked=true;app.querySelectorAll('input.ans').forEach(x=>x.disabled=true);if($('#cTake'))$('#cTake').disabled=true;$('#acts').innerHTML=`<button class="btn wide" id="nx">${Q.i+1<Q.tasks.length?'Weiter ➜':'Quest abschließen 🏁'}</button>`;$('#nx').onclick=next;}
 function next(){stopSpeak();Q.i++;if(Q.i<Q.tasks.length)renderTask();else endQuest();}
 function stat(t,ok){const k=t.skill;S.stats[k]=S.stats[k]||{ok:0,all:0};S.stats[k].all++;if(ok)S.stats[k].ok++;}
 
