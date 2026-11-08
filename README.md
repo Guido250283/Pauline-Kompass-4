@@ -37,6 +37,10 @@ Fünf Minispiele als Belohnung: Drachen-Snake (Vollbild, Wischsteuerung), Zauber
 - **Oder mit Kristallen:** 10 💎 pro Runde (die Erfahrungsstufe bleibt dabei erhalten)
 - Rekorde je Spiel, alles ohne fremde Bibliotheken
 
+## Quests pausieren
+
+Eine angefangene Quest wird gespeichert. Beim nächsten Start geht es genau bei der Aufgabe weiter, bei der pausiert wurde – auch nach dem Schließen der App.
+
 ## Aufgabenvorrat
 
 - **Mathe:** Jede Aufgabe wird mit neuen Zufallszahlen erzeugt.

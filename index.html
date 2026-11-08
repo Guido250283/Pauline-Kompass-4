@@ -103,16 +103,30 @@ svg.fig{display:block;margin:10px auto;max-width:100%}
 .review{border-top:1px dashed var(--edge);padding:10px 0;font-size:15px}
 .spark{position:fixed;pointer-events:none;z-index:50;font-size:22px;animation:fly 1s ease-out forwards}
 @keyframes fly{to{transform:translate(var(--dx),var(--dy)) scale(.4);opacity:0}}
-.modal{position:fixed;inset:0;background:#000a;z-index:40;display:grid;place-items:center;padding:16px}
+.modal{position:fixed;inset:0;background:#000a;z-index:80;display:grid;place-items:center;padding:16px}
 .modal .card{max-width:420px;width:100%}
 .cert{text-align:center;border:6px double #a87a2a}
 .cert .big{font-size:64px}
 .small{font-size:14px;color:#6b4a1f}
 a{color:#4b3690}
-.fsgame{position:fixed;inset:0;z-index:60;background:#14301f;touch-action:none;-webkit-user-select:none;user-select:none;display:flex;flex-direction:column;overscroll-behavior:none}
-.fsgame canvas{display:block;touch-action:none}
-.fshud{display:flex;justify-content:space-between;align-items:center;padding:calc(env(safe-area-inset-top) + 8px) 14px 8px;background:#0e2216;color:#fde9b0;font:800 18px Nunito,sans-serif}
-.fs-x{background:#ffffff22;border:none;color:#fde9b0;font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer}
+.fsgame{position:fixed;inset:0;z-index:60;background:#140d33;touch-action:none;-webkit-user-select:none;user-select:none;display:flex;flex-direction:column;overscroll-behavior:none}
+.fshud{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 8px) 14px 8px;background:#0b0724;color:#fde9b0;font:800 18px Nunito,sans-serif}
+.fshud small{font-size:13px;opacity:.8}
+.fs-x{background:#ffffff22;border:none;color:#fde9b0;font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer;flex:0 0 auto}
+.fsarea{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;touch-action:none;background:radial-gradient(ellipse at 50% 0%,#5b3fa8,#2a1b5e 55%,#140d33)}
+.fsarea .gcanvas{border-radius:0;box-shadow:none;position:absolute;inset:0}
+.fsarea .ftime,.gmsg{color:#fde9b0;font:800 18px Nunito,sans-serif;margin-bottom:12px;text-align:center;min-height:26px;padding:0 10px}
+.gnote{color:#fde9b0cc;font-size:14px;margin-top:12px;text-align:center;padding:0 12px}
+.simon{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px}
+.spad{border:none;border-radius:26px;background:var(--c);opacity:.5;box-shadow:0 6px 0 #0006;transition:opacity .1s,transform .1s;cursor:pointer}
+.spad.lit{opacity:1;transform:scale(1.04);box-shadow:0 0 34px var(--c)}
+.ttt{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:8px}
+.tcell{border:none;border-radius:16px;background:#fff8e6;box-shadow:0 4px 0 #c9a35c;cursor:pointer;padding:0}
+.puz{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:8px}
+.ptile{border:none;border-radius:16px;font-family:Nunito,sans-serif;font-weight:900;color:#fff;background:linear-gradient(135deg,hsl(var(--h),70%,65%),hsl(var(--h),60%,42%));box-shadow:0 4px 0 #0006;text-shadow:0 2px 4px #0006;cursor:pointer}
+.pempty{border-radius:16px;background:#ffffff14}
+
+
 
 .hcalc{display:flex;flex-direction:column;gap:8px;align-items:center}
 .hrow{display:flex;align-items:center;gap:5px}
@@ -128,12 +142,12 @@ a{color:#4b3690}
 .dpad{display:grid;grid-template-columns:repeat(3,68px);grid-template-rows:repeat(2,54px);gap:6px;margin-top:10px;touch-action:none}
 .dpad button{font-size:24px;border-radius:14px;border:none;background:linear-gradient(#efe4ff,#c9b6f2);box-shadow:0 3px 0 #7a62b5;color:#2a1b5e}
 .dpad [data-d="0,-1"]{grid-column:2;grid-row:1}.dpad [data-d="-1,0"]{grid-column:1;grid-row:2}.dpad [data-d="0,1"]{grid-column:2;grid-row:2}.dpad [data-d="1,0"]{grid-column:3;grid-row:2}
-.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:360px}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .mcard{aspect-ratio:1;border-radius:12px;border:3px solid #c9a35c;background:linear-gradient(135deg,#7a62b5,#4b3690);font-size:34px;cursor:pointer;padding:0;transition:background .15s}
 .mcard span{opacity:0;transition:opacity .15s}.mcard.up{background:#fffdf5}.mcard.up span{opacity:1}.mcard.done{background:#dff5e6;border-color:#2f9e57}
-.holes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:330px;touch-action:manipulation}
+.holes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .hole{aspect-ratio:1;border-radius:50%;border:none;background:radial-gradient(circle at 50% 62%,#2b1d0e 0 42%,#6b4423 43% 58%,#8fbf6a 59%);overflow:hidden;cursor:pointer;padding:0}
-.hole span{display:inline-block;font-size:46px;transform:translateY(70%) scale(.4);opacity:0;transition:transform .12s,opacity .12s}
+.hole span{display:inline-block;transform:translateY(70%) scale(.4);opacity:0;transition:transform .12s,opacity .12s}
 .hole.up span{transform:none;opacity:1}.hole.gold{box-shadow:0 0 0 4px #f3c45a,0 0 22px #f3c45a}.hole.gold span{filter:sepia(1) saturate(4) hue-rotate(5deg)}
 .hole.hit{background:radial-gradient(circle,#fff 0 30%,#f3c45a 31% 58%,#8fbf6a 59%)}
 .ftime{font-size:18px;font-weight:800;margin-bottom:8px}
@@ -497,7 +511,7 @@ function showMap(){leaveGame();if(!S.name)return showStart();window.scrollTo(0,0
 <div class="legend"><span class="lm">Mathe</span><span class="ld">Deutsch</span></div>
 <div class="map" style="height:${H}px"><svg class="path" viewBox="0 0 100 ${H}" preserveAspectRatio="none"><path d="${path}" fill="none" stroke="#fde9b0" stroke-opacity=".55" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
 ${nodes.map((n,i)=>{const st=S.regions[n.id]?.stars||0;const cls=n.final?('final'+(unlocked?'':' locked')):(n.subj==='M'?'m':'d');
-  return `<div class="node ${cls}" style="left:${xs[i]}%;top:${i*gapY+8}px" data-id="${n.id}"><div class="disc">${n.final&&!unlocked?'🔒':n.icon}</div><b>${n.name}</b>${n.final?`<div class="subj">${unlocked?(S.finalDone?'⭐ bezwungen!':'Bereit für die letzte Prüfung!'):'Sammle alle 8 Splitter'}</div>`:`<div class="stars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><div class="subj">${n.subj==='M'?'Mathe':'Deutsch'}</div>`}</div>`;}).join('')}</div>
+  return `<div class="node ${cls}" style="left:${xs[i]}%;top:${i*gapY+8}px" data-id="${n.id}"><div class="disc">${n.final&&!unlocked?'🔒':n.icon}</div><b>${n.name}</b>${n.final?`<div class="subj">${unlocked?(S.finalDone?'⭐ bezwungen!':'Bereit für die letzte Prüfung!'):'Sammle alle 8 Splitter'}</div>`:`<div class="stars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><div class="subj">${questSaved(n.id)?`▶ angefangen (${Math.min(questSaved(n.id).res.length+1,questSaved(n.id).n)}/${questSaved(n.id).n})`:(n.subj==='M'?'Mathe':'Deutsch')}</div>`}</div>`;}).join('')}</div>
 ${healCount()?`<div class="card"><h2>🌿 Quelle der Wiederholung</h2><div class="speech"><div class="p">${pet().e}</div><div class="bubble">Hier warten <b>${healCount()} Aufgabenarten</b>, bei denen du noch gestolpert bist. Wer sie hier löst, macht sie für immer zu seinen Stärken!</div></div><div class="row"><button class="btn wide" onclick="startQuest('heal')">Stolpersteine üben 🌿</button></div></div>`:''}
 <div class="card"><h2>🎓 Probe-Kompass</h2><p class="q">Wie im echten Test: 11 Aufgaben, 30 Minuten, keine Tipps. Am Ende siehst du alle Lösungen.</p><div class="row"><button class="btn sec" onclick="startQuest('probeM')">Mathe-Probe</button><button class="btn sec" onclick="startQuest('probeD')">Deutsch-Probe</button></div></div>
 <div class="row"><button class="btn ghost wide" style="color:#fde9b0;border-color:#fde9b088" onclick="showParents()">👪 Für Eltern: Fortschritt ansehen</button></div>`;
@@ -509,7 +523,7 @@ function showRegion(id){leaveGame();const r=REGIONS.find(x=>x.id===id);const st=
   app.innerHTML=topbar()+`<div class="card"><div style="font-size:60px;text-align:center">${r.icon}</div><h2 style="text-align:center">${r.name}</h2><p class="small" style="text-align:center">${r.subj==='M'?'Mathe':'Deutsch'} · ${r.desc}</p>
 <div class="speech"><div class="p">${pet().e}</div><div class="bubble">${r.intro}</div></div>
 <div class="bigstars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><p class="small" style="text-align:center">6 Aufgaben · 1 Stern ab 3 richtig · 3 Sterne bei allen richtig<br>Kommst du nicht weiter? Tippe auf 💡 Hilfe – sie hilft dir Schritt für Schritt.</p>
-<div class="row"><button class="btn wide" onclick="startQuest('${id}')">Quest starten ⚔️</button></div><div class="row"><button class="btn ghost wide" onclick="showMap()">Zurück zur Karte</button></div></div>`;}
+${(()=>{const sv=questSaved(id);return sv?`<div class="speech" style="margin-top:8px"><div class="p">⏸️</div><div class="bubble">Du hast diese Quest angefangen und bist bei <b>Aufgabe ${Math.min(sv.res.length+1,sv.n)} von ${sv.n}</b>.</div></div><div class="row"><button class="btn wide" onclick="startQuest('${id}')">Weiter bei Aufgabe ${Math.min(sv.res.length+1,sv.n)} ▶</button></div>`:`<div class="row"><button class="btn wide" onclick="startQuest('${id}')">Quest starten ⚔️</button></div>`;})()}<div class="row"><button class="btn ghost wide" onclick="showMap()">Zurück zur Karte</button></div></div>`;}
 
 /* ============ Quest ============ */
 let Q=null;
@@ -521,13 +535,18 @@ function healCount(){return Object.values(S.mistakes||{}).filter(v=>v>0).length;
 function addMistake(t){if(!t.gen)return;S.mistakes=S.mistakes||{};S.mistakes[t.gen]=Math.min(3,(S.mistakes[t.gen]||0)+1);}
 function fixMistake(t){if(!t.gen||!S.mistakes||!S.mistakes[t.gen])return;S.mistakes[t.gen]--;if(S.mistakes[t.gen]<=0)delete S.mistakes[t.gen];}
 
-function startQuest(kind){leaveGame();touchStreak();let tasks,title,probe=false;
+function saveQuest(){if(!Q||Q.probe)return;S.quests=S.quests||{};S.quests[Q.kind]={title:Q.title,tasks:Q.tasks,n:Q.n,res:Q.res,twins:Q.twins};save();}
+function questSaved(kind){const q=(S.quests||{})[kind];return q&&q.res.length<q.tasks.length?q:null;}
+function startQuest(kind){leaveGame();touchStreak();
+  const sv=/^probe/.test(kind)?null:questSaved(kind);
+  if(sv){Q={kind,title:sv.title,tasks:sv.tasks,n:sv.n,i:sv.res.length,res:sv.res,att:0,probe:false,resp:[],twins:sv.twins||0,end:0,resumed:true};renderTask();return;}
+  let tasks,title,probe=false;
   if(kind==='final'){tasks=genMixed(null,10);title='Turm des Großen Kompass';}
   else if(kind==='probeM'){tasks=genMixed('M',11);title='Probe-Kompass Mathe';probe=true;}
   else if(kind==='probeD'){tasks=genMixed('D',11);title='Probe-Kompass Deutsch';probe=true;}
   else if(kind==='heal'){tasks=genHeal(6);title='Quelle der Wiederholung';if(!tasks.length)return showMap();}
   else{const r=REGIONS.find(x=>x.id===kind);tasks=genFor(r,6);title=r.name;}
-  Q={kind,title,tasks,n:tasks.length,i:0,res:[],att:0,probe,resp:[],twins:0,end:probe?Date.now()+30*60000:0};renderTask();}
+  Q={kind,title,tasks,n:tasks.length,i:0,res:[],att:0,probe,resp:[],twins:0,end:probe?Date.now()+30*60000:0};saveQuest();renderTask();}
 
 function maxAttempts(t){if(t.type==='choice')return t.options.length<=2?1:2;return 3;}
 
@@ -538,16 +557,18 @@ function renderTask(){const t=Q.tasks[Q.i];Q.att=0;Q.help=0;Q.locked=false;Q.cur
   else if(t.type==='tap')inp=`<div class="chips">${t.words.map((w,k)=>`<button class="chip" data-k="${k}">${w}</button>`).join('')}</div>`;
   else if(t.type==='multi')inp=t.fields.map((f,k)=>`<div class="field"><label>${f.label}</label><input class="ans" data-k="${k}" ${f.type==='num'?'inputmode="decimal"':'autocapitalize="off" autocorrect="off" spellcheck="false"'} autocomplete="off">${f.unit?`<span class="unit">${f.unit}</span>`:''}</div>`).join('');
   else inp=`<div class="field"><input class="ans" id="single" ${t.type==='num'||t.type==='time'?'inputmode="decimal"':'autocapitalize="off" autocorrect="off" spellcheck="false"'} placeholder="${t.placeholder||'Deine Antwort'}" autocomplete="off">${t.unit&&t.type!=='time'?`<span class="unit">${t.unit}</span>`:''}</div>`;
+  const backNote=Q.resumed?`<div class="speech" style="margin:8px 0"><div class="p">${pet().e}</div><div class="bubble"><b>Willkommen zurück!</b> Du machst bei Aufgabe ${Math.min(Q.i+1,Q.n)} von ${Q.n} weiter.</div></div>`:'';Q.resumed=false;
   const twinNote=t.twin?`<div class="speech" style="margin:8px 0"><div class="p">${pet().e}</div><div class="bubble"><b>🔁 Übungsaufgabe:</b> Gleich nochmal so eine, mit neuen Zahlen. Jetzt weißt du, wie es geht!</div></div>`:'';
   app.innerHTML=topbar()+`<div class="card" id="tc"><div class="taskhead"><span>${Q.title}</span><span>${Q.probe?`<span class="timer" id="timer"></span>`:t.twin?'Übung':`Aufgabe ${Math.min(Q.i+1,Q.n)} / ${Q.n}`}</span></div><div class="progress">${prog}</div>
-<div style="display:flex;justify-content:space-between;align-items:center"><span class="tag">${t.skill}</span><button class="iconbtn" id="spk" style="color:#5a2d0c" aria-label="Vorlesen" title="Vorlesen">🔊</button></div>${twinNote}${!Q.probe&&t.story&&!t.twin?`<div class="story" style="margin-top:6px">${t.story}</div>`:'<div style="height:6px"></div>'}<div class="q" id="qtext">${t.q}</div>${isMath(t)?toolsHtml():''}${inp}
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="tag">${t.skill}</span><button class="iconbtn" id="spk" style="color:#5a2d0c" aria-label="Vorlesen" title="Vorlesen">🔊</button></div>${backNote}${twinNote}${!Q.probe&&t.story&&!t.twin?`<div class="story" style="margin-top:6px">${t.story}</div>`:'<div style="height:6px"></div>'}<div class="q" id="qtext">${t.q}</div>${isMath(t)?toolsHtml():''}${inp}
 <div id="helpbox"></div><div class="fb" id="fb"></div><div class="row" id="acts"><button class="btn" id="chk">${Q.probe?'Antwort speichern':'Prüfen ✨'}</button>${Q.probe?'':`<button class="btn sec" id="hnt" style="flex:0 0 auto">💡 Hilfe</button>`}</div>
-<div class="row"><button class="btn ghost wide" id="quit">Quest abbrechen</button></div></div>`;
+<div class="row"><button class="btn ghost wide" id="quit">${Q.probe?'Probe abbrechen':'⏸️ Pause – später weitermachen'}</button></div></div>`;
   app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(Q.locked||b.disabled)return;Q.cur=+b.dataset.k;app.querySelectorAll('.opt').forEach(x=>x.classList.toggle('sel',x===b));});
   app.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{if(Q.locked)return;const k=+b.dataset.k;const i=Q.cur.indexOf(k);if(i>=0)Q.cur.splice(i,1);else Q.cur.push(k);b.classList.toggle('sel');});
   app.querySelectorAll('input.ans').forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')$('#chk')?.click();}));
   $('#chk').onclick=onCheck;if($('#hnt'))$('#hnt').onclick=onHelp;$('#spk').onclick=()=>speak($('#qtext').innerText);
-  $('#quit').onclick=()=>confirmBox('Willst du die Quest wirklich abbrechen? Dein Fortschritt in dieser Quest geht verloren.',()=>{clearInterval(Q.timerId);stopSpeak();showMap();});
+  $('#quit').onclick=()=>{if(Q.probe)return confirmBox('Willst du die Probe wirklich abbrechen? Die Probe wird dann nicht gewertet.',()=>{clearInterval(Q.timerId);stopSpeak();showMap();});
+    saveQuest();stopSpeak();toast(`Pause! Dein Fortschritt ist gespeichert. Beim nächsten Mal machst du bei Aufgabe ${Math.min(Q.res.length+1,Q.n)} weiter.`);showMap();};
   initTools(t);if(Q.probe)startTimer();}
 
 /* ---- Rechenkasten & Notizblock ---- */
@@ -673,7 +694,7 @@ function onCheck(){const t=Q.tasks[Q.i];if(Q.locked)return;const r=readResp(t);
   if(emptyResp(t,r)){fb('hint',`${pet().e} Gib zuerst eine Antwort ein. Wenn du nicht weiterweißt, tippe auf <b>💡 Hilfe</b>.`);return;}
   const ok=check(t,r);
   if(Q.probe){Q.resp.push(r);Q.res.push(ok?2:0);stat(t,ok);if(ok)markSolved(t);if(!ok)addMistake(t);save();next();return;}
-  if(ok){const clean=Q.att===0&&Q.help===0;const g=clean?2:1;S.gems+=g;Q.res.push(clean?2:1);stat(t,true);markSolved(t);if(t.twin||Q.kind==='heal')fixMistake(t);save();markChoice(t,true);
+  if(ok){const clean=Q.att===0&&Q.help===0;const g=clean?2:1;S.gems+=g;Q.res.push(clean?2:1);stat(t,true);markSolved(t);if(t.twin||Q.kind==='heal')fixMistake(t);saveQuest();markChoice(t,true);
     const b=$('#chk').getBoundingClientRect();sparkle(b.left+b.width/2,b.top);
     fb('good',`<b>${pick(PRAISE)}</b> ${pet().e} ${pet().n} freut sich. +${g} 💎${clean?' (ganz allein beim ersten Versuch!)':Q.help?' Gut, dass du dir Hilfe geholt hast!':''}`);done();return;}
   Q.att++;$('#tc').classList.remove('shake');void $('#tc').offsetWidth;$('#tc').classList.add('shake');
@@ -683,7 +704,7 @@ function onCheck(){const t=Q.tasks[Q.i];if(Q.locked)return;const r=readResp(t);
   fb('hint',`<b>Noch nicht ganz.</b> ${msg||''}${t.type==='choice'?' Die falsche Antwort habe ich durchgestrichen.':''}<br><i>Versuch es noch einmal – ${maxAttempts(t)-Q.att===1?'ein Versuch':'noch '+(maxAttempts(t)-Q.att)+' Versuche'}.</i>`);
   const target=Math.min(2,Q.att+(maxAttempts(t)===2?1:0));while(Q.help<target){Q.help++;addHelp(Q.help);}}
 function fail(asked){const t=Q.tasks[Q.i];Q.res.push(0);stat(t,false);if(!t.twin&&Q.kind!=='heal')addMistake(t);save();markChoice(t,false);
-  let twinTxt='';if(!Q.probe&&Q.kind!=='final'&&Q.twins<3){const tw=makeTwin(t);if(tw){Q.tasks.splice(Q.i+1,0,tw);Q.twins++;twinTxt=`<br><br>${pet().e} <b>Als Nächstes kommt eine Übungsaufgabe derselben Art</b> – so festigst du es gleich.`;}}
+  let twinTxt='';if(!Q.probe&&Q.kind!=='final'&&Q.twins<3){const tw=makeTwin(t);if(tw){Q.tasks.splice(Q.i+1,0,tw);Q.twins++;twinTxt=`<br><br>${pet().e} <b>Als Nächstes kommt eine Übungsaufgabe derselben Art</b> – so festigst du es gleich.`;}}saveQuest();
   const L=LESSON[t.skill];
   fb('sol',`<b>${asked?'Hier ist der Lösungsweg':'So geht’s'}:</b><br>${t.type==='choice'?`Richtig ist: <b>${t.options[t.answer]}</b><br>`:''}${t.sol}${L&&Q.help<3?`<details style="margin-top:8px"><summary><b>📖 Erklär's mir nochmal</b></summary><div style="margin-top:6px">${L.learn}</div></details>`:''}<br><small>${pick(COMFORT)}</small>${twinTxt}`);done();}
 function markChoice(t,ok){if(t.type==='choice'){app.querySelectorAll('.opt').forEach(x=>{const k=+x.dataset.k;if(k===t.answer)x.classList.add('right');});}
@@ -692,7 +713,7 @@ function done(){Q.locked=true;app.querySelectorAll('input.ans').forEach(x=>x.dis
 function next(){stopSpeak();Q.i++;if(Q.i<Q.tasks.length)renderTask();else endQuest();}
 function stat(t,ok){const k=t.skill;S.stats[k]=S.stats[k]||{ok:0,all:0};S.stats[k].all++;if(ok)S.stats[k].ok++;}
 
-function endQuest(){clearInterval(Q.timerId);window.scrollTo(0,0);
+function endQuest(){clearInterval(Q.timerId);window.scrollTo(0,0);if(S.quests)delete S.quests[Q.kind];save();
   const orig=Q.tasks.map((t,k)=>[t,Q.res[k]]).filter(([t])=>!t.twin);const n=orig.length,ok=orig.filter(x=>x[1]>0).length,first=orig.filter(x=>x[1]===2).length;
   const twinsOk=Q.tasks.filter((t,k)=>t.twin&&Q.res[k]>0).length,twinsAll=Q.tasks.filter(t=>t.twin).length;
   if(Q.probe){S.probes.push({k:Q.kind,d:today(),ok,n});const earnP=5*60000;addPlay(earnP);save();
@@ -720,115 +741,162 @@ function fmtMs(ms){const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60
 function addPlay(ms){S.playMs=(S.playMs||0)+ms;}
 function earnHtml(ms){return ms?`<div class="speech" style="text-align:left;margin-top:12px"><div class="p">🎮</div><div class="bubble"><b>+${ms/60000} Minuten Spielzeit</b> für die Zauber-Arkade!<br><button class="btn sec" style="margin-top:8px;padding:8px 14px;font-size:15px" onclick="showArcade()">Jetzt spielen</button></div></div>`:'';}
 function emoji(ctx,ch,x,y,size){ctx.font=`${size}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(ch,x,y+1);}
-function overlayText(ctx,W,H,txt){ctx.fillStyle='#000a';ctx.fillRect(0,H/2-24,W,48);ctx.fillStyle='#fde9b0';ctx.font='800 16px Nunito,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,W/2,H/2);}
-function mkCanvas(el,W,H){const c=document.createElement('canvas');c.className='gcanvas';const cw=Math.min(el.clientWidth||320,420);const k=cw/W;c.style.width=cw+'px';c.style.height=H*k+'px';const dpr=window.devicePixelRatio||1;c.width=Math.round(cw*dpr);c.height=Math.round(H*k*dpr);const ctx=c.getContext('2d');ctx.setTransform(k*dpr,0,0,k*dpr,0,0);el.appendChild(c);
-  const pos=e=>{const r=c.getBoundingClientRect();return [(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H];};return {c,ctx,pos};}
+function overlayText(ctx,W,H,txt){ctx.fillStyle='#000a';ctx.fillRect(0,H/2-24,W,48);ctx.fillStyle='#fde9b0';ctx.font='800 15px Nunito,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,W/2,H/2);}
+function areaSize(el){return [el.clientWidth||window.innerWidth,el.clientHeight||(window.innerHeight-60)];}
+/* Canvas, das die ganze Spielfläche füllt; logische Breite W, Höhe passend zum Bildschirm */
+function mkCanvas(el,W){const [aw,ah]=areaSize(el),H=Math.round(W*ah/aw),c=document.createElement('canvas');c.className='gcanvas';c.style.width=aw+'px';c.style.height=ah+'px';const dpr=window.devicePixelRatio||1;c.width=Math.round(aw*dpr);c.height=Math.round(ah*dpr);const ctx=c.getContext('2d'),k=aw/W;ctx.setTransform(k*dpr,0,0,k*dpr,0,0);el.appendChild(c);
+  const pos=e=>{const r=c.getBoundingClientRect();return [(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H];};return {c,ctx,pos,W,H};}
 function rrect(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);ctx.fill();}
+const buzz=ms=>{try{navigator.vibrate&&navigator.vibrate(ms);}catch(e){}};
 
-/* --- Drachen-Snake (Vollbild, Wischsteuerung) --- */
-function runSnake(el,api){
-  const ov=document.createElement('div');ov.className='fsgame';
-  ov.innerHTML=`<div class="fshud"><span>💎 <b class="fs-score">0</b></span><span class="fs-time"></span><button class="fs-x" aria-label="Spiel beenden">✕</button></div><canvas></canvas>`;
-  document.body.appendChild(ov);const prevOv=document.body.style.overflow;document.body.style.overflow='hidden';
-  const c=ov.querySelector('canvas'),ctx=c.getContext('2d');let W,H,C,CW,CH,ox,oy;
-  function size(){const hud=ov.querySelector('.fshud').offsetHeight;W=window.innerWidth;H=window.innerHeight-hud;const dpr=window.devicePixelRatio||1;
-    c.style.width=W+'px';c.style.height=H+'px';c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
-    C=Math.max(20,Math.min(30,Math.floor(Math.min(W,H)/15)));CW=Math.floor(W/C);CH=Math.floor(H/C);ox=Math.floor((W-CW*C)/2);oy=Math.floor((H-CH*C)/2);}
-  size();
-  let sn,dir,nd,score=0,step=165,acc=0,last=performance.now(),raf,started=false,dead=false,food;
-  const mx=Math.floor(CW/2),my=Math.floor(CH/2);sn=[{x:mx,y:my},{x:mx-1,y:my},{x:mx-2,y:my}];dir={x:1,y:0};nd=dir;
-  const place=()=>{let p;do{p={x:ri(0,CW-1),y:ri(0,CH-1)};}while(sn.some(s=>s.x===p.x&&s.y===p.y));return p;};food=place();
-  const turn=(x,y)=>{if(dead)return;const cur=started?dir:{x:0,y:0};if(x===-cur.x&&y===-cur.y&&started)return;nd={x,y};if(!started){dir=nd;started=true;}};
+/* --- 1 Drachen-Snake --- */
+function runSnake(el,api){const [W,H]=areaSize(el),c=document.createElement('canvas');c.className='gcanvas';const dpr=window.devicePixelRatio||1;c.style.width=W+'px';c.style.height=H+'px';c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);el.appendChild(c);
+  const C=Math.max(20,Math.min(30,Math.floor(Math.min(W,H)/15))),CW=Math.floor(W/C),CH=Math.floor(H/C),ox=Math.floor((W-CW*C)/2),oy=Math.floor((H-CH*C)/2);
+  let mx=Math.floor(CW/2),my=Math.floor(CH/2),sn=[{x:mx,y:my},{x:mx-1,y:my},{x:mx-2,y:my}],dir={x:1,y:0},nd=dir,score=0,step=165,acc=0,last=performance.now(),raf,started=false,dead=false;
+  const place=()=>{let p;do{p={x:ri(0,CW-1),y:ri(0,CH-1)};}while(sn.some(s=>s.x===p.x&&s.y===p.y));return p;};let food=place();
+  const turn=(x,y)=>{if(dead)return;if(started&&x===-dir.x&&y===-dir.y)return;nd={x,y};if(!started){dir=nd;started=true;}};
   function update(){dir=nd;const h={x:(sn[0].x+dir.x+CW)%CW,y:(sn[0].y+dir.y+CH)%CH};
-    if(sn.some(s=>s.x===h.x&&s.y===h.y)){dead=true;draw();navigator.vibrate&&navigator.vibrate(150);setTimeout(()=>api.end(score),700);return;}
-    sn.unshift(h);if(h.x===food.x&&h.y===food.y){score++;api.score(score);ov.querySelector('.fs-score').textContent=score;food=place();step=Math.max(80,step-4);}else sn.pop();}
+    if(sn.some(s=>s.x===h.x&&s.y===h.y)){dead=true;draw();buzz(150);setTimeout(()=>api.end(score),700);return;}
+    sn.unshift(h);if(h.x===food.x&&h.y===food.y){score++;api.score(score);food=place();step=Math.max(80,step-4);}else sn.pop();}
   function draw(){ctx.fillStyle='#14301f';ctx.fillRect(0,0,W,H);ctx.fillStyle='#1d3b2a';ctx.fillRect(ox,oy,CW*C,CH*C);ctx.strokeStyle='#ffffff10';ctx.lineWidth=1;
     for(let x=0;x<=CW;x++){ctx.beginPath();ctx.moveTo(ox+x*C,oy);ctx.lineTo(ox+x*C,oy+CH*C);ctx.stroke();}for(let y=0;y<=CH;y++){ctx.beginPath();ctx.moveTo(ox,oy+y*C);ctx.lineTo(ox+CW*C,oy+y*C);ctx.stroke();}
-    const cx=p=>ox+p.x*C+C/2,cy=p=>oy+p.y*C+C/2;
-    emoji(ctx,'💎',cx(food),cy(food),C*.85);
+    const cx=p=>ox+p.x*C+C/2,cy=p=>oy+p.y*C+C/2;emoji(ctx,'💎',cx(food),cy(food),C*.85);
     for(let i=sn.length-1;i>0;i--){ctx.fillStyle=i%2?'#5fcf80':'#3fae62';ctx.beginPath();ctx.arc(cx(sn[i]),cy(sn[i]),C/2-1,0,7);ctx.fill();}
-    emoji(ctx,dead?'😵':'🐲',cx(sn[0]),cy(sn[0]),C*1.05);
-    if(!started)overlayText(ctx,W,H,'Wische in eine Richtung, um loszulegen!');
-    if(G&&G.timeMode){const t=ov.querySelector('.fs-time');if(t)t.textContent='⏳ '+fmtMs(S.playMs||0);}}
+    emoji(ctx,dead?'😵':'🐲',cx(sn[0]),cy(sn[0]),C*1.05);if(!started)overlayText(ctx,W,H,'Wische in eine Richtung, um loszulegen!');}
   function loop(t){raf=requestAnimationFrame(loop);const dt=Math.min(250,t-last);last=t;if(started&&!dead){acc+=dt;while(acc>=step&&!dead){acc-=step;update();}}if(!dead)draw();}
-  raf=requestAnimationFrame(loop);
-  /* Wischen: Richtung wechselt schon während der Bewegung, mehrere Wischer hintereinander möglich */
-  let sx=null,sy=null;const TH=22;
-  ov.addEventListener('pointerdown',e=>{if(e.target.closest('.fs-x'))return;sx=e.clientX;sy=e.clientY;e.preventDefault();});
-  ov.addEventListener('pointermove',e=>{if(sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))<TH)return;
-    Math.abs(dx)>Math.abs(dy)?turn(Math.sign(dx),0):turn(0,Math.sign(dy));sx=e.clientX;sy=e.clientY;e.preventDefault();});
-  ['pointerup','pointercancel'].forEach(ev=>ov.addEventListener(ev,()=>{sx=sy=null;}));
-  ov.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+  raf=requestAnimationFrame(loop);let sx=null,sy=null;
+  el.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;e.preventDefault();});
+  el.addEventListener('pointermove',e=>{if(sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))<22)return;Math.abs(dx)>Math.abs(dy)?turn(Math.sign(dx),0):turn(0,Math.sign(dy));sx=e.clientX;sy=e.clientY;});
+  ['pointerup','pointercancel'].forEach(ev=>el.addEventListener(ev,()=>{sx=sy=null;}));
   const key=e=>{const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(m){e.preventDefault();turn(m[0],m[1]);}};window.addEventListener('keydown',key);
-  ov.querySelector('.fs-x').onclick=()=>{if(!dead){dead=true;api.end(score);}};
-  el.insertAdjacentHTML('beforeend','<p class="small" style="text-align:center">Das Spiel läuft im Vollbild.</p>');
-  return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);ov.remove();document.body.style.overflow=prevOv;}};}
+  return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);}};}
 
-/* --- Zauber-Memory --- */
-function runMemory(el,api){const pics=['🐉','🦄','🦉','🦊','🧚','🧙','🏰','💎'];const cards=shuffle([...pics,...pics]);let open=[],moves=0,found=0,lock=false,t1=null;
-  el.insertAdjacentHTML('beforeend',`<div class="mem">${cards.map((p,i)=>`<button class="mcard" data-i="${i}"><span>${p}</span></button>`).join('')}</div>`);
+/* --- 2 Zauber-Memory --- */
+function runMemory(el,api){const [aw,ah]=areaSize(el),sz=Math.min(aw-24,ah-24,560);const pics=['🐉','🦄','🦉','🦊','🧚','🧙','🏰','💎'],cards=shuffle([...pics,...pics]);let open=[],moves=0,found=0,lock=false,t1=null;
+  el.insertAdjacentHTML('beforeend',`<div class="mem" style="width:${sz}px">${cards.map((p,i)=>`<button class="mcard" data-i="${i}" style="font-size:${Math.round(sz/9)}px"><span>${p}</span></button>`).join('')}</div>`);
   el.querySelectorAll('.mcard').forEach(b=>b.onclick=()=>{if(lock||b.classList.contains('up'))return;b.classList.add('up');open.push(b);
     if(open.length===2){moves++;api.score(moves);const [x,y]=open;
       if(cards[x.dataset.i]===cards[y.dataset.i]){x.classList.add('done');y.classList.add('done');open=[];found++;if(found===pics.length)t1=setTimeout(()=>api.end(moves),600);}
       else{lock=true;t1=setTimeout(()=>{x.classList.remove('up');y.classList.remove('up');open=[];lock=false;},850);}}});
   return {stop(){clearTimeout(t1);}};}
 
-/* --- Frosch-Fangen --- */
-function runFrog(el,api){let score=0,left=30,alive=true,cur=-1,spawnT=null,tick=null;
-  el.insertAdjacentHTML('beforeend',`<div class="ftime">⏱️ <b class="fleft">30</b> Sekunden</div><div class="holes">${[...Array(9)].map((_,i)=>`<button class="hole" data-i="${i}"><span>🐸</span></button>`).join('')}</div><p class="small" style="text-align:center">Goldene Frösche bringen 3 Punkte!</p>`);
+/* --- 3 Frosch-Fangen --- */
+function runFrog(el,api){const [aw,ah]=areaSize(el),sz=Math.min(aw-24,ah-110,520);let score=0,left=30,alive=true,cur=-1,spawnT=null,tick=null;
+  el.insertAdjacentHTML('beforeend',`<div class="ftime">⏱️ <b class="fleft">30</b> Sekunden · Goldfrösche = 3 Punkte</div><div class="holes" style="width:${sz}px">${[...Array(9)].map((_,i)=>`<button class="hole" data-i="${i}"><span style="font-size:${Math.round(sz/6.5)}px">🐸</span></button>`).join('')}</div>`);
   const holes=[...el.querySelectorAll('.hole')];
   function spawn(){if(!alive)return;holes.forEach(h=>h.classList.remove('up','gold'));let i;do{i=ri(0,8);}while(i===cur);cur=i;holes[i].classList.add('up');if(Math.random()<.15)holes[i].classList.add('gold');spawnT=setTimeout(spawn,Math.max(480,1000-score*15));}
   holes.forEach(h=>h.addEventListener('pointerdown',e=>{e.preventDefault();if(!alive||!h.classList.contains('up'))return;score+=h.classList.contains('gold')?3:1;api.score(score);h.classList.remove('up','gold');h.classList.add('hit');setTimeout(()=>h.classList.remove('hit'),180);clearTimeout(spawnT);spawnT=setTimeout(spawn,260);}));
   tick=setInterval(()=>{left--;const f=el.querySelector('.fleft');if(f)f.textContent=left;if(left<=0){alive=false;clearInterval(tick);clearTimeout(spawnT);holes.forEach(h=>h.classList.remove('up','gold'));api.end(score);}},1000);
   spawnT=setTimeout(spawn,500);return {stop(){alive=false;clearInterval(tick);clearTimeout(spawnT);}};}
 
-/* --- Eulenflug --- */
-function runOwl(el,api){const W=300,H=420;const {c,ctx}=mkCanvas(el,W,H);let y=H/2,vy=0,pipes=[],score=0,started=false,dead=false,raf,last=performance.now(),acc=0;const X=80,R=13,GAP=135,SP=2.1;
-  const stars=[...Array(30)].map(()=>[Math.random()*W,Math.random()*(H-40)]);
-  const flap=()=>{if(dead)return;started=true;vy=-6.2;};
-  c.addEventListener('pointerdown',e=>{e.preventDefault();flap();});const key=e=>{if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();flap();}};window.addEventListener('keydown',key);
-  function die(){dead=true;draw();setTimeout(()=>api.end(score),500);}
+/* --- 4 Eulenflug --- */
+function runOwl(el,api){const {c,ctx,W,H}=mkCanvas(el,300);let y=H/2,vy=0,pipes=[],score=0,started=false,dead=false,raf,last=performance.now(),acc=0;const X=80,R=13,GAP=Math.min(150,Math.max(125,H*.28)),SP=2.1;
+  const stars=[...Array(40)].map(()=>[Math.random()*W,Math.random()*(H-40)]);const flap=()=>{if(dead)return;started=true;vy=-6.2;};
+  el.addEventListener('pointerdown',e=>{e.preventDefault();flap();});const key=e=>{if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();flap();}};window.addEventListener('keydown',key);
+  function die(){dead=true;draw();buzz(150);setTimeout(()=>api.end(score),500);}
   function step(f){vy+=0.36*f;y+=vy*f;acc+=f;if(acc>95){acc=0;pipes.push({x:W,g:ri(60,H-70-GAP),p:false});}pipes.forEach(p=>p.x-=SP*f);pipes=pipes.filter(p=>p.x>-60);
-    for(const p of pipes){if(!p.p&&p.x+44<X-R){p.p=true;score++;api.score(score);}if(X+R>p.x+8&&X-R<p.x+42&&(y-R<p.g||y+R>p.g+GAP)){die();return;}}
-    if(y+R>H-20||y-R<0)die();}
-  function draw(){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1b1340');g.addColorStop(1,'#5b3fa8');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-    ctx.fillStyle='#ffffffaa';stars.forEach(([sx,sy])=>ctx.fillRect(sx,sy,2,2));ctx.fillStyle='#f5dc8f';ctx.beginPath();ctx.arc(250,50,18,0,7);ctx.fill();
+    for(const p of pipes){if(!p.p&&p.x+44<X-R){p.p=true;score++;api.score(score);}if(X+R>p.x+8&&X-R<p.x+42&&(y-R<p.g||y+R>p.g+GAP)){die();return;}}if(y+R>H-20||y-R<0)die();}
+  function draw(){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1b1340');g.addColorStop(1,'#5b3fa8');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.fillStyle='#ffffffaa';stars.forEach(([sx,sy])=>ctx.fillRect(sx,sy,2,2));ctx.fillStyle='#f5dc8f';ctx.beginPath();ctx.arc(250,50,18,0,7);ctx.fill();
     for(const p of pipes){ctx.fillStyle='#6b4423';ctx.fillRect(p.x+12,0,26,p.g);ctx.fillRect(p.x+12,p.g+GAP,26,H-p.g-GAP);ctx.fillStyle='#2f8a57';ctx.beginPath();ctx.ellipse(p.x+25,p.g-6,26,13,0,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(p.x+25,p.g+GAP+6,26,13,0,0,7);ctx.fill();}
-    ctx.fillStyle='#1d3b2a';ctx.fillRect(0,H-20,W,20);
-    ctx.save();ctx.translate(X,y);ctx.rotate(Math.max(-.5,Math.min(.8,vy/10)));emoji(ctx,'🦉',0,0,30);ctx.restore();
-    if(!started)overlayText(ctx,W,H,'Tippe, damit die Eule flattert!');}
+    ctx.fillStyle='#1d3b2a';ctx.fillRect(0,H-20,W,20);ctx.save();ctx.translate(X,y);ctx.rotate(Math.max(-.5,Math.min(.8,vy/10)));emoji(ctx,'🦉',0,0,30);ctx.restore();if(!started)overlayText(ctx,W,H,'Tippe, damit die Eule flattert!');}
   function loop(t){raf=requestAnimationFrame(loop);const f=Math.min(3,(t-last)/16.67);last=t;if(started&&!dead)step(f);if(!dead)draw();}
   raf=requestAnimationFrame(loop);return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);}};}
 
-/* --- Kristall-Breakout --- */
-function runBreakout(el,api){const W=300,H=420;const {c,ctx,pos}=mkCanvas(el,W,H);const cols=6,rows=5,bw=44,bh=16,gx=4,ox=(W-(cols*bw+(cols-1)*gx))/2,oy=46,BR=6,PY=H-30;
+/* --- 5 Kristall-Breakout --- */
+function runBreakout(el,api){const {c,ctx,pos,W,H}=mkCanvas(el,300);const cols=6,rows=5,bw=44,bh=16,gx=4,ox=(W-(cols*bw+(cols-1)*gx))/2,oy=50,BR=6,PY=H-40;
   const colors=['#f08a7a','#f3c45a','#7fd6a0','#7fc8f0','#b09cf0'];let px=W/2,pw=72,ball,bricks,score=0,lives=3,level=1,started=false,raf,last=performance.now(),over=false;
-  const build=()=>{bricks=[];for(let r=0;r<rows;r++)for(let k=0;k<cols;k++)bricks.push({x:ox+k*(bw+gx),y:oy+r*(bh+gx),c:colors[r],a:true});};
-  const reset=()=>{ball={x:px,y:PY-BR,vx:0,vy:0};started=false;};build();reset();
+  const build=()=>{bricks=[];for(let r=0;r<rows;r++)for(let k=0;k<cols;k++)bricks.push({x:ox+k*(bw+gx),y:oy+r*(bh+gx),c:colors[r],a:true});};const reset=()=>{ball={x:px,y:PY-BR,vx:0,vy:0};started=false;};build();reset();
   const launch=()=>{if(started||over)return;started=true;const sp=3.4+level*.4,a=-Math.PI/2+(Math.random()-.5)*.8;ball.vx=Math.cos(a)*sp;ball.vy=Math.sin(a)*sp;};
-  c.addEventListener('pointerdown',e=>{e.preventDefault();px=pos(e)[0];launch();});c.addEventListener('pointermove',e=>{px=pos(e)[0];});
+  el.addEventListener('pointerdown',e=>{e.preventDefault();px=pos(e)[0];launch();});el.addEventListener('pointermove',e=>{px=pos(e)[0];});
   const key=e=>{if(e.key==='ArrowLeft')px-=26;else if(e.key==='ArrowRight')px+=26;else if(e.code==='Space')launch();else return;e.preventDefault();};window.addEventListener('keydown',key);
   function step(f){px=Math.max(pw/2,Math.min(W-pw/2,px));if(!started){ball.x=px;ball.y=PY-BR;return;}ball.x+=ball.vx*f;ball.y+=ball.vy*f;
     if(ball.x<BR){ball.x=BR;ball.vx=Math.abs(ball.vx);}if(ball.x>W-BR){ball.x=W-BR;ball.vx=-Math.abs(ball.vx);}if(ball.y<BR){ball.y=BR;ball.vy=Math.abs(ball.vy);}
     if(ball.vy>0&&ball.y+BR>=PY&&ball.y+BR<=PY+14&&ball.x>px-pw/2-BR&&ball.x<px+pw/2+BR){const hit=Math.max(-1,Math.min(1,(ball.x-px)/(pw/2))),sp=Math.hypot(ball.vx,ball.vy),ang=-Math.PI/2+hit*1.05;ball.vx=Math.cos(ang)*sp;ball.vy=Math.sin(ang)*sp;ball.y=PY-BR;}
     for(const b of bricks){if(!b.a)continue;if(ball.x+BR>b.x&&ball.x-BR<b.x+bw&&ball.y+BR>b.y&&ball.y-BR<b.y+bh){b.a=false;score++;api.score(score);const dx=Math.min(ball.x+BR-b.x,b.x+bw-(ball.x-BR)),dy=Math.min(ball.y+BR-b.y,b.y+bh-(ball.y-BR));if(dx<dy)ball.vx*=-1;else ball.vy*=-1;break;}}
-    if(bricks.every(b=>!b.a)){level++;build();reset();}
-    if(ball.y>H+10){lives--;if(lives<=0){over=true;draw();setTimeout(()=>api.end(score),400);}else reset();}}
+    if(bricks.every(b=>!b.a)){level++;build();reset();}if(ball.y>H+10){lives--;buzz(80);if(lives<=0){over=true;draw();setTimeout(()=>api.end(score),400);}else reset();}}
   function draw(){ctx.fillStyle='#1b1340';ctx.fillRect(0,0,W,H);for(const b of bricks){if(!b.a)continue;ctx.fillStyle=b.c;rrect(ctx,b.x,b.y,bw,bh,4);ctx.fillStyle='#ffffff66';ctx.fillRect(b.x+5,b.y+3,bw-10,3);}
     ctx.fillStyle='#f3c45a';rrect(ctx,px-pw/2,PY,pw,10,5);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ball.x,ball.y,BR,0,7);ctx.fill();
-    ctx.font='800 13px Nunito,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';ctx.fillStyle='#fde9b0';ctx.fillText('Leben: '+'♥'.repeat(Math.max(0,lives))+'   Level '+level,8,12);
-    if(!started&&!over)overlayText(ctx,W,H,'Tippe zum Starten, ziehe zum Lenken');}
+    ctx.font='800 13px Nunito,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';ctx.fillStyle='#fde9b0';ctx.fillText('Leben: '+'♥'.repeat(Math.max(0,lives))+'   Level '+level,8,14);if(!started&&!over)overlayText(ctx,W,H,'Tippe zum Starten, ziehe zum Lenken');}
   function loop(t){raf=requestAnimationFrame(loop);const f=Math.min(3,(t-last)/16.67);last=t;if(over)return;const n=Math.ceil(f*1.5)||1;for(let i=0;i<n&&!over;i++)step(f/n);if(!over)draw();}
   raf=requestAnimationFrame(loop);return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);}};}
 
+/* --- 6 Sternenfänger --- */
+function runCatch(el,api){const {c,ctx,pos,W,H}=mkCanvas(el,300);let px=W/2,items=[],score=0,lives=3,acc=0,raf,last=performance.now(),over=false,started=false;const PY=H-55;
+  el.addEventListener('pointerdown',e=>{px=pos(e)[0];started=true;e.preventDefault();});el.addEventListener('pointermove',e=>{px=pos(e)[0];});
+  const key=e=>{if(e.key==='ArrowLeft')px-=24;else if(e.key==='ArrowRight')px+=24;else return;started=true;e.preventDefault();};window.addEventListener('keydown',key);
+  function step(f){px=Math.max(25,Math.min(W-25,px));acc+=f;if(acc>Math.max(20,48-score*.8)){acc=0;items.push({x:ri(15,W-15),y:-20,bad:Math.random()<.25,v:1.6+Math.random()*1.2+score*.03});}
+    items.forEach(it=>it.y+=it.v*f);
+    items=items.filter(it=>{if(it.y>PY-16&&it.y<PY+16&&Math.abs(it.x-px)<32){if(it.bad){lives--;buzz(100);if(lives<=0){over=true;draw();setTimeout(()=>api.end(score),500);}}else{score++;api.score(score);}return false;}return it.y<H+20;});}
+  function draw(){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#140d33');g.addColorStop(1,'#3b2a7a');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    items.forEach(it=>emoji(ctx,it.bad?'🪨':'🌟',it.x,it.y,24));emoji(ctx,'🧺',px,PY,44);
+    ctx.font='800 13px Nunito,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';ctx.fillStyle='#fde9b0';ctx.fillText('Leben: '+'♥'.repeat(Math.max(0,lives)),8,14);
+    if(!started)overlayText(ctx,W,H,'Fang die Sterne – weiche den Steinen aus!');}
+  function loop(t){raf=requestAnimationFrame(loop);const f=Math.min(3,(t-last)/16.67);last=t;if(over)return;if(started)step(f);if(!over)draw();}
+  raf=requestAnimationFrame(loop);return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);}};}
+
+/* --- 7 Zauber-Runen (Merkspiel) --- */
+function runSimon(el,api){const [aw,ah]=areaSize(el),sz=Math.min(aw-30,ah-150,480);
+  el.insertAdjacentHTML('beforeend',`<div class="gmsg">Merke dir die Reihenfolge der Runen!</div><div class="simon" style="width:${sz}px;height:${sz}px">${['#f08a7a','#7fd6a0','#7fc8f0','#f3c45a'].map((col,i)=>`<button class="spad" data-i="${i}" style="--c:${col};font-size:${Math.round(sz/6)}px">${['🔥','🌿','💧','⭐'][i]}</button>`).join('')}</div><button class="btn" id="sStart" style="margin-top:16px">Los geht's!</button>`);
+  let seq=[],p=0,input=false,alive=true,timers=[],actx=null;const pads=[...el.querySelectorAll('.spad')],msg=el.querySelector('.gmsg');
+  const tone=i=>{try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=[330,392,494,587][i];o.connect(g);g.connect(actx.destination);g.gain.setValueAtTime(.15,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+.35);o.start();o.stop(actx.currentTime+.36);}catch(e){}};
+  const flash=(i,d=380)=>{pads[i].classList.add('lit');tone(i);timers.push(setTimeout(()=>pads[i].classList.remove('lit'),d));};
+  function play(){input=false;msg.textContent='Schau genau hin …';seq.push(ri(0,3));seq.forEach((v,k)=>timers.push(setTimeout(()=>flash(v),700+k*650)));timers.push(setTimeout(()=>{input=true;p=0;msg.textContent=`Jetzt du! (${seq.length} ${seq.length===1?'Rune':'Runen'})`;},700+seq.length*650));}
+  pads.forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();if(!input||!alive)return;const i=+b.dataset.i;flash(i,200);
+    if(i!==seq[p]){alive=false;input=false;msg.textContent='Oh nein, falsche Rune!';buzz(150);timers.push(setTimeout(()=>api.end(seq.length-1),900));return;}
+    p++;if(p===seq.length){api.score(seq.length);input=false;msg.textContent='Super! 🌟';timers.push(setTimeout(play,800));}}));
+  el.querySelector('#sStart').onclick=e=>{e.target.remove();tone(0);play();};
+  return {stop(){alive=false;timers.forEach(clearTimeout);try{if(actx&&actx.state!=='closed'){const x=actx;actx=null;x.close().catch(()=>{});}}catch(e){}}};}
+
+/* --- 8 Seifenblasen-Zauber --- */
+function runBubbles(el,api){const {c,ctx,pos,W,H}=mkCanvas(el,300);let bs=[],pops=[],score=0,acc=0,raf,last=performance.now(),t0=performance.now(),over=false,left=30;
+  el.addEventListener('pointerdown',e=>{e.preventDefault();if(over)return;const [x,y]=pos(e);for(let i=bs.length-1;i>=0;i--){const b=bs[i];if((x-b.x)**2+(y-b.y)**2<(b.r+8)**2){score+=b.gold?3:1;api.score(score);pops.push({x:b.x,y:b.y,r:b.r,t:0});bs.splice(i,1);break;}}});
+  function step(f,now){left=Math.max(0,30-(now-t0)/1000);if(left<=0){over=true;draw();setTimeout(()=>api.end(score),300);return;}
+    acc+=f;if(acc>Math.max(14,30-score*.3)){acc=0;bs.push({x:ri(30,W-30),y:H+30,r:ri(18,30),v:.8+Math.random()*1.4+score*.02,gold:Math.random()<.12,w:Math.random()*6.28,e:pick(['🧚','✨','🦋','🍄','🌸','🐞'])});}
+    bs.forEach(b=>{b.y-=b.v*f;b.w+=.05*f;});bs=bs.filter(b=>b.y>-40);pops.forEach(p=>p.t+=f);pops=pops.filter(p=>p.t<14);}
+  function draw(){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#7fc8f0');g.addColorStop(1,'#d9f0ff');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    for(const b of bs){const x=b.x+Math.sin(b.w)*4;const rg=ctx.createRadialGradient(x-b.r/3,b.y-b.r/3,2,x,b.y,b.r);rg.addColorStop(0,'#ffffffcc');rg.addColorStop(1,b.gold?'#f3c45a88':'#b09cf044');ctx.fillStyle=rg;ctx.beginPath();ctx.arc(x,b.y,b.r,0,7);ctx.fill();ctx.strokeStyle=b.gold?'#e0a82e':'#ffffffcc';ctx.lineWidth=2;ctx.stroke();emoji(ctx,b.e,x,b.y,b.r*.95);}
+    for(const p of pops){ctx.strokeStyle=`rgba(255,255,255,${1-p.t/14})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(p.x,p.y,p.r+p.t*2,0,7);ctx.stroke();}
+    ctx.font='800 14px Nunito,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';ctx.fillStyle='#2a1b5e';ctx.fillText('⏱️ '+Math.ceil(left)+' s · goldene Blasen = 3 Punkte',8,12);}
+  function loop(t){raf=requestAnimationFrame(loop);const f=Math.min(3,(t-last)/16.67);last=t;if(over)return;step(f,t);if(!over)draw();}
+  raf=requestAnimationFrame(loop);return {stop(){cancelAnimationFrame(raf);}};}
+
+/* --- 9 Tic-Tac-Toe gegen den Kobold --- */
+function runTTT(el,api){const [aw,ah]=areaSize(el),sz=Math.min(aw-30,ah-160,460),me=pet().e,ko='👺';let b,wins=0,turn=null,alive=true,timers=[];
+  el.insertAdjacentHTML('beforeend',`<div class="gmsg"></div><div class="ttt" style="width:${sz}px;height:${sz}px">${[...Array(9)].map((_,i)=>`<button class="tcell" data-i="${i}" style="font-size:${Math.round(sz/6)}px"></button>`).join('')}</div><div class="gnote">Du bist ${me}, der Kobold ist ${ko}. Unentschieden? Einfach weiterspielen!</div>`);
+  const cells=[...el.querySelectorAll('.tcell')],msg=el.querySelector('.gmsg'),L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  const win=(bb,p)=>L.some(l=>l.every(i=>bb[i]===p));const render=()=>cells.forEach((c,i)=>c.textContent=b[i]==='X'?me:b[i]==='O'?ko:'');
+  const newRound=()=>{b=Array(9).fill(null);render();turn='X';msg.textContent=`Siege: ${wins} · Du bist dran!`;};
+  const draw=()=>{if(b.every(Boolean)){msg.textContent='Unentschieden! Neue Runde …';turn=null;timers.push(setTimeout(newRound,1000));return true;}return false;};
+  function aiMove(){const free=b.map((v,i)=>v?null:i).filter(i=>i!==null);const tryWin=p=>{for(const i of free){b[i]=p;const w=win(b,p);b[i]=null;if(w)return i;}return null;};
+    let m=Math.random()<.85?tryWin('O'):null;if(m===null&&Math.random()<.7)m=tryWin('X');if(m===null&&b[4]===null&&Math.random()<.6)m=4;if(m===null)m=pick(free);b[m]='O';render();
+    if(win(b,'O')){alive=false;msg.textContent='Der Kobold hat gewonnen!';timers.push(setTimeout(()=>api.end(wins),1300));return;}if(!draw()){turn='X';msg.textContent=`Siege: ${wins} · Du bist dran!`;}}
+  cells.forEach((c,i)=>c.addEventListener('click',()=>{if(!alive||turn!=='X'||b[i])return;b[i]='X';render();
+    if(win(b,'X')){wins++;api.score(wins);msg.textContent='Gewonnen! 🎉 Nächste Runde …';turn=null;timers.push(setTimeout(newRound,1100));return;}
+    if(draw())return;turn='O';msg.textContent='Der Kobold überlegt …';timers.push(setTimeout(aiMove,550));}));
+  newRound();return {stop(){alive=false;timers.forEach(clearTimeout);}};}
+
+/* --- 10 Kristall-Schiebepuzzle --- */
+function runPuzzle(el,api){const [aw,ah]=areaSize(el),sz=Math.min(aw-30,ah-120,460);let t=[1,2,3,4,5,6,7,8,0],moves=0,done=false,tm=null;
+  const nb=e=>{const r=Math.floor(e/3),c=e%3,o=[];if(r>0)o.push(e-3);if(r<2)o.push(e+3);if(c>0)o.push(e-1);if(c<2)o.push(e+1);return o;};
+  do{for(let k=0;k<180;k++){const e=t.indexOf(0),j=pick(nb(e));[t[e],t[j]]=[t[j],t[e]];}}while(t.join()==='1,2,3,4,5,6,7,8,0');
+  el.insertAdjacentHTML('beforeend',`<div class="gmsg">Schiebe die Kristalle in die Reihenfolge 1 bis 8!</div><div class="puz" style="width:${sz}px;height:${sz}px"></div><div class="gnote">Tippe auf einen Kristall neben dem leeren Feld.</div>`);const box=el.querySelector('.puz');
+  function render(){box.innerHTML=t.map((v,i)=>v?`<button class="ptile" data-i="${i}" style="--h:${v*40};font-size:${Math.round(sz/7)}px">${v}</button>`:'<div class="pempty"></div>').join('');
+    box.querySelectorAll('.ptile').forEach(b=>b.onclick=()=>{if(done)return;const i=+b.dataset.i,e=t.indexOf(0);if(!nb(e).includes(i))return;[t[e],t[i]]=[t[i],t[e]];moves++;api.score(moves);render();if(t.join()==='1,2,3,4,5,6,7,8,0'){done=true;tm=setTimeout(()=>api.end(moves),700);}});}
+  render();return {stop(){clearTimeout(tm);}};}
+
 const GAMES=[
- {id:'snake',name:'Drachen-Snake',icon:'🐲',desc:'Im Vollbild: Wische mit dem Finger, um den Drachen zu lenken, und sammle Kristalle. Beiß dich nicht in den eigenen Schwanz!',unit:'Kristalle',run:runSnake},
+ {id:'snake',name:'Drachen-Snake',icon:'🐲',desc:'Wische mit dem Finger, um den Drachen zu lenken, und sammle Kristalle. Beiß dich nicht in den Schwanz!',unit:'Kristalle',run:runSnake},
  {id:'memory',name:'Zauber-Memory',icon:'🃏',desc:'Finde alle Paare der Fabelwesen mit möglichst wenigen Zügen.',unit:'Züge',low:true,run:runMemory},
  {id:'frog',name:'Frosch-Fangen',icon:'🐸',desc:'Merlos Zauberfrösche sind entwischt! Tippe sie schnell an, bevor sie abtauchen.',unit:'Punkte',run:runFrog},
  {id:'owl',name:'Eulenflug',icon:'🦉',desc:'Tippe, damit die Eule flattert, und fliege durch die Lücken im Zauberwald.',unit:'Bäume',run:runOwl},
- {id:'brk',name:'Kristall-Breakout',icon:'💎',desc:'Lenke den goldenen Schild und zerschlage alle Kristallmauern.',unit:'Kristalle',run:runBreakout}];
+ {id:'brk',name:'Kristall-Breakout',icon:'💎',desc:'Lenke den goldenen Schild und zerschlage alle Kristallmauern.',unit:'Kristalle',run:runBreakout},
+ {id:'catch',name:'Sternenfänger',icon:'🌟',desc:'Fang mit dem Korb die fallenden Sterne und weiche den Steinen aus.',unit:'Sterne',run:runCatch},
+ {id:'simon',name:'Zauber-Runen',icon:'🔮',desc:'Die Runen leuchten in einer Reihenfolge auf. Merke sie dir und tippe sie nach!',unit:'Runen',run:runSimon},
+ {id:'bubble',name:'Seifenblasen-Zauber',icon:'🫧',desc:'Bringe in 30 Sekunden so viele Zauberblasen wie möglich zum Platzen.',unit:'Blasen',run:runBubbles},
+ {id:'ttt',name:'Kobold-Duell',icon:'👺',desc:'Tic-Tac-Toe gegen den frechen Kobold. Wie oft kannst du ihn besiegen?',unit:'Siege',run:runTTT},
+ {id:'puzzle',name:'Kristall-Schiebepuzzle',icon:'🧩',desc:'Schiebe die Kristalle in die richtige Reihenfolge – mit möglichst wenigen Zügen.',unit:'Züge',low:true,run:runPuzzle}];
 let G=null;
-function stopGame(){if(!G)return;clearInterval(G.tick);try{G.inst&&G.inst.stop();}catch(e){}save();}
+function stopGame(){if(!G)return;clearInterval(G.tick);try{G.inst&&G.inst.stop();}catch(e){}if(G.ov){G.ov.remove();G.ov=null;document.body.style.overflow='';}save();}
 function leaveGame(){if(G){G.over=true;stopGame();G=null;}}
 function showArcade(){leaveGame();window.scrollTo(0,0);const t=S.playMs||0,w=wallet();
   app.innerHTML=topbar()+`<div class="lead"><h1 style="font-size:30px">🎮 Zauber-Arkade</h1></div>
@@ -838,16 +906,17 @@ ${GAMES.map(g=>{const hs=(S.high||{})[g.id];return `<div class="card game"><div 
 <div class="row"><button class="btn ghost wide" style="color:#fde9b0;border-color:#fde9b088" onclick="showMap()">Zurück zur Karte</button></div>`;}
 function startGame(id){leaveGame();const g=GAMES.find(x=>x.id===id);const timeMode=(S.playMs||0)>0;
   if(!timeMode){if(wallet()<PRICE)return toast(`Für eine Runde brauchst du ${PRICE} 💎. Dir fehlen noch ${PRICE-wallet()}. Löse eine Quest, dann bekommst du Kristalle und Spielzeit!`);S.spent=(S.spent||0)+PRICE;save();}
-  window.scrollTo(0,0);const hs=(S.high||{})[g.id];
-  app.innerHTML=topbar()+`<div class="card" style="padding:12px"><div class="taskhead"><span>${g.icon} ${g.name}</span><span>${timeMode?`⏳ <b id="gtime">${fmtMs(S.playMs)}</b>`:'1 Runde'}</span></div><div class="small" style="margin:4px 0 10px">${g.unit}: <b id="gscore">0</b> · 🏆 Rekord: ${hs!=null?hs:'–'}</div><div id="garea" class="garea"></div><div class="row"><button class="btn ghost wide" id="gquit">Zurück zur Arkade</button></div></div>`;
-  const sess={g,timeMode,score:0,over:false};G=sess;
-  const api={score:v=>{if(G!==sess)return;sess.score=v;const e=$('#gscore');if(e)e.textContent=v;},end:v=>{if(G===sess)gameOver(v,false);}};
-  sess.inst=g.run($('#garea'),api);
-  if(timeMode){sess.last=Date.now();sess.tick=setInterval(()=>{const now=Date.now();if(!document.hidden)S.playMs=Math.max(0,(S.playMs||0)-(now-sess.last));sess.last=now;const e=$('#gtime');if(e)e.textContent=fmtMs(S.playMs);if(S.playMs<=0)gameOver(g.low?null:sess.score,true);},250);}
-  $('#gquit').onclick=()=>{if(!sess.over&&!timeMode)return confirmBox('Runde beenden? Die Kristalle für diese Runde sind dann verbraucht.',()=>showArcade());showArcade();};}
+  window.scrollTo(0,0);app.innerHTML=topbar()+`<div class="card" style="padding:12px"><div class="taskhead"><span>${g.icon} ${g.name}</span><span></span></div><div id="garea" class="garea"><p class="small">Das Spiel läuft im Vollbild …</p></div><div class="row"><button class="btn ghost wide" onclick="showArcade()">Zurück zur Arkade</button></div></div>`;
+  const ov=document.createElement('div');ov.className='fsgame';ov.innerHTML=`<div class="fshud"><span>${g.icon} <b class="fs-score">0</b> <small>${g.unit}</small></span><span class="fs-time">${timeMode?'⏳ '+fmtMs(S.playMs):'1 Runde'}</span><button class="fs-x" aria-label="Spiel beenden">✕</button></div><div class="fsarea"></div>`;
+  document.body.appendChild(ov);document.body.style.overflow='hidden';ov.addEventListener('touchmove',e=>{if(e.target.closest('.fsarea'))e.preventDefault();},{passive:false});
+  const sess={g,timeMode,score:0,over:false,ov};G=sess;
+  const api={score:v=>{if(G!==sess)return;sess.score=v;const e=ov.querySelector('.fs-score');if(e)e.textContent=v;},end:v=>{if(G===sess)gameOver(v,false);}};
+  sess.inst=g.run(ov.querySelector('.fsarea'),api);
+  if(timeMode){sess.last=Date.now();sess.tick=setInterval(()=>{const now=Date.now();if(!document.hidden)S.playMs=Math.max(0,(S.playMs||0)-(now-sess.last));sess.last=now;const e=ov.querySelector('.fs-time');if(e)e.textContent='⏳ '+fmtMs(S.playMs);if(S.playMs<=0)gameOver(g.low?null:sess.score,true);},250);}
+  ov.querySelector('.fs-x').onclick=()=>{if(sess.over)return;confirmBox(timeMode?'Spiel beenden? Deine restliche Spielzeit bleibt erhalten.':'Runde beenden? Die Kristalle für diese Runde sind dann verbraucht.',()=>gameOver(g.low?null:sess.score,false));};}
 function gameOver(score,timeUp){const s=G;if(!s||s.over)return;s.over=true;stopGame();const g=s.g;S.high=S.high||{};const prev=S.high[g.id];let rec=false;
-  if(score!=null&&(g.low?(prev==null||score<prev):score>(prev||0))){S.high[g.id]=score;rec=true;}save();const t=S.playMs||0;
-  $('#garea').innerHTML=`<div class="gres"><div style="font-size:56px">${rec?'🏆':g.icon}</div><h2>${timeUp?'Spielzeit vorbei!':rec?'Neuer Rekord!':'Runde vorbei!'}</h2>${score!=null?`<p class="q">${g.unit}: <b>${score}</b></p>`:''}<p class="small">🏆 Rekord: ${S.high[g.id]!=null?S.high[g.id]+' '+g.unit:'–'}</p>${timeUp?`<p class="small">Mit der nächsten Quest verdienst du neue Spielzeit – oder spiele mit Kristallen weiter.</p>`:''}
+  if(score!=null&&(g.low?(prev==null||score<prev):score>(prev||0))){S.high[g.id]=score;rec=true;}save();const t=S.playMs||0;const area=$('#garea');if(!area)return;
+  area.innerHTML=`<div class="gres"><div style="font-size:56px">${rec?'🏆':g.icon}</div><h2>${timeUp?'Spielzeit vorbei!':rec?'Neuer Rekord!':'Runde vorbei!'}</h2>${score!=null?`<p class="q">${g.unit}: <b>${score}</b></p>`:''}<p class="small">🏆 Rekord: ${S.high[g.id]!=null?S.high[g.id]+' '+g.unit:'–'}</p>${timeUp?`<p class="small">Mit der nächsten Quest verdienst du neue Spielzeit – oder spiele mit Kristallen weiter.</p>`:''}
 <div class="row"><button class="btn" id="gagain">${t>0?'Nochmal ⏳':'Nochmal · '+PRICE+' 💎'}</button><button class="btn sec" id="gback">Zur Arkade</button></div>${timeUp?`<div class="row"><button class="btn ghost wide" onclick="showMap()">Zur Karte – neue Quest</button></div>`:''}</div>`;
   $('#gagain').onclick=()=>startGame(g.id);$('#gback').onclick=()=>showArcade();if(rec)sparkle(innerWidth/2,260,20);}
 
@@ -861,7 +930,7 @@ function showParents(){leaveGame();window.scrollTo(0,0);const sk=Object.entries(
 <h3 class="medieval">Probe-Tests</h3>${S.probes.length?S.probes.slice(-8).reverse().map(p=>`<div class="stat"><span>${p.k==='probeM'?'Mathe':'Deutsch'} · ${p.d}</span><span>${p.ok} / ${p.n}</span></div>`).join(''):'<p class="small">Noch kein Probe-Test.</p>'}
 <p class="small" style="margin-top:12px">Die Aufgaben sind eigene Übungsaufgaben im Stil der Kompass-4-Kompetenzmessung (Klasse 4, Baden-Württemberg), keine Originalaufgaben des IBBW. Rechenaufgaben werden bei jedem Start neu erzeugt.</p>
 <div class="row"><button class="btn sec" onclick="showStart()">Name / Begleiter ändern</button><button class="btn ghost" id="rst">Fortschritt löschen</button></div><div class="row"><button class="btn wide" onclick="showMap()">Zur Karte</button></div></div>`;
-  $('#rst').onclick=()=>confirmBox('Wirklich den gesamten Fortschritt löschen?',()=>{S={name:S.name,pet:S.pet,gems:0,regions:{},stats:{},streak:0,lastDay:'',finalDone:false,probes:[],mistakes:{},seen:{},spent:0,playMs:0,high:{}};SEEN=S.seen;save();showMap();});}
+  $('#rst').onclick=()=>confirmBox('Wirklich den gesamten Fortschritt löschen?',()=>{S={name:S.name,pet:S.pet,gems:0,regions:{},stats:{},streak:0,lastDay:'',finalDone:false,probes:[],mistakes:{},seen:{},spent:0,playMs:0,high:{},quests:{}};SEEN=S.seen;save();showMap();});}
 
 S.name?showMap():showStart();
 </script>
