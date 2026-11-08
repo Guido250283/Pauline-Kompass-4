@@ -31,7 +31,7 @@ Der magische Kompass des Reiches Kompassia ist in acht Splitter zerbrochen. An a
 
 ## Zauber-Arkade 🎮
 
-Fünf Minispiele als Belohnung: Drachen-Snake, Zauber-Memory, Frosch-Fangen, Eulenflug, Kristall-Breakout.
+Fünf Minispiele als Belohnung: Drachen-Snake (Vollbild, Wischsteuerung), Zauber-Memory, Frosch-Fangen, Eulenflug, Kristall-Breakout.
 
 - **Spielzeit verdienen:** 2 Minuten pro Stern einer Quest, 3 Min. Quelle der Wiederholung, 5 Min. Probe-Test, 10 Min. Endprüfung
 - **Oder mit Kristallen:** 10 💎 pro Runde (die Erfahrungsstufe bleibt dabei erhalten)

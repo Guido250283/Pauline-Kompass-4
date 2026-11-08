@@ -109,6 +109,11 @@ svg.fig{display:block;margin:10px auto;max-width:100%}
 .cert .big{font-size:64px}
 .small{font-size:14px;color:#6b4a1f}
 a{color:#4b3690}
+.fsgame{position:fixed;inset:0;z-index:60;background:#14301f;touch-action:none;-webkit-user-select:none;user-select:none;display:flex;flex-direction:column;overscroll-behavior:none}
+.fsgame canvas{display:block;touch-action:none}
+.fshud{display:flex;justify-content:space-between;align-items:center;padding:calc(env(safe-area-inset-top) + 8px) 14px 8px;background:#0e2216;color:#fde9b0;font:800 18px Nunito,sans-serif}
+.fs-x{background:#ffffff22;border:none;color:#fde9b0;font-size:20px;width:40px;height:40px;border-radius:50%;cursor:pointer}
+
 .hcalc{display:flex;flex-direction:column;gap:8px;align-items:center}
 .hrow{display:flex;align-items:center;gap:5px}
 .hrow span{font-weight:900;font-size:20px;color:#5a2d0c;min-width:12px;text-align:center}
@@ -720,28 +725,44 @@ function mkCanvas(el,W,H){const c=document.createElement('canvas');c.className='
   const pos=e=>{const r=c.getBoundingClientRect();return [(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H];};return {c,ctx,pos};}
 function rrect(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);ctx.fill();}
 
-/* --- Drachen-Snake --- */
-function runSnake(el,api){const W=300,H=360,C=20,CW=W/C,CH=H/C;const {c,ctx}=mkCanvas(el,W,H);
-  let sn=[{x:7,y:9},{x:6,y:9},{x:5,y:9}],dir={x:1,y:0},nd=dir,score=0,step=170,acc=0,last=performance.now(),raf,started=false,dead=false;
-  const place=()=>{let p;do{p={x:ri(0,CW-1),y:ri(0,CH-1)};}while(sn.some(s=>s.x===p.x&&s.y===p.y));return p;};let food=place();
-  const turn=(x,y)=>{if(dead)return;if(x===-dir.x&&y===-dir.y)return;nd={x,y};started=true;};
+/* --- Drachen-Snake (Vollbild, Wischsteuerung) --- */
+function runSnake(el,api){
+  const ov=document.createElement('div');ov.className='fsgame';
+  ov.innerHTML=`<div class="fshud"><span>💎 <b class="fs-score">0</b></span><span class="fs-time"></span><button class="fs-x" aria-label="Spiel beenden">✕</button></div><canvas></canvas>`;
+  document.body.appendChild(ov);const prevOv=document.body.style.overflow;document.body.style.overflow='hidden';
+  const c=ov.querySelector('canvas'),ctx=c.getContext('2d');let W,H,C,CW,CH,ox,oy;
+  function size(){const hud=ov.querySelector('.fshud').offsetHeight;W=window.innerWidth;H=window.innerHeight-hud;const dpr=window.devicePixelRatio||1;
+    c.style.width=W+'px';c.style.height=H+'px';c.width=Math.round(W*dpr);c.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
+    C=Math.max(20,Math.min(30,Math.floor(Math.min(W,H)/15)));CW=Math.floor(W/C);CH=Math.floor(H/C);ox=Math.floor((W-CW*C)/2);oy=Math.floor((H-CH*C)/2);}
+  size();
+  let sn,dir,nd,score=0,step=165,acc=0,last=performance.now(),raf,started=false,dead=false,food;
+  const mx=Math.floor(CW/2),my=Math.floor(CH/2);sn=[{x:mx,y:my},{x:mx-1,y:my},{x:mx-2,y:my}];dir={x:1,y:0};nd=dir;
+  const place=()=>{let p;do{p={x:ri(0,CW-1),y:ri(0,CH-1)};}while(sn.some(s=>s.x===p.x&&s.y===p.y));return p;};food=place();
+  const turn=(x,y)=>{if(dead)return;const cur=started?dir:{x:0,y:0};if(x===-cur.x&&y===-cur.y&&started)return;nd={x,y};if(!started){dir=nd;started=true;}};
   function update(){dir=nd;const h={x:(sn[0].x+dir.x+CW)%CW,y:(sn[0].y+dir.y+CH)%CH};
-    if(sn.some(s=>s.x===h.x&&s.y===h.y)){dead=true;draw();setTimeout(()=>api.end(score),500);return;}
-    sn.unshift(h);if(h.x===food.x&&h.y===food.y){score++;api.score(score);food=place();step=Math.max(85,step-5);}else sn.pop();}
-  function draw(){ctx.fillStyle='#1d3b2a';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#ffffff12';ctx.lineWidth=1;
-    for(let x=0;x<=W;x+=C){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<=H;y+=C){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
-    emoji(ctx,'💎',food.x*C+C/2,food.y*C+C/2,17);
-    for(let i=sn.length-1;i>0;i--){const s=sn[i];ctx.fillStyle=i%2?'#5fcf80':'#3fae62';ctx.beginPath();ctx.arc(s.x*C+C/2,s.y*C+C/2,C/2-1,0,7);ctx.fill();}
-    emoji(ctx,dead?'😵':'🐲',sn[0].x*C+C/2,sn[0].y*C+C/2,21);
-    if(!started)overlayText(ctx,W,H,'Wische oder tippe auf die Pfeile');}
+    if(sn.some(s=>s.x===h.x&&s.y===h.y)){dead=true;draw();navigator.vibrate&&navigator.vibrate(150);setTimeout(()=>api.end(score),700);return;}
+    sn.unshift(h);if(h.x===food.x&&h.y===food.y){score++;api.score(score);ov.querySelector('.fs-score').textContent=score;food=place();step=Math.max(80,step-4);}else sn.pop();}
+  function draw(){ctx.fillStyle='#14301f';ctx.fillRect(0,0,W,H);ctx.fillStyle='#1d3b2a';ctx.fillRect(ox,oy,CW*C,CH*C);ctx.strokeStyle='#ffffff10';ctx.lineWidth=1;
+    for(let x=0;x<=CW;x++){ctx.beginPath();ctx.moveTo(ox+x*C,oy);ctx.lineTo(ox+x*C,oy+CH*C);ctx.stroke();}for(let y=0;y<=CH;y++){ctx.beginPath();ctx.moveTo(ox,oy+y*C);ctx.lineTo(ox+CW*C,oy+y*C);ctx.stroke();}
+    const cx=p=>ox+p.x*C+C/2,cy=p=>oy+p.y*C+C/2;
+    emoji(ctx,'💎',cx(food),cy(food),C*.85);
+    for(let i=sn.length-1;i>0;i--){ctx.fillStyle=i%2?'#5fcf80':'#3fae62';ctx.beginPath();ctx.arc(cx(sn[i]),cy(sn[i]),C/2-1,0,7);ctx.fill();}
+    emoji(ctx,dead?'😵':'🐲',cx(sn[0]),cy(sn[0]),C*1.05);
+    if(!started)overlayText(ctx,W,H,'Wische in eine Richtung, um loszulegen!');
+    if(G&&G.timeMode){const t=ov.querySelector('.fs-time');if(t)t.textContent='⏳ '+fmtMs(S.playMs||0);}}
   function loop(t){raf=requestAnimationFrame(loop);const dt=Math.min(250,t-last);last=t;if(started&&!dead){acc+=dt;while(acc>=step&&!dead){acc-=step;update();}}if(!dead)draw();}
   raf=requestAnimationFrame(loop);
-  let sx=0,sy=0;c.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;e.preventDefault();});
-  c.addEventListener('pointerup',e=>{const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;Math.abs(dx)>Math.abs(dy)?turn(Math.sign(dx),0):turn(0,Math.sign(dy));});
-  const dp=document.createElement('div');dp.className='dpad';dp.innerHTML='<button data-d="0,-1">▲</button><button data-d="-1,0">◀</button><button data-d="0,1">▼</button><button data-d="1,0">▶</button>';el.appendChild(dp);
-  dp.querySelectorAll('button').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();const [x,y]=b.dataset.d.split(',').map(Number);turn(x,y);}));
+  /* Wischen: Richtung wechselt schon während der Bewegung, mehrere Wischer hintereinander möglich */
+  let sx=null,sy=null;const TH=22;
+  ov.addEventListener('pointerdown',e=>{if(e.target.closest('.fs-x'))return;sx=e.clientX;sy=e.clientY;e.preventDefault();});
+  ov.addEventListener('pointermove',e=>{if(sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))<TH)return;
+    Math.abs(dx)>Math.abs(dy)?turn(Math.sign(dx),0):turn(0,Math.sign(dy));sx=e.clientX;sy=e.clientY;e.preventDefault();});
+  ['pointerup','pointercancel'].forEach(ev=>ov.addEventListener(ev,()=>{sx=sy=null;}));
+  ov.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
   const key=e=>{const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(m){e.preventDefault();turn(m[0],m[1]);}};window.addEventListener('keydown',key);
-  return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);}};}
+  ov.querySelector('.fs-x').onclick=()=>{if(!dead){dead=true;api.end(score);}};
+  el.insertAdjacentHTML('beforeend','<p class="small" style="text-align:center">Das Spiel läuft im Vollbild.</p>');
+  return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);ov.remove();document.body.style.overflow=prevOv;}};}
 
 /* --- Zauber-Memory --- */
 function runMemory(el,api){const pics=['🐉','🦄','🦉','🦊','🧚','🧙','🏰','💎'];const cards=shuffle([...pics,...pics]);let open=[],moves=0,found=0,lock=false,t1=null;
@@ -801,7 +822,7 @@ function runBreakout(el,api){const W=300,H=420;const {c,ctx,pos}=mkCanvas(el,W,H
   raf=requestAnimationFrame(loop);return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);}};}
 
 const GAMES=[
- {id:'snake',name:'Drachen-Snake',icon:'🐲',desc:'Steuere den Drachen und sammle Kristalle. Beiß dich nicht in den eigenen Schwanz!',unit:'Kristalle',run:runSnake},
+ {id:'snake',name:'Drachen-Snake',icon:'🐲',desc:'Im Vollbild: Wische mit dem Finger, um den Drachen zu lenken, und sammle Kristalle. Beiß dich nicht in den eigenen Schwanz!',unit:'Kristalle',run:runSnake},
  {id:'memory',name:'Zauber-Memory',icon:'🃏',desc:'Finde alle Paare der Fabelwesen mit möglichst wenigen Zügen.',unit:'Züge',low:true,run:runMemory},
  {id:'frog',name:'Frosch-Fangen',icon:'🐸',desc:'Merlos Zauberfrösche sind entwischt! Tippe sie schnell an, bevor sie abtauchen.',unit:'Punkte',run:runFrog},
  {id:'owl',name:'Eulenflug',icon:'🦉',desc:'Tippe, damit die Eule flattert, und fliege durch die Lücken im Zauberwald.',unit:'Bäume',run:runOwl},
