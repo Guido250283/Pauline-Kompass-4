@@ -109,6 +109,25 @@ svg.fig{display:block;margin:10px auto;max-width:100%}
 .cert .big{font-size:64px}
 .small{font-size:14px;color:#6b4a1f}
 a{color:#4b3690}
+.garea{display:flex;flex-direction:column;align-items:center;width:100%}
+.gcanvas{display:block;border-radius:12px;touch-action:none;box-shadow:0 4px 14px #0006;max-width:100%;-webkit-user-select:none;user-select:none}
+.dpad{display:grid;grid-template-columns:repeat(3,68px);grid-template-rows:repeat(2,54px);gap:6px;margin-top:10px;touch-action:none}
+.dpad button{font-size:24px;border-radius:14px;border:none;background:linear-gradient(#efe4ff,#c9b6f2);box-shadow:0 3px 0 #7a62b5;color:#2a1b5e}
+.dpad [data-d="0,-1"]{grid-column:2;grid-row:1}.dpad [data-d="-1,0"]{grid-column:1;grid-row:2}.dpad [data-d="0,1"]{grid-column:2;grid-row:2}.dpad [data-d="1,0"]{grid-column:3;grid-row:2}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:360px}
+.mcard{aspect-ratio:1;border-radius:12px;border:3px solid #c9a35c;background:linear-gradient(135deg,#7a62b5,#4b3690);font-size:34px;cursor:pointer;padding:0;transition:background .15s}
+.mcard span{opacity:0;transition:opacity .15s}.mcard.up{background:#fffdf5}.mcard.up span{opacity:1}.mcard.done{background:#dff5e6;border-color:#2f9e57}
+.holes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:330px;touch-action:manipulation}
+.hole{aspect-ratio:1;border-radius:50%;border:none;background:radial-gradient(circle at 50% 62%,#2b1d0e 0 42%,#6b4423 43% 58%,#8fbf6a 59%);overflow:hidden;cursor:pointer;padding:0}
+.hole span{display:inline-block;font-size:46px;transform:translateY(70%) scale(.4);opacity:0;transition:transform .12s,opacity .12s}
+.hole.up span{transform:none;opacity:1}.hole.gold{box-shadow:0 0 0 4px #f3c45a,0 0 22px #f3c45a}.hole.gold span{filter:sepia(1) saturate(4) hue-rotate(5deg)}
+.hole.hit{background:radial-gradient(circle,#fff 0 30%,#f3c45a 31% 58%,#8fbf6a 59%)}
+.ftime{font-size:18px;font-weight:800;margin-bottom:8px}
+.gres{text-align:center;padding:10px;width:100%}.gres h2{margin:4px 0}
+.card.game{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:center}
+.card.game .gicon{font-size:44px;text-align:center}.card.game h3{margin:0 0 4px;font-size:20px;color:#5a2d0c}.card.game .btn{grid-column:1 / -1}
+.arc-stat{display:flex;justify-content:space-around;margin-top:10px;font-size:17px;flex-wrap:wrap;gap:6px}
+
 .tools{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .tbtn{font:800 15px Nunito,sans-serif;padding:8px 12px;border-radius:20px;border:2px solid var(--edge);background:#fffdf5;color:#5a2d0c;cursor:pointer}
 .tbtn.on{background:#5a2d0c;color:#fde9b0;border-color:#5a2d0c}
@@ -433,7 +452,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 (function(){const sky=$('#sky');for(let i=0;i<70;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.animationDelay=(Math.random()*3)+'s';if(Math.random()<.2){s.style.width=s.style.height='3px';}sky.appendChild(s);}})();
 
 function topbar(){const {cur,next}=level();const pct=next?Math.round((S.gems-cur[0])/(next[0]-cur[0])*100):100;
-  return `<div class="top"><div class="pet">${pet().e}</div><div class="who"><b>${esc(S.name||'Heldin')} · ${cur[1]}</b><div class="bar"><span style="width:${pct}%"></span></div><small>${next?`Noch ${next[0]-S.gems} 💎 bis „${next[1]}“`:'Höchste Stufe erreicht!'}${S.streak>1?` · 🔥 ${S.streak} Tage`:''}</small></div><div class="gems">💎 ${S.gems}</div><button class="iconbtn" onclick="showMap()" aria-label="Karte">🗺️</button></div>`;}
+  return `<div class="top"><div class="pet">${pet().e}</div><div class="who"><b>${esc(S.name||'Heldin')} · ${cur[1]}</b><div class="bar"><span style="width:${pct}%"></span></div><small>${next?`Noch ${next[0]-S.gems} Erfahrung bis „${next[1]}“`:'Höchste Stufe erreicht!'}${S.streak>1?` · 🔥 ${S.streak} Tage`:''}</small></div><div class="gems">💎 ${wallet()}</div><button class="iconbtn" onclick="showMap()" aria-label="Karte">🗺️</button></div>`;}
 
 function sparkle(x,y,n=14){const em=['✨','💎','⭐','🌟'];for(let i=0;i<n;i++){const s=document.createElement('div');s.className='spark';s.textContent=em[i%em.length];s.style.left=x+'px';s.style.top=y+'px';const a=Math.random()*Math.PI*2,d=60+Math.random()*90;s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',Math.sin(a)*d+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),1000);}}
 
@@ -447,11 +466,12 @@ function showStart(){let sel=S.pet;app.innerHTML=`<div class="lead"><h1>Kompass-
   $('#go').onclick=()=>{S.name=$('#nm').value.trim()||'Pauline';S.pet=sel;save();showMap();};}
 
 /* ============ Karte ============ */
-function showMap(){if(!S.name)return showStart();window.scrollTo(0,0);const nodes=[...REGIONS,{id:'final',name:'Turm des Großen Kompass',icon:'🧭',final:true}];
+function showMap(){leaveGame();if(!S.name)return showStart();window.scrollTo(0,0);const nodes=[...REGIONS,{id:'final',name:'Turm des Großen Kompass',icon:'🧭',final:true}];
   const xs=[28,72,30,70,28,72,30,70,50],gapY=150,H=nodes.length*gapY+20;const sp=splinters(),unlocked=sp>=8;
   const pts=nodes.map((n,i)=>[xs[i],i*gapY+50]);
   let path=`M${pts[0][0]} ${pts[0][1]}`;for(let i=1;i<pts.length;i++){const [x0,y0]=pts[i-1],[x1,y1]=pts[i];path+=` C${x0} ${y0+gapY/2}, ${x1} ${y1-gapY/2}, ${x1} ${y1}`;}
   app.innerHTML=topbar()+`<div class="lead"><h1 style="font-size:30px">Das Reich Kompassia</h1><div>Kompass-Splitter: <b>${sp} / 8</b> ${'🔷'.repeat(sp)}${'▫️'.repeat(8-sp)}</div></div>
+<div class="row" style="margin-top:10px"><button class="btn sec wide" onclick="showArcade()">🎮 Zauber-Arkade${(S.playMs||0)>0?' · ⏳ '+fmtMs(S.playMs):' · 💎 '+wallet()}</button></div>
 <div class="legend"><span class="lm">Mathe</span><span class="ld">Deutsch</span></div>
 <div class="map" style="height:${H}px"><svg class="path" viewBox="0 0 100 ${H}" preserveAspectRatio="none"><path d="${path}" fill="none" stroke="#fde9b0" stroke-opacity=".55" stroke-width="3" stroke-dasharray="2 8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>
 ${nodes.map((n,i)=>{const st=S.regions[n.id]?.stars||0;const cls=n.final?('final'+(unlocked?'':' locked')):(n.subj==='M'?'m':'d');
@@ -463,7 +483,7 @@ ${healCount()?`<div class="card"><h2>🌿 Quelle der Wiederholung</h2><div class
 
 function toast(msg){const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="card"><div class="speech"><div class="p">${pet().e}</div><div class="bubble">${msg}</div></div><div class="row"><button class="btn wide">OK</button></div></div>`;m.querySelector('button').onclick=()=>m.remove();m.onclick=e=>{if(e.target===m)m.remove();};document.body.appendChild(m);}
 
-function showRegion(id){const r=REGIONS.find(x=>x.id===id);const st=S.regions[id]?.stars||0;window.scrollTo(0,0);
+function showRegion(id){leaveGame();const r=REGIONS.find(x=>x.id===id);const st=S.regions[id]?.stars||0;window.scrollTo(0,0);
   app.innerHTML=topbar()+`<div class="card"><div style="font-size:60px;text-align:center">${r.icon}</div><h2 style="text-align:center">${r.name}</h2><p class="small" style="text-align:center">${r.subj==='M'?'Mathe':'Deutsch'} · ${r.desc}</p>
 <div class="speech"><div class="p">${pet().e}</div><div class="bubble">${r.intro}</div></div>
 <div class="bigstars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><p class="small" style="text-align:center">6 Aufgaben · 1 Stern ab 3 richtig · 3 Sterne bei allen richtig<br>Kommst du nicht weiter? Tippe auf 💡 Hilfe – sie hilft dir Schritt für Schritt.</p>
@@ -479,7 +499,7 @@ function healCount(){return Object.values(S.mistakes||{}).filter(v=>v>0).length;
 function addMistake(t){if(!t.gen)return;S.mistakes=S.mistakes||{};S.mistakes[t.gen]=Math.min(3,(S.mistakes[t.gen]||0)+1);}
 function fixMistake(t){if(!t.gen||!S.mistakes||!S.mistakes[t.gen])return;S.mistakes[t.gen]--;if(S.mistakes[t.gen]<=0)delete S.mistakes[t.gen];}
 
-function startQuest(kind){touchStreak();let tasks,title,probe=false;
+function startQuest(kind){leaveGame();touchStreak();let tasks,title,probe=false;
   if(kind==='final'){tasks=genMixed(null,10);title='Turm des Großen Kompass';}
   else if(kind==='probeM'){tasks=genMixed('M',11);title='Probe-Kompass Mathe';probe=true;}
   else if(kind==='probeD'){tasks=genMixed('D',11);title='Probe-Kompass Deutsch';probe=true;}
@@ -613,34 +633,157 @@ function stat(t,ok){const k=t.skill;S.stats[k]=S.stats[k]||{ok:0,all:0};S.stats[
 function endQuest(){clearInterval(Q.timerId);window.scrollTo(0,0);
   const orig=Q.tasks.map((t,k)=>[t,Q.res[k]]).filter(([t])=>!t.twin);const n=orig.length,ok=orig.filter(x=>x[1]>0).length,first=orig.filter(x=>x[1]===2).length;
   const twinsOk=Q.tasks.filter((t,k)=>t.twin&&Q.res[k]>0).length,twinsAll=Q.tasks.filter(t=>t.twin).length;
-  if(Q.probe){S.probes.push({k:Q.kind,d:today(),ok,n});save();
-    app.innerHTML=topbar()+`<div class="card"><h2>${Q.title}: Auswertung</h2><div class="bigstars">${ok} / ${n}</div><p class="q" style="text-align:center">${ok>=9?'Hervorragend, du bist bestens vorbereitet!':ok>=6?'Gut gemacht! Schau dir die Fehler genau an.':'Übe die Bereiche auf der Karte noch etwas. Du schaffst das!'}</p>${ok<n?`<p class="small" style="text-align:center">Deine Fehler-Aufgaben warten jetzt in der <b>Quelle der Wiederholung</b> auf der Karte.</p>`:''}
+  if(Q.probe){S.probes.push({k:Q.kind,d:today(),ok,n});const earnP=5*60000;addPlay(earnP);save();
+    app.innerHTML=topbar()+`<div class="card"><h2>${Q.title}: Auswertung</h2><div class="bigstars">${ok} / ${n}</div><p class="q" style="text-align:center">${ok>=9?'Hervorragend, du bist bestens vorbereitet!':ok>=6?'Gut gemacht! Schau dir die Fehler genau an.':'Übe die Bereiche auf der Karte noch etwas. Du schaffst das!'}</p>${earnHtml(earnP)}${ok<n?`<p class="small" style="text-align:center">Deine Fehler-Aufgaben warten jetzt in der <b>Quelle der Wiederholung</b> auf der Karte.</p>`:''}
 ${Q.tasks.map((t,k)=>`<div class="review"><b>${Q.res[k]?'✅':'❌'} Aufgabe ${k+1}</b> <span class="tag">${t.skill}</span><div class="q" style="font-size:16px">${t.q.replace(/<div class="textbox">[\s\S]*?<\/div>/,'<i>(Lesetext)</i> ')}</div>${t.type==='choice'?`<div>Richtige Antwort: <b>${t.options[t.answer]}</b></div>`:''}<div class="small">${t.sol}</div>${!Q.res[k]&&LESSON[t.skill]?`<details><summary class="small"><b>📖 Erklärung zum Thema</b></summary><div class="small">${LESSON[t.skill].learn}</div></details>`:''}</div>`).join('')}
 <div class="row"><button class="btn wide" onclick="showMap()">Zur Karte</button></div></div>`;return;}
   const twinLine=twinsAll?`<p class="small">Übungsaufgaben: ${twinsOk} von ${twinsAll} geschafft${twinsOk?' – stark, dass du drangeblieben bist!':''}</p>`:'';
-  if(Q.kind==='heal'){save();app.innerHTML=topbar()+`<div class="card" style="text-align:center"><div style="font-size:56px">🌿</div><h2>Gut geübt!</h2><p class="q">${ok} von ${n} richtig.</p>${twinLine}<p class="q">${healCount()?`Noch ${healCount()} Stolperstein-${healCount()===1?'Art':'Arten'} in der Quelle.`:'Die Quelle ist leer – alle Stolpersteine geschafft! 🎉'}</p><div class="row">${healCount()?`<button class="btn" onclick="startQuest('heal')">Weiter üben</button>`:''}<button class="btn sec" onclick="showMap()">Zur Karte</button></div></div>`;if(ok)setTimeout(()=>sparkle(innerWidth/2,180,15),200);return;}
-  if(Q.kind==='final'){const win=ok>=7;if(win){S.finalDone=true;S.gems+=20;save();}
-    app.innerHTML=topbar()+(win?`<div class="card cert"><div class="big">🧭</div><h2>Urkunde</h2><p class="q">Hiermit wird feierlich bestätigt:</p><h1 style="margin:6px 0;color:#7a2e0b">${esc(S.name)}</h1><p class="q">hat den <b>Großen Kompass von Kompassia</b> wieder zusammengesetzt und ist nun<br><b style="font-size:24px">Hüterin des Reiches</b>!</p><div class="bigstars">${pet().e}✨</div><p class="small">${ok} von ${n} Prüfungen bestanden · +20 💎 Bonus</p><div class="row"><button class="btn wide" onclick="showMap()">Zur Karte</button></div></div>`
+  if(Q.kind==='heal'){const earnH=ok>=3?3*60000:0;addPlay(earnH);save();app.innerHTML=topbar()+`<div class="card" style="text-align:center"><div style="font-size:56px">🌿</div><h2>Gut geübt!</h2><p class="q">${ok} von ${n} richtig.</p>${twinLine}<p class="q">${healCount()?`Noch ${healCount()} Stolperstein-${healCount()===1?'Art':'Arten'} in der Quelle.`:'Die Quelle ist leer – alle Stolpersteine geschafft! 🎉'}</p>${earnHtml(earnH)}<div class="row">${healCount()?`<button class="btn" onclick="startQuest('heal')">Weiter üben</button>`:''}<button class="btn sec" onclick="showMap()">Zur Karte</button></div></div>`;if(ok)setTimeout(()=>sparkle(innerWidth/2,180,15),200);return;}
+  if(Q.kind==='final'){const win=ok>=7;if(win){S.finalDone=true;S.gems+=20;addPlay(10*60000);save();}
+    app.innerHTML=topbar()+(win?`<div class="card cert"><div class="big">🧭</div><h2>Urkunde</h2><p class="q">Hiermit wird feierlich bestätigt:</p><h1 style="margin:6px 0;color:#7a2e0b">${esc(S.name)}</h1><p class="q">hat den <b>Großen Kompass von Kompassia</b> wieder zusammengesetzt und ist nun<br><b style="font-size:24px">Hüterin des Reiches</b>!</p><div class="bigstars">${pet().e}✨</div><p class="small">${ok} von ${n} Prüfungen bestanden · +20 💎 Bonus</p>${earnHtml(10*60000)}<div class="row"><button class="btn wide" onclick="showMap()">Zur Karte</button></div></div>`
     :`<div class="card"><h2>Fast geschafft!</h2><p class="q">Du hast ${ok} von ${n} Aufgaben gelöst. Für den Großen Kompass brauchst du 7. ${pet().n} glaubt an dich, versuch es gleich noch einmal!</p><div class="row"><button class="btn" onclick="startQuest('final')">Nochmal versuchen</button><button class="btn sec" onclick="showMap()">Zur Karte</button></div></div>`);
     if(win)setTimeout(()=>sparkle(innerWidth/2,200,30),200);return;}
-  const stars=ok===n&&first>=n-1?3:ok>=n-1?2:ok>=3?1:0;const R=S.regions[Q.kind]=S.regions[Q.kind]||{stars:0,plays:0};const had=R.stars;R.plays++;R.stars=Math.max(R.stars,stars);const newSplinter=had<1&&stars>=1;save();
+  const stars=ok===n&&first>=n-1?3:ok>=n-1?2:ok>=3?1:0;const R=S.regions[Q.kind]=S.regions[Q.kind]||{stars:0,plays:0};const had=R.stars;R.plays++;R.stars=Math.max(R.stars,stars);const newSplinter=had<1&&stars>=1;const earnR=stars*2*60000;addPlay(earnR);save();
   const reg=REGIONS.find(x=>x.id===Q.kind);
   app.innerHTML=topbar()+`<div class="card" style="text-align:center"><div style="font-size:56px">${reg.icon}</div><h2>${stars?'Quest geschafft!':'Quest beendet'}</h2><div class="bigstars">${'⭐'.repeat(stars)}${'☆'.repeat(3-stars)}</div><p class="q">${ok} von ${n} richtig, ${first} davon ganz allein beim ersten Versuch.</p>${twinLine}
 ${newSplinter?`<div class="speech" style="text-align:left"><div class="p">${pet().e}</div><div class="bubble"><b>Ein Kompass-Splitter! 🔷</b> Du hast den Splitter vom ${reg.name} gefunden. Noch ${8-splinters()} bis zum Großen Kompass!</div></div>`:''}
 ${!stars?`<div class="speech" style="text-align:left"><div class="p">${pet().e}</div><div class="bubble">Ab 3 richtigen Aufgaben bekommst du den ersten Stern. Probier es gleich nochmal, die Aufgaben sind jedes Mal neu!</div></div>`:''}
-<div class="row"><button class="btn" onclick="startQuest('${Q.kind}')">Nochmal ⚔️</button><button class="btn sec" onclick="showMap()">Zur Karte</button></div></div>`;
+${earnHtml(earnR)}<div class="row"><button class="btn" onclick="startQuest('${Q.kind}')">Nochmal ⚔️</button><button class="btn sec" onclick="showMap()">Zur Karte</button></div></div>`;
   if(stars)setTimeout(()=>sparkle(innerWidth/2,180,stars*10),200);}
 
+/* ============ Zauber-Arkade ============ */
+const PRICE=10;
+function wallet(){return S.gems-(S.spent||0);}
+function fmtMs(ms){const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+pad(s%60);}
+function addPlay(ms){S.playMs=(S.playMs||0)+ms;}
+function earnHtml(ms){return ms?`<div class="speech" style="text-align:left;margin-top:12px"><div class="p">🎮</div><div class="bubble"><b>+${ms/60000} Minuten Spielzeit</b> für die Zauber-Arkade!<br><button class="btn sec" style="margin-top:8px;padding:8px 14px;font-size:15px" onclick="showArcade()">Jetzt spielen</button></div></div>`:'';}
+function emoji(ctx,ch,x,y,size){ctx.font=`${size}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(ch,x,y+1);}
+function overlayText(ctx,W,H,txt){ctx.fillStyle='#000a';ctx.fillRect(0,H/2-24,W,48);ctx.fillStyle='#fde9b0';ctx.font='800 16px Nunito,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,W/2,H/2);}
+function mkCanvas(el,W,H){const c=document.createElement('canvas');c.className='gcanvas';const cw=Math.min(el.clientWidth||320,420);const k=cw/W;c.style.width=cw+'px';c.style.height=H*k+'px';const dpr=window.devicePixelRatio||1;c.width=Math.round(cw*dpr);c.height=Math.round(H*k*dpr);const ctx=c.getContext('2d');ctx.setTransform(k*dpr,0,0,k*dpr,0,0);el.appendChild(c);
+  const pos=e=>{const r=c.getBoundingClientRect();return [(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H];};return {c,ctx,pos};}
+function rrect(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);ctx.fill();}
+
+/* --- Drachen-Snake --- */
+function runSnake(el,api){const W=300,H=360,C=20,CW=W/C,CH=H/C;const {c,ctx}=mkCanvas(el,W,H);
+  let sn=[{x:7,y:9},{x:6,y:9},{x:5,y:9}],dir={x:1,y:0},nd=dir,score=0,step=170,acc=0,last=performance.now(),raf,started=false,dead=false;
+  const place=()=>{let p;do{p={x:ri(0,CW-1),y:ri(0,CH-1)};}while(sn.some(s=>s.x===p.x&&s.y===p.y));return p;};let food=place();
+  const turn=(x,y)=>{if(dead)return;if(x===-dir.x&&y===-dir.y)return;nd={x,y};started=true;};
+  function update(){dir=nd;const h={x:(sn[0].x+dir.x+CW)%CW,y:(sn[0].y+dir.y+CH)%CH};
+    if(sn.some(s=>s.x===h.x&&s.y===h.y)){dead=true;draw();setTimeout(()=>api.end(score),500);return;}
+    sn.unshift(h);if(h.x===food.x&&h.y===food.y){score++;api.score(score);food=place();step=Math.max(85,step-5);}else sn.pop();}
+  function draw(){ctx.fillStyle='#1d3b2a';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#ffffff12';ctx.lineWidth=1;
+    for(let x=0;x<=W;x+=C){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<=H;y+=C){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    emoji(ctx,'💎',food.x*C+C/2,food.y*C+C/2,17);
+    for(let i=sn.length-1;i>0;i--){const s=sn[i];ctx.fillStyle=i%2?'#5fcf80':'#3fae62';ctx.beginPath();ctx.arc(s.x*C+C/2,s.y*C+C/2,C/2-1,0,7);ctx.fill();}
+    emoji(ctx,dead?'😵':'🐲',sn[0].x*C+C/2,sn[0].y*C+C/2,21);
+    if(!started)overlayText(ctx,W,H,'Wische oder tippe auf die Pfeile');}
+  function loop(t){raf=requestAnimationFrame(loop);const dt=Math.min(250,t-last);last=t;if(started&&!dead){acc+=dt;while(acc>=step&&!dead){acc-=step;update();}}if(!dead)draw();}
+  raf=requestAnimationFrame(loop);
+  let sx=0,sy=0;c.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;e.preventDefault();});
+  c.addEventListener('pointerup',e=>{const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;Math.abs(dx)>Math.abs(dy)?turn(Math.sign(dx),0):turn(0,Math.sign(dy));});
+  const dp=document.createElement('div');dp.className='dpad';dp.innerHTML='<button data-d="0,-1">▲</button><button data-d="-1,0">◀</button><button data-d="0,1">▼</button><button data-d="1,0">▶</button>';el.appendChild(dp);
+  dp.querySelectorAll('button').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();const [x,y]=b.dataset.d.split(',').map(Number);turn(x,y);}));
+  const key=e=>{const m={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(m){e.preventDefault();turn(m[0],m[1]);}};window.addEventListener('keydown',key);
+  return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);}};}
+
+/* --- Zauber-Memory --- */
+function runMemory(el,api){const pics=['🐉','🦄','🦉','🦊','🧚','🧙','🏰','💎'];const cards=shuffle([...pics,...pics]);let open=[],moves=0,found=0,lock=false,t1=null;
+  el.insertAdjacentHTML('beforeend',`<div class="mem">${cards.map((p,i)=>`<button class="mcard" data-i="${i}"><span>${p}</span></button>`).join('')}</div>`);
+  el.querySelectorAll('.mcard').forEach(b=>b.onclick=()=>{if(lock||b.classList.contains('up'))return;b.classList.add('up');open.push(b);
+    if(open.length===2){moves++;api.score(moves);const [x,y]=open;
+      if(cards[x.dataset.i]===cards[y.dataset.i]){x.classList.add('done');y.classList.add('done');open=[];found++;if(found===pics.length)t1=setTimeout(()=>api.end(moves),600);}
+      else{lock=true;t1=setTimeout(()=>{x.classList.remove('up');y.classList.remove('up');open=[];lock=false;},850);}}});
+  return {stop(){clearTimeout(t1);}};}
+
+/* --- Frosch-Fangen --- */
+function runFrog(el,api){let score=0,left=30,alive=true,cur=-1,spawnT=null,tick=null;
+  el.insertAdjacentHTML('beforeend',`<div class="ftime">⏱️ <b class="fleft">30</b> Sekunden</div><div class="holes">${[...Array(9)].map((_,i)=>`<button class="hole" data-i="${i}"><span>🐸</span></button>`).join('')}</div><p class="small" style="text-align:center">Goldene Frösche bringen 3 Punkte!</p>`);
+  const holes=[...el.querySelectorAll('.hole')];
+  function spawn(){if(!alive)return;holes.forEach(h=>h.classList.remove('up','gold'));let i;do{i=ri(0,8);}while(i===cur);cur=i;holes[i].classList.add('up');if(Math.random()<.15)holes[i].classList.add('gold');spawnT=setTimeout(spawn,Math.max(480,1000-score*15));}
+  holes.forEach(h=>h.addEventListener('pointerdown',e=>{e.preventDefault();if(!alive||!h.classList.contains('up'))return;score+=h.classList.contains('gold')?3:1;api.score(score);h.classList.remove('up','gold');h.classList.add('hit');setTimeout(()=>h.classList.remove('hit'),180);clearTimeout(spawnT);spawnT=setTimeout(spawn,260);}));
+  tick=setInterval(()=>{left--;const f=el.querySelector('.fleft');if(f)f.textContent=left;if(left<=0){alive=false;clearInterval(tick);clearTimeout(spawnT);holes.forEach(h=>h.classList.remove('up','gold'));api.end(score);}},1000);
+  spawnT=setTimeout(spawn,500);return {stop(){alive=false;clearInterval(tick);clearTimeout(spawnT);}};}
+
+/* --- Eulenflug --- */
+function runOwl(el,api){const W=300,H=420;const {c,ctx}=mkCanvas(el,W,H);let y=H/2,vy=0,pipes=[],score=0,started=false,dead=false,raf,last=performance.now(),acc=0;const X=80,R=13,GAP=135,SP=2.1;
+  const stars=[...Array(30)].map(()=>[Math.random()*W,Math.random()*(H-40)]);
+  const flap=()=>{if(dead)return;started=true;vy=-6.2;};
+  c.addEventListener('pointerdown',e=>{e.preventDefault();flap();});const key=e=>{if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();flap();}};window.addEventListener('keydown',key);
+  function die(){dead=true;draw();setTimeout(()=>api.end(score),500);}
+  function step(f){vy+=0.36*f;y+=vy*f;acc+=f;if(acc>95){acc=0;pipes.push({x:W,g:ri(60,H-70-GAP),p:false});}pipes.forEach(p=>p.x-=SP*f);pipes=pipes.filter(p=>p.x>-60);
+    for(const p of pipes){if(!p.p&&p.x+44<X-R){p.p=true;score++;api.score(score);}if(X+R>p.x+8&&X-R<p.x+42&&(y-R<p.g||y+R>p.g+GAP)){die();return;}}
+    if(y+R>H-20||y-R<0)die();}
+  function draw(){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#1b1340');g.addColorStop(1,'#5b3fa8');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#ffffffaa';stars.forEach(([sx,sy])=>ctx.fillRect(sx,sy,2,2));ctx.fillStyle='#f5dc8f';ctx.beginPath();ctx.arc(250,50,18,0,7);ctx.fill();
+    for(const p of pipes){ctx.fillStyle='#6b4423';ctx.fillRect(p.x+12,0,26,p.g);ctx.fillRect(p.x+12,p.g+GAP,26,H-p.g-GAP);ctx.fillStyle='#2f8a57';ctx.beginPath();ctx.ellipse(p.x+25,p.g-6,26,13,0,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(p.x+25,p.g+GAP+6,26,13,0,0,7);ctx.fill();}
+    ctx.fillStyle='#1d3b2a';ctx.fillRect(0,H-20,W,20);
+    ctx.save();ctx.translate(X,y);ctx.rotate(Math.max(-.5,Math.min(.8,vy/10)));emoji(ctx,'🦉',0,0,30);ctx.restore();
+    if(!started)overlayText(ctx,W,H,'Tippe, damit die Eule flattert!');}
+  function loop(t){raf=requestAnimationFrame(loop);const f=Math.min(3,(t-last)/16.67);last=t;if(started&&!dead)step(f);if(!dead)draw();}
+  raf=requestAnimationFrame(loop);return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);}};}
+
+/* --- Kristall-Breakout --- */
+function runBreakout(el,api){const W=300,H=420;const {c,ctx,pos}=mkCanvas(el,W,H);const cols=6,rows=5,bw=44,bh=16,gx=4,ox=(W-(cols*bw+(cols-1)*gx))/2,oy=46,BR=6,PY=H-30;
+  const colors=['#f08a7a','#f3c45a','#7fd6a0','#7fc8f0','#b09cf0'];let px=W/2,pw=72,ball,bricks,score=0,lives=3,level=1,started=false,raf,last=performance.now(),over=false;
+  const build=()=>{bricks=[];for(let r=0;r<rows;r++)for(let k=0;k<cols;k++)bricks.push({x:ox+k*(bw+gx),y:oy+r*(bh+gx),c:colors[r],a:true});};
+  const reset=()=>{ball={x:px,y:PY-BR,vx:0,vy:0};started=false;};build();reset();
+  const launch=()=>{if(started||over)return;started=true;const sp=3.4+level*.4,a=-Math.PI/2+(Math.random()-.5)*.8;ball.vx=Math.cos(a)*sp;ball.vy=Math.sin(a)*sp;};
+  c.addEventListener('pointerdown',e=>{e.preventDefault();px=pos(e)[0];launch();});c.addEventListener('pointermove',e=>{px=pos(e)[0];});
+  const key=e=>{if(e.key==='ArrowLeft')px-=26;else if(e.key==='ArrowRight')px+=26;else if(e.code==='Space')launch();else return;e.preventDefault();};window.addEventListener('keydown',key);
+  function step(f){px=Math.max(pw/2,Math.min(W-pw/2,px));if(!started){ball.x=px;ball.y=PY-BR;return;}ball.x+=ball.vx*f;ball.y+=ball.vy*f;
+    if(ball.x<BR){ball.x=BR;ball.vx=Math.abs(ball.vx);}if(ball.x>W-BR){ball.x=W-BR;ball.vx=-Math.abs(ball.vx);}if(ball.y<BR){ball.y=BR;ball.vy=Math.abs(ball.vy);}
+    if(ball.vy>0&&ball.y+BR>=PY&&ball.y+BR<=PY+14&&ball.x>px-pw/2-BR&&ball.x<px+pw/2+BR){const hit=Math.max(-1,Math.min(1,(ball.x-px)/(pw/2))),sp=Math.hypot(ball.vx,ball.vy),ang=-Math.PI/2+hit*1.05;ball.vx=Math.cos(ang)*sp;ball.vy=Math.sin(ang)*sp;ball.y=PY-BR;}
+    for(const b of bricks){if(!b.a)continue;if(ball.x+BR>b.x&&ball.x-BR<b.x+bw&&ball.y+BR>b.y&&ball.y-BR<b.y+bh){b.a=false;score++;api.score(score);const dx=Math.min(ball.x+BR-b.x,b.x+bw-(ball.x-BR)),dy=Math.min(ball.y+BR-b.y,b.y+bh-(ball.y-BR));if(dx<dy)ball.vx*=-1;else ball.vy*=-1;break;}}
+    if(bricks.every(b=>!b.a)){level++;build();reset();}
+    if(ball.y>H+10){lives--;if(lives<=0){over=true;draw();setTimeout(()=>api.end(score),400);}else reset();}}
+  function draw(){ctx.fillStyle='#1b1340';ctx.fillRect(0,0,W,H);for(const b of bricks){if(!b.a)continue;ctx.fillStyle=b.c;rrect(ctx,b.x,b.y,bw,bh,4);ctx.fillStyle='#ffffff66';ctx.fillRect(b.x+5,b.y+3,bw-10,3);}
+    ctx.fillStyle='#f3c45a';rrect(ctx,px-pw/2,PY,pw,10,5);ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(ball.x,ball.y,BR,0,7);ctx.fill();
+    ctx.font='800 13px Nunito,sans-serif';ctx.textAlign='left';ctx.textBaseline='top';ctx.fillStyle='#fde9b0';ctx.fillText('Leben: '+'♥'.repeat(Math.max(0,lives))+'   Level '+level,8,12);
+    if(!started&&!over)overlayText(ctx,W,H,'Tippe zum Starten, ziehe zum Lenken');}
+  function loop(t){raf=requestAnimationFrame(loop);const f=Math.min(3,(t-last)/16.67);last=t;if(over)return;const n=Math.ceil(f*1.5)||1;for(let i=0;i<n&&!over;i++)step(f/n);if(!over)draw();}
+  raf=requestAnimationFrame(loop);return {stop(){cancelAnimationFrame(raf);window.removeEventListener('keydown',key);}};}
+
+const GAMES=[
+ {id:'snake',name:'Drachen-Snake',icon:'🐲',desc:'Steuere den Drachen und sammle Kristalle. Beiß dich nicht in den eigenen Schwanz!',unit:'Kristalle',run:runSnake},
+ {id:'memory',name:'Zauber-Memory',icon:'🃏',desc:'Finde alle Paare der Fabelwesen mit möglichst wenigen Zügen.',unit:'Züge',low:true,run:runMemory},
+ {id:'frog',name:'Frosch-Fangen',icon:'🐸',desc:'Merlos Zauberfrösche sind entwischt! Tippe sie schnell an, bevor sie abtauchen.',unit:'Punkte',run:runFrog},
+ {id:'owl',name:'Eulenflug',icon:'🦉',desc:'Tippe, damit die Eule flattert, und fliege durch die Lücken im Zauberwald.',unit:'Bäume',run:runOwl},
+ {id:'brk',name:'Kristall-Breakout',icon:'💎',desc:'Lenke den goldenen Schild und zerschlage alle Kristallmauern.',unit:'Kristalle',run:runBreakout}];
+let G=null;
+function stopGame(){if(!G)return;clearInterval(G.tick);try{G.inst&&G.inst.stop();}catch(e){}save();}
+function leaveGame(){if(G){G.over=true;stopGame();G=null;}}
+function showArcade(){leaveGame();window.scrollTo(0,0);const t=S.playMs||0,w=wallet();
+  app.innerHTML=topbar()+`<div class="lead"><h1 style="font-size:30px">🎮 Zauber-Arkade</h1></div>
+<div class="card"><div class="speech"><div class="p">${pet().e}</div><div class="bubble">${t>0?`Du hast <b>⏳ ${fmtMs(t)} Spielzeit</b> verdient. Viel Spaß!`:`Eine Runde kostet <b>${PRICE} 💎</b>. Mit jeder geschafften Quest verdienst du außerdem Spielzeit: <b>2 Minuten pro Stern</b>.`}</div></div>
+<div class="arc-stat"><span>⏳ Spielzeit: <b>${fmtMs(t)}</b></span><span>💎 Kristalle: <b>${w}</b></span></div></div>
+${GAMES.map(g=>{const hs=(S.high||{})[g.id];return `<div class="card game"><div class="gicon">${g.icon}</div><div><h3 class="medieval">${g.name}</h3><div class="small">${g.desc}</div><div class="small" style="margin-top:4px">🏆 Rekord: <b>${hs!=null?hs+' '+g.unit:'–'}</b></div></div><button class="btn" onclick="startGame('${g.id}')">${t>0?'Spielen ⏳':'Spielen · '+PRICE+' 💎'}</button></div>`;}).join('')}
+<div class="row"><button class="btn ghost wide" style="color:#fde9b0;border-color:#fde9b088" onclick="showMap()">Zurück zur Karte</button></div>`;}
+function startGame(id){leaveGame();const g=GAMES.find(x=>x.id===id);const timeMode=(S.playMs||0)>0;
+  if(!timeMode){if(wallet()<PRICE)return toast(`Für eine Runde brauchst du ${PRICE} 💎. Dir fehlen noch ${PRICE-wallet()}. Löse eine Quest, dann bekommst du Kristalle und Spielzeit!`);S.spent=(S.spent||0)+PRICE;save();}
+  window.scrollTo(0,0);const hs=(S.high||{})[g.id];
+  app.innerHTML=topbar()+`<div class="card" style="padding:12px"><div class="taskhead"><span>${g.icon} ${g.name}</span><span>${timeMode?`⏳ <b id="gtime">${fmtMs(S.playMs)}</b>`:'1 Runde'}</span></div><div class="small" style="margin:4px 0 10px">${g.unit}: <b id="gscore">0</b> · 🏆 Rekord: ${hs!=null?hs:'–'}</div><div id="garea" class="garea"></div><div class="row"><button class="btn ghost wide" id="gquit">Zurück zur Arkade</button></div></div>`;
+  const sess={g,timeMode,score:0,over:false};G=sess;
+  const api={score:v=>{if(G!==sess)return;sess.score=v;const e=$('#gscore');if(e)e.textContent=v;},end:v=>{if(G===sess)gameOver(v,false);}};
+  sess.inst=g.run($('#garea'),api);
+  if(timeMode){sess.last=Date.now();sess.tick=setInterval(()=>{const now=Date.now();if(!document.hidden)S.playMs=Math.max(0,(S.playMs||0)-(now-sess.last));sess.last=now;const e=$('#gtime');if(e)e.textContent=fmtMs(S.playMs);if(S.playMs<=0)gameOver(g.low?null:sess.score,true);},250);}
+  $('#gquit').onclick=()=>{if(!sess.over&&!timeMode)return confirmBox('Runde beenden? Die Kristalle für diese Runde sind dann verbraucht.',()=>showArcade());showArcade();};}
+function gameOver(score,timeUp){const s=G;if(!s||s.over)return;s.over=true;stopGame();const g=s.g;S.high=S.high||{};const prev=S.high[g.id];let rec=false;
+  if(score!=null&&(g.low?(prev==null||score<prev):score>(prev||0))){S.high[g.id]=score;rec=true;}save();const t=S.playMs||0;
+  $('#garea').innerHTML=`<div class="gres"><div style="font-size:56px">${rec?'🏆':g.icon}</div><h2>${timeUp?'Spielzeit vorbei!':rec?'Neuer Rekord!':'Runde vorbei!'}</h2>${score!=null?`<p class="q">${g.unit}: <b>${score}</b></p>`:''}<p class="small">🏆 Rekord: ${S.high[g.id]!=null?S.high[g.id]+' '+g.unit:'–'}</p>${timeUp?`<p class="small">Mit der nächsten Quest verdienst du neue Spielzeit – oder spiele mit Kristallen weiter.</p>`:''}
+<div class="row"><button class="btn" id="gagain">${t>0?'Nochmal ⏳':'Nochmal · '+PRICE+' 💎'}</button><button class="btn sec" id="gback">Zur Arkade</button></div>${timeUp?`<div class="row"><button class="btn ghost wide" onclick="showMap()">Zur Karte – neue Quest</button></div>`:''}</div>`;
+  $('#gagain').onclick=()=>startGame(g.id);$('#gback').onclick=()=>showArcade();if(rec)sparkle(innerWidth/2,260,20);}
+
 /* ============ Eltern ============ */
-function showParents(){window.scrollTo(0,0);const sk=Object.entries(S.stats).sort((a,b)=>a[1].ok/a[1].all-b[1].ok/b[1].all);
+function showParents(){leaveGame();window.scrollTo(0,0);const sk=Object.entries(S.stats).sort((a,b)=>a[1].ok/a[1].all-b[1].ok/b[1].all);
   app.innerHTML=topbar()+`<div class="card"><h2>👪 Für Eltern</h2><p class="small">Der Fortschritt wird nur auf diesem Gerät im Browser gespeichert.</p>
 <h3 class="medieval">Bereiche (schwächste zuerst)</h3>${sk.length?sk.map(([k,v])=>{const p=Math.round(v.ok/v.all*100);return `<div class="stat"><span>${k}</span><span style="display:flex;align-items:center">${v.ok}/${v.all} (${p} %)<span class="mini"><span style="width:${p}%"></span></span></span></div>`;}).join(''):'<p class="small">Noch keine Aufgaben gelöst.</p>'}
 <h3 class="medieval">Aufgabenvorrat</h3>${(()=>{const p=poolStats();return `<div class="stat"><span>Deutsch-Aufgaben &amp; Lesetexte gelöst</span><span>${p.sol} von ${p.all}</span></div><p class="small">Gelöste Aufgaben kommen erst wieder, wenn alle anderen einer Liste dran waren. Mathe-Aufgaben bekommen immer neue Zahlen.</p>`;})()}
 <h3 class="medieval">Orte</h3>${REGIONS.map(r=>`<div class="stat"><span>${r.icon} ${r.name}</span><span>${'⭐'.repeat(S.regions[r.id]?.stars||0)||'–'} · ${S.regions[r.id]?.plays||0}× gespielt</span></div>`).join('')}
+<h3 class="medieval">Zauber-Arkade</h3><div class="stat"><span>Spielzeit-Guthaben</span><span>${fmtMs(S.playMs||0)}</span></div><div class="stat"><span>Kristalle verdient / ausgegeben</span><span>${S.gems} / ${S.spent||0}</span></div>${GAMES.map(g=>`<div class="stat"><span>${g.icon} ${g.name}</span><span>Rekord: ${(S.high||{})[g.id]??'–'}</span></div>`).join('')}<p class="small">Spielzeit gibt es für Quests (2 Min. pro Stern), die Quelle der Wiederholung (3 Min.), Probe-Tests (5 Min.) und die Endprüfung (10 Min.). Ohne Spielzeit kostet eine Runde 10 💎.</p>
 <h3 class="medieval">Probe-Tests</h3>${S.probes.length?S.probes.slice(-8).reverse().map(p=>`<div class="stat"><span>${p.k==='probeM'?'Mathe':'Deutsch'} · ${p.d}</span><span>${p.ok} / ${p.n}</span></div>`).join(''):'<p class="small">Noch kein Probe-Test.</p>'}
 <p class="small" style="margin-top:12px">Die Aufgaben sind eigene Übungsaufgaben im Stil der Kompass-4-Kompetenzmessung (Klasse 4, Baden-Württemberg), keine Originalaufgaben des IBBW. Rechenaufgaben werden bei jedem Start neu erzeugt.</p>
 <div class="row"><button class="btn sec" onclick="showStart()">Name / Begleiter ändern</button><button class="btn ghost" id="rst">Fortschritt löschen</button></div><div class="row"><button class="btn wide" onclick="showMap()">Zur Karte</button></div></div>`;
-  $('#rst').onclick=()=>confirmBox('Wirklich den gesamten Fortschritt löschen?',()=>{S={name:S.name,pet:S.pet,gems:0,regions:{},stats:{},streak:0,lastDay:'',finalDone:false,probes:[],mistakes:{},seen:{}};SEEN=S.seen;save();showMap();});}
+  $('#rst').onclick=()=>confirmBox('Wirklich den gesamten Fortschritt löschen?',()=>{S={name:S.name,pet:S.pet,gems:0,regions:{},stats:{},streak:0,lastDay:'',finalDone:false,probes:[],mistakes:{},seen:{},spent:0,playMs:0,high:{}};SEEN=S.seen;save();showMap();});}
 
 S.name?showMap():showStart();
 </script>
