@@ -109,6 +109,9 @@ svg.fig{display:block;margin:10px auto;max-width:100%}
 .cert .big{font-size:64px}
 .small{font-size:14px;color:#6b4a1f}
 a{color:#4b3690}
+.fsgame,.fsgame *{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important;-webkit-tap-highlight-color:transparent}
+.fsgame canvas{-webkit-user-drag:none}
+
 .fsgame{position:fixed;inset:0;z-index:60;background:#140d33;touch-action:none;-webkit-user-select:none;user-select:none;display:flex;flex-direction:column;overscroll-behavior:none}
 .fshud{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top) + 8px) 14px 8px;background:#0b0724;color:#fde9b0;font:800 18px Nunito,sans-serif}
 .fshud small{font-size:13px;opacity:.8}
@@ -909,6 +912,9 @@ function startGame(id){leaveGame();const g=GAMES.find(x=>x.id===id);const timeMo
   window.scrollTo(0,0);app.innerHTML=topbar()+`<div class="card" style="padding:12px"><div class="taskhead"><span>${g.icon} ${g.name}</span><span></span></div><div id="garea" class="garea"><p class="small">Das Spiel läuft im Vollbild …</p></div><div class="row"><button class="btn ghost wide" onclick="showArcade()">Zurück zur Arkade</button></div></div>`;
   const ov=document.createElement('div');ov.className='fsgame';ov.innerHTML=`<div class="fshud"><span>${g.icon} <b class="fs-score">0</b> <small>${g.unit}</small></span><span class="fs-time">${timeMode?'⏳ '+fmtMs(S.playMs):'1 Runde'}</span><button class="fs-x" aria-label="Spiel beenden">✕</button></div><div class="fsarea"></div>`;
   document.body.appendChild(ov);document.body.style.overflow='hidden';ov.addEventListener('touchmove',e=>{if(e.target.closest('.fsarea'))e.preventDefault();},{passive:false});
+  /* iPhone: kein Markieren/Kopieren-Menü, kein Doppeltipp-Zoom, keine Lupe bei schnellem Tippen */
+  ov.addEventListener('touchstart',e=>{if(e.target.closest('canvas')||e.target.classList.contains('fsarea'))e.preventDefault();try{window.getSelection().removeAllRanges();}catch(_){}},{passive:false});
+  ['selectstart','contextmenu','dblclick','gesturestart'].forEach(ev=>ov.addEventListener(ev,e=>e.preventDefault()));
   const sess={g,timeMode,score:0,over:false,ov};G=sess;
   const api={score:v=>{if(G!==sess)return;sess.score=v;const e=ov.querySelector('.fs-score');if(e)e.textContent=v;},end:v=>{if(G===sess)gameOver(v,false);}};
   sess.inst=g.run(ov.querySelector('.fsarea'),api);
