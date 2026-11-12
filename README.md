@@ -49,6 +49,12 @@ Eine angefangene Quest wird gespeichert. Beim nächsten Start geht es genau bei 
 
 Dazu: **Probe-Kompass** (11 Aufgaben, 30 Minuten, ohne Tipps, mit Auswertung) und ein **Elternbereich** mit Statistik je Kompetenz.
 
+## Als App installieren (ohne Browserleiste)
+
+- **iPhone:** Seite in Safari öffnen → Teilen → „Zum Home-Bildschirm“. Danach immer über das Kompass-Symbol starten.
+- **Android:** Chrome-Menü ⋮ → „App installieren“ bzw. „Zum Startbildschirm hinzufügen“.
+- Spielstand umziehen: Elternbereich → „Spielstand-Code kopieren“, in der App einfügen → „Code laden“.
+
 ## Benutzen
 
 Einfach `index.html` im Browser öffnen. Keine Installation, keine Abhängigkeiten, kein Server. Der Fortschritt wird lokal im Browser gespeichert.

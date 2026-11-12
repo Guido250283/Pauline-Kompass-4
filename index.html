@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Paulines Kompass-Quest</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Kompass-Quest">
+<meta name="theme-color" content="#140d33">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -933,9 +941,20 @@ function showParents(){leaveGame();window.scrollTo(0,0);const sk=Object.entries(
 <h3 class="medieval">Aufgabenvorrat</h3>${(()=>{const p=poolStats();return `<div class="stat"><span>Deutsch-Aufgaben &amp; Lesetexte gelöst</span><span>${p.sol} von ${p.all}</span></div><p class="small">Gelöste Aufgaben kommen erst wieder, wenn alle anderen einer Liste dran waren. Mathe-Aufgaben bekommen immer neue Zahlen.</p>`;})()}
 <h3 class="medieval">Orte</h3>${REGIONS.map(r=>`<div class="stat"><span>${r.icon} ${r.name}</span><span>${'⭐'.repeat(S.regions[r.id]?.stars||0)||'–'} · ${S.regions[r.id]?.plays||0}× gespielt</span></div>`).join('')}
 <h3 class="medieval">Zauber-Arkade</h3><div class="stat"><span>Spielzeit-Guthaben</span><span>${fmtMs(S.playMs||0)}</span></div><div class="stat"><span>Kristalle verdient / ausgegeben</span><span>${S.gems} / ${S.spent||0}</span></div>${GAMES.map(g=>`<div class="stat"><span>${g.icon} ${g.name}</span><span>Rekord: ${(S.high||{})[g.id]??'–'}</span></div>`).join('')}<p class="small">Spielzeit gibt es für Quests (2 Min. pro Stern), die Quelle der Wiederholung (3 Min.), Probe-Tests (5 Min.) und die Endprüfung (10 Min.). Ohne Spielzeit kostet eine Runde 10 💎.</p>
+<h3 class="medieval">Spielstand übertragen</h3><p class="small">Zum Umziehen vom Browser in die App auf dem Startbildschirm oder auf ein anderes Gerät: Code kopieren, am neuen Ort einfügen und laden. Der Code ist auch ein gutes Backup.</p>
+<div class="row"><button class="btn sec wide" id="expBtn">📋 Spielstand-Code kopieren</button></div>
+<textarea id="codeBox" class="ans" rows="3" style="font-size:14px;margin-top:10px;resize:vertical" placeholder="Hier einen Spielstand-Code einfügen …" autocapitalize="off" autocorrect="off" spellcheck="false"></textarea>
+<div class="row"><button class="btn wide" id="impBtn">Code laden</button></div><div id="codeMsg" class="fb"></div>
 <h3 class="medieval">Probe-Tests</h3>${S.probes.length?S.probes.slice(-8).reverse().map(p=>`<div class="stat"><span>${p.k==='probeM'?'Mathe':'Deutsch'} · ${p.d}</span><span>${p.ok} / ${p.n}</span></div>`).join(''):'<p class="small">Noch kein Probe-Test.</p>'}
 <p class="small" style="margin-top:12px">Die Aufgaben sind eigene Übungsaufgaben im Stil der Kompass-4-Kompetenzmessung (Klasse 4, Baden-Württemberg), keine Originalaufgaben des IBBW. Rechenaufgaben werden bei jedem Start neu erzeugt.</p>
 <div class="row"><button class="btn sec" onclick="showStart()">Name / Begleiter ändern</button><button class="btn ghost" id="rst">Fortschritt löschen</button></div><div class="row"><button class="btn wide" onclick="showMap()">Zur Karte</button></div></div>`;
+  const cmsg=(c,h)=>{const m=$('#codeMsg');m.className='fb show '+c;m.innerHTML=h;};
+  $('#expBtn').onclick=async()=>{const code='KQ1:'+btoa(unescape(encodeURIComponent(JSON.stringify(S))));const box=$('#codeBox');
+    try{await navigator.clipboard.writeText(code);cmsg('good','✅ Code kopiert! Öffne jetzt die App am neuen Ort, gehe in den Elternbereich, füge den Code ein und tippe auf „Code laden“.');}
+    catch(e){box.value=code;box.focus();box.select();cmsg('hint','Kopieren automatisch hat nicht geklappt. Der Code steht im Feld und ist markiert – tippe ihn lange an und wähle „Kopieren“.');}};
+  $('#impBtn').onclick=()=>{const raw=$('#codeBox').value.trim().replace(/\s/g,'');let o=null;
+    try{if(!raw.startsWith('KQ1:'))throw 0;o=JSON.parse(decodeURIComponent(escape(atob(raw.slice(4)))));if(typeof o!=='object'||typeof o.gems!=='number')throw 0;}catch(e){return cmsg('hint','Dieser Code ist ungültig. Bitte den kompletten Code einfügen (er beginnt mit „KQ1:“).');}
+    confirmBox(`Spielstand von <b>${esc(o.name||'?')}</b> laden (${o.gems} 💎)? Der Spielstand auf diesem Gerät wird dabei ersetzt.`,()=>{S=Object.assign({mistakes:{},seen:{},quests:{},high:{},probes:[],regions:{},stats:{}},o);SEEN=S.seen;save();toast(`Spielstand geladen! Willkommen zurück, ${esc(S.name||'Heldin')}!`);showMap();});};
   $('#rst').onclick=()=>confirmBox('Wirklich den gesamten Fortschritt löschen?',()=>{S={name:S.name,pet:S.pet,gems:0,regions:{},stats:{},streak:0,lastDay:'',finalDone:false,probes:[],mistakes:{},seen:{},spent:0,playMs:0,high:{},quests:{}};SEEN=S.seen;save();showMap();});}
 
 S.name?showMap():showStart();
